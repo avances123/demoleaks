@@ -14,14 +14,13 @@ class Sistema(models.Model):
 			 )
 
 
-	nombre = models.CharField(max_length=200)
-	fecha = models.DateTimeField('Fecha elecciones')
+	nombre = models.CharField(max_length=50)
+	fecha = models.IntegerField()
 	formula = models.CharField(max_length=1, choices=FORMULA_CHOICES)
 	elecciones = models.CharField(max_length=1, choices=ELECCIONES_CHOICES)
 
 
 class Sitio(models.Model):
-	sistema = models.ForeignKey(Sistema)
 	nombre_sitio = models.CharField(max_length=200)
 	num_a_elegir = models.IntegerField()
 	tipo_sitio = models.IntegerField()
@@ -32,9 +31,11 @@ class Sitio(models.Model):
 	
 
 class Partido(models.Model):
-	id_partido = models.IntegerField()
+	sistema = models.ForeignKey(Sistema)
 	sitio = models.ForeignKey(Sitio)
+	id_partido = models.IntegerField()
 	nombre = models.CharField(max_length=200)
 	electos = models.IntegerField()
 	votos_numero = models.IntegerField()
 	votos_porciento = models.DecimalField(max_digits=5,decimal_places=2)
+	residuo = models.IntegerField(null=True)

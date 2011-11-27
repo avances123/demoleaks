@@ -113,6 +113,7 @@ class Experimento:
 	def escribeSQL(self,path):
 		f = open(path, 'wb')
 		f.write("INSERT INTO formulas_electorales_sistema (nombre, fecha, formula, elecciones) VALUES ('%s','%s','%s','%s');\n" % (self.nombre, self.fecha, self.formula, self.elecciones))
+		f.write("INSERT INTO formulas_electorales_sistema (nombre, fecha, formula, elecciones) VALUES ('%s','%s','%s','%s');\n" % (self.nombre, self.fecha, self.formula, self.elecciones))
 		f.close()	
 	
 	def insertaEnDB(self):
