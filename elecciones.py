@@ -60,8 +60,12 @@ class Sitio:
 
 class Experimento:
 
-	def __init__(self, sitio):
+	def __init__(self, sitio, nombre,fecha,formula,elecciones):
 		self.sitio = sitio
+		self.nombre = nombre
+		self.fecha = fecha
+		self.formula = formula
+		self.elecciones = elecciones
 		
 	# De momento no implemento porque es como estan los datos originales
 	def aplicaLeyDhont(self):
@@ -106,6 +110,18 @@ class Experimento:
 		for i in partidos_ordenados:
 			writer.writerow([i.nombre,i.electos,i.votos_numero])
 
+	def escribeSQL(self,path):
+		f = open(path, 'wb')
+		f.write("INSERT INTO formulas_electorales_sistema (nombre, fecha, formula, elecciones) VALUES ('%s','%s','%s','%s');\n" % (self.nombre, self.fecha, self.formula, self.elecciones))
+		f.close()	
+	
+	def insertaEnDB(self):
+		from models import Sitio,Sistema,Partido
+		conn = psycopg2.connect("dbname=django_sandbox user=fa")
+		cur = conn.cursor()
+		# Inserto datos del sistema
+		cur.execute("INSERT INTO formulas_electorales_sistema (nombre, fecha, formula, elecciones) VALUES (%s, %s,%s, %s)",(self.nombre, self.fecha, self.formula, self.elecciones))
+		conn.commit()
 
 
 
@@ -114,18 +130,20 @@ class Experimento:
 if __name__ == '__main__':
 
 	#tree = etree.parse("http://rsl00.epimg.net/elecciones/2008/generales/congreso/index.xml2")
-	tree = etree.parse("2008.txt")
+	tree = etree.parse("2011.xml")
 	sitio = Sitio(tree)
 
-	dhontExperimento = Experimento(sitio)
+	dhontExperimento = Experimento(sitio,'Generales 2011','2011-11-20','D','G')
 	#dhontExperimento.aplicaCocienteHare()
 	dhontExperimento.muestraInfo()
-	dhontExperimento.escribeCSV('2008-dhont.csv')
+	dhontExperimento.escribeSQL('sql/2011.sql')
+	#dhontExperimento.insertaEnDB()
+	#dhontExperimento.escribeCSV('2008-dhont.csv')
 
-	sitio = Sitio(tree)
-	hareExperimento = Experimento(sitio)
-	hareExperimento.aplicaCocienteHare()
-	hareExperimento.muestraInfo()
-	hareExperimento.escribeCSV('2008-hare.csv')
-
-
+#	sitio = Sitio(tree)
+#	hareExperimento = Experimento(sitio,'Generales 2008 con coeficiente Hare')
+#	hareExperimento.aplicaCocienteHare()
+#	hareExperimento.muestraInfo()
+#	hareExperimento.escribeCSV('2008-hare.csv')
+#
+#

@@ -3,8 +3,21 @@ from django.db import models
 # Create your models here.
 
 class Sistema(models.Model):
+
+	FORMULA_CHOICES = (
+		         	('D', 'Dhont'),
+			 	('H', 'Hare'),
+			 )
+	ELECCIONES_CHOICES = (
+		         	('G', 'Generales'),
+			 	('A', 'Autonomicas'),
+			 )
+
+
 	nombre = models.CharField(max_length=200)
-	pub_date = models.DateTimeField('Fecha elecciones')
+	fecha = models.DateTimeField('Fecha elecciones')
+	formula = models.CharField(max_length=1, choices=FORMULA_CHOICES)
+	elecciones = models.CharField(max_length=1, choices=ELECCIONES_CHOICES)
 
 
 class Sitio(models.Model):
