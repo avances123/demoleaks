@@ -1,8 +1,8 @@
 from formulas_electorales.models import Sistema,Sitio,Partido
-import datetime
+import datetime,os
 from lxml import etree
 from operator import itemgetter, attrgetter  # Para ordenar listas
-
+import urllib2
 
 
 def parseaPartidos(sistema,sitio,tree):
@@ -66,8 +66,12 @@ def llenaSitios(sistema):
 		tree = etree.parse(url)
 		print "Parseado %s" % url
 		s = parseaSitio(sistema,tree)
+		path = "ficheros/%d/" % (sistema.fecha)
+		if not os.path.exists(path):
+			os.makedirs(path)
 	except IOError:
 		pass
+
 
 	#return None   # Solo para Espana
 	# procesa una comunidad
@@ -77,6 +81,10 @@ def llenaSitios(sistema):
 			tree = etree.parse(url)
 			print "Parseado %s" % url
 			s = parseaSitio(sistema,tree)
+			path = "ficheros/%d/%02d/" % (sistema.fecha,comunidad)
+			if not os.path.exists(path):
+				os.makedirs(path)
+
 		except IOError:
 			pass
 		# procesa una provincia
@@ -86,6 +94,11 @@ def llenaSitios(sistema):
 					tree = etree.parse(url)
 					print "Parseado %s" % url
 					s = parseaSitio(sistema,tree)
+					path = "ficheros/%d/%02d/%02d" % (sistema.fecha,comunidad,provincia)
+					if not os.path.exists(path):
+						os.makedirs(path)
+				
+
 				except IOError:
 					#print "Error http: %s" % url
 					continue
@@ -97,10 +110,22 @@ def llenaSitios(sistema):
 						break
 					url = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/%02d/%02d.xml2" % (sistema.fecha,comunidad,provincia,municipio)
 					try:
-						tree = etree.parse(url)
-						print "Parseado %s" % url
+						tree = None
+						path = "ficheros/%d/%02d/%02d/%02d.xml" % (sistema.fecha,comunidad,provincia,municipio)
+						if os.path.exists(path):
+							tree = etree.parse(path)
+							print "Parseado %s" % path
+						else:
+							tree = etree.parse(url)
+							print "Parseado %s" % url
+							u = urllib2.urlopen(url)
+							localFile = open(path, 'w')
+							localFile.write(u.read())
+							localFile.close()	
+
 						s = parseaSitio(sistema,tree)
 						rotos = 0
+							
 					except IOError:
 						print "Error http: %s" % url
 						rotos += 1
