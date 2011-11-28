@@ -102,7 +102,6 @@ def llenaSitios(sistema):
 				except IOError:
 					#print "Error http: %s" % url
 					continue
-
 				# procesa un municipio
 				rotos = 0 # municipios rotos
 				for municipio in range(1,1000):  # Esperamos que no haya mas de 1000 pueblos en una provincia
@@ -163,9 +162,9 @@ def aplicaCoefHare(orig,dest):
 
 
 def llenaSistemasBase():
-	s1 = Sistema(id=1,nombre='Generales 2011 ley Dhont',fecha=2011,formula='D',elecciones='G')
-	s1.save()
-	llenaSitios(s1)
+	#s1 = Sistema(id=1,nombre='Generales 2011 ley Dhont',fecha=2011,formula='D',elecciones='G')
+	#s1.save()
+	#llenaSitios(s1)
 
 	s3 = Sistema(id=3,nombre='Generales 2011 coef Hare',fecha=2011,formula='H',elecciones='G')
 	s3.save()

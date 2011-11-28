@@ -19,6 +19,10 @@ class Sistema(models.Model):
 	formula = models.CharField(max_length=1, choices=FORMULA_CHOICES)
 	elecciones = models.CharField(max_length=1, choices=ELECCIONES_CHOICES)
 
+        def __unicode__(self):
+		return self.nombre
+
+
 
 class Sitio(models.Model):
 	nombre_sitio = models.CharField(max_length=200)
@@ -28,6 +32,9 @@ class Sitio(models.Model):
 	votos_abstenciones = models.IntegerField()
 	votos_nulos = models.IntegerField()
 	votos_blancos = models.IntegerField()
+
+	def __unicode__(self):
+		        return self.nombre_sitio
 	
 
 class Partido(models.Model):
@@ -39,3 +46,6 @@ class Partido(models.Model):
 	votos_numero = models.IntegerField()
 	votos_porciento = models.DecimalField(max_digits=5,decimal_places=2)
 	residuo = models.IntegerField(null=True)
+	def __unicode__(self):
+		return self.nombre
+
