@@ -25,7 +25,7 @@ def parseaPartidos(sistema,sitio,tree):
 		x += 1
 	#print "Guardado %d partidos" % x
 
-def parseaSitio(sistema, tree):
+def parseaSitio(sistema, tree, contenedor):
         # Numero de escanios a elegir
 	num_a_elegir = 0
 	try:
@@ -45,12 +45,13 @@ def parseaSitio(sistema, tree):
 	# Creamos el sitio
 	s = Sitio(
 			nombre_sitio=nombre_sitio,num_a_elegir=num_a_elegir,tipo_sitio=tipo_sitio,
-			votos_contabilizados=contabilizados,votos_abstenciones=abstenciones,votos_nulos=nulos,votos_blancos=blancos
+			votos_contabilizados=contabilizados,votos_abstenciones=abstenciones,votos_nulos=nulos,votos_blancos=blancos,contenido_en=contenedor
 		)
 	s.save()
 	print "Guardado el sitio %s" % nombre_sitio 
         # Despues parseamos la info por partidos
         parseaPartidos(sistema,s,tree)
+	return s
 	print "\n"
 
 
@@ -59,13 +60,13 @@ def parseaSitio(sistema, tree):
 
 
 def llenaSitios(sistema):
-
 	# fase nacional
+	nacional = None
 	url = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/index.xml2" % (sistema.fecha)
 	try: 
 		tree = etree.parse(url)
 		print "Parseado %s" % url
-		s = parseaSitio(sistema,tree)
+		nacional = parseaSitio(sistema,tree,nacional)
 		path = "ficheros/%d/" % (sistema.fecha)
 		if not os.path.exists(path):
 			os.makedirs(path)
@@ -75,12 +76,13 @@ def llenaSitios(sistema):
 
 	#return None   # Solo para Espana
 	# procesa una comunidad
-	for comunidad in range(1,17):
+	for comunidad in range(1,18):
 		url = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/index.xml2" % (sistema.fecha,comunidad)
+		comu_obj = None
 		try:
 			tree = etree.parse(url)
 			print "Parseado %s" % url
-			s = parseaSitio(sistema,tree)
+			comu_obj = parseaSitio(sistema,tree,nacional)
 			path = "ficheros/%d/%02d/" % (sistema.fecha,comunidad)
 			if not os.path.exists(path):
 				os.makedirs(path)
@@ -88,20 +90,20 @@ def llenaSitios(sistema):
 		except IOError:
 			pass
 		# procesa una provincia
-		for provincia in range(1,52):
+		for provincia in range(1,53):
+				prov = None
 				url = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/%02d.xml2" % (sistema.fecha,comunidad,provincia)
 				try:
 					tree = etree.parse(url)
 					print "Parseado %s" % url
-					s = parseaSitio(sistema,tree)
+					prov = parseaSitio(sistema,tree,comu_obj)
 					path = "ficheros/%d/%02d/%02d" % (sistema.fecha,comunidad,provincia)
 					if not os.path.exists(path):
 						os.makedirs(path)
 				
-
 				except IOError:
-					#print "Error http: %s" % url
 					continue
+					#print "Error http: %s" % url
 				# procesa un municipio
 				rotos = 0 # municipios rotos
 				for municipio in range(1,1000):  # Esperamos que no haya mas de 1000 pueblos en una provincia
@@ -122,7 +124,7 @@ def llenaSitios(sistema):
 							localFile.write(u.read())
 							localFile.close()	
 
-						s = parseaSitio(sistema,tree)
+						s = parseaSitio(sistema,tree,prov)
 						rotos = 0
 							
 					except IOError:
@@ -162,19 +164,19 @@ def aplicaCoefHare(orig,dest):
 
 
 def llenaSistemasBase():
-	#s1 = Sistema(id=1,nombre='Generales 2011 ley Dhont',fecha=2011,formula='D',elecciones='G')
-	#s1.save()
-	#llenaSitios(s1)
-
-	s3 = Sistema(id=3,nombre='Generales 2011 coef Hare',fecha=2011,formula='H',elecciones='G')
-	s3.save()
-	sistema_base = Sistema.objects.filter(id = 1)
-	aplicaCoefHare(sistema_base,s3)
-
-	s2 = Sistema(id=2,nombre='Generales 2008 ley Dhont',fecha=2008,formula='D',elecciones='G')
-	s2.save()
-	llenaSitios(s2)
-
+	s1 = Sistema(id=1,nombre='Generales 2011 ley Dhont',fecha=2011,formula='D',elecciones='G')
+	s1.save()
+	llenaSitios(s1)
+#
+#	s3 = Sistema(id=3,nombre='Generales 2011 coef Hare',fecha=2011,formula='H',elecciones='G')
+#	s3.save()
+#	sistema_base = Sistema.objects.filter(id = 1)
+#	aplicaCoefHare(sistema_base,s3)
+#
+#	s2 = Sistema(id=2,nombre='Generales 2008 ley Dhont',fecha=2008,formula='D',elecciones='G')
+#	s2.save()
+#	llenaSitios(s2)
+#
 
 	
 if __name__ == '__main__':

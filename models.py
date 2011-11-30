@@ -32,6 +32,7 @@ class Sitio(models.Model):
 	votos_abstenciones = models.IntegerField()
 	votos_nulos = models.IntegerField()
 	votos_blancos = models.IntegerField()
+	contenido_en = models.ForeignKey('self',null=True)
 
 	def __unicode__(self):
 		        return self.nombre_sitio
