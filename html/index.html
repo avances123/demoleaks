@@ -1,0 +1,9 @@
+{% if lista_sistemas %}
+    <ul>
+    {% for p in lista_sistemas %}
+        <li><a href="/sistema/{{ p.id }}/">{{ p.nombre }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
