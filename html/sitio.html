@@ -1,0 +1,17 @@
+{% if sitio %}
+    <H1> {{ sitio.nombre_sitio }}   </H1>
+    <ul>
+    <li>Votos contabilizados: {{ sitio.votos_contabilizados }}</li>
+    <li>Abstenciones: {{ sitio.votos_abstenciones }}</li>
+    <li>En blanco: {{ sitio.votos_blancos }}</li>
+    <li>Votos nulos: {{ sitio.votos_nulos }}</li>
+    </ul>
+    <ul>
+    {% for p in lista_partidos %}
+    <li><a href="/elecciones/partidos/{{ p.id }}/">{{ p.nombre }}</a>  Votos: {{ p.votos_numero }}</li>
+    {% endfor %}
+    </ul>
+
+{% else %}
+    <p>No existe el sitio</p>
+{% endif %}
