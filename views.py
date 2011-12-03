@@ -5,14 +5,16 @@ from django.shortcuts import render_to_response
 
 
 def index(request):
-    	lista_sistemas = Sistema.objects.filter(id=1)
+    	lista_sistemas = Sistema.objects.all()
 	c = Context({'lista_sistemas': lista_sistemas,})
 	return render_to_response('index.html',c)
 
-
-    
-
 def sistema(request, sistema_id):
+	# TODO explicar el algoritmo
+	# TODO poner Espana por defecto
+	sistema = Sistema.objects.get(id = sistema_id)
+	sitio = Sitio.objects.get(id = 1)  # Spain
+	lista_partidos = Partido.objects.filter(sitio = sitio,sistema = sistema).order_by('-votos_numero')
 	return HttpResponse("You're looking at poll %s." % sistema_id)
 
 
