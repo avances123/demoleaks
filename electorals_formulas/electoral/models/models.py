@@ -19,7 +19,17 @@ class Sistema(TransModel):
         return self.nombre
 
 
+class Comicio(TransModel):
+    nombre = models.CharField(max_length = 50, null = False, blanck = False)
+    fecha = models.DateField(null = False, blanck = False)
+
+    def __unicode__(self):
+        return '%s (%s)' % (self.nombre, self.fecha)
+
+
 class Sitio(TransModel):
+    comicio = models.ForeignKey(Comicio, null = True, blanck = False, related_name = 'sitios')
+    codigo_ISO_3166 = models.CharField(max_length = 8, null=True, blank = False)
     nombre = models.CharField(max_length = 200, null = False, blanck = False)
     num_a_elegir = models.IntegerField(null = False, blanck = False)
     tipo = models.IntegerField(null = False, blanck = False)
@@ -34,7 +44,6 @@ class Sitio(TransModel):
 
 
 class Partido(TransModel):
-    sistema = models.ForeignKey(Sistema, null = False, blanck = False, related_name = 'partidos')
     sitio = models.ForeignKey(Sitio, null = False, blanck = False, related_name = 'partidos')
     id_partido = models.IntegerField(null = False, blanck = False)
     nombre = models.CharField(max_length = 200, null = False, blanck = False)
