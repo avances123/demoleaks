@@ -2,7 +2,7 @@
 # Django settings for electorals_formulas project.
 from django.utils.translation import ugettext_lazy as _
 
-import os.path
+import os
 import sys
 
 PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
@@ -47,7 +47,7 @@ LANGUAGES = (
     ('es', _(u'Español')),
     ('en', _(u'Inglés')),
 )
-BASEDIR = path.dirname(path.abspath(__file__))
+BASEDIR = os.path.dirname(os.path.abspath(__file__))
 
 SITE_ID = 1
 
