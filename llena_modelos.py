@@ -1,11 +1,11 @@
-from formulas_electorales.models import Sistema,Sitio,Partido
+from formulas_electorales.models import Sistema,Sitio,Partido,Comicio
 import datetime,os
 from lxml import etree
 from operator import itemgetter, attrgetter  # Para ordenar listas
 import urllib2
 
 
-def parseaPartidos(sistema,sitio,tree):
+def parseaPartidos(comicio,sistema,sitio,tree):
         lista_partidos=[]
         partidos = tree.xpath('/escrutinio_sitio/resultados/partido')
 	x = 0
@@ -20,12 +20,12 @@ def parseaPartidos(sistema,sitio,tree):
                 votos_porciento = partido.xpath('votos_porciento')[0].text
 
                 p = Partido(sistema=sistema,id_partido=id_partido,sitio=sitio,nombre=nombre,electos=electos,
-				votos_numero=votos_numero,votos_porciento=votos_porciento)
+				votos_numero=votos_numero,votos_porciento=votos_porciento,comicio=comicio)
                 p.save()
 		x += 1
 	#print "Guardado %d partidos" % x
 
-def parseaSitio(sistema, tree, contenedor):
+def parseaSitio(comicio, sistema, tree, contenedor):
         # Numero de escanios a elegir
 	num_a_elegir = 0
 	try:
@@ -44,13 +44,13 @@ def parseaSitio(sistema, tree, contenedor):
 
 	# Creamos el sitio
 	s = Sitio(
-			nombre_sitio=nombre_sitio,num_a_elegir=num_a_elegir,tipo_sitio=tipo_sitio,
+			nombre_sitio=nombre_sitio,num_a_elegir=num_a_elegir,tipo_sitio=tipo_sitio,comicio=comicio,
 			votos_contabilizados=contabilizados,votos_abstenciones=abstenciones,votos_nulos=nulos,votos_blancos=blancos,contenido_en=contenedor
 		)
 	s.save()
 	print "Guardado el sitio %s" % nombre_sitio 
         # Despues parseamos la info por partidos
-        parseaPartidos(sistema,s,tree)
+        parseaPartidos(comicio,sistema,s,tree)
 	return s
 	print "\n"
 
@@ -59,15 +59,15 @@ def parseaSitio(sistema, tree, contenedor):
 
 
 
-def llenaSitios(sistema):
+def llenaSitios(sistema,comicio):
 	# fase nacional
 	nacional = None
-	url = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/index.xml2" % (sistema.fecha)
+	url = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/index.xml2" % (comicio.fecha.year)
 	try: 
 		tree = etree.parse(url)
 		print "Parseado %s" % url
-		nacional = parseaSitio(sistema,tree,nacional)
-		path = "ficheros/%d/" % (sistema.fecha)
+		nacional = parseaSitio(comicio,sistema,tree,nacional)
+		path = "ficheros/%d/" % (comicio.fecha.year)
 		if not os.path.exists(path):
 			os.makedirs(path)
 	except IOError:
@@ -77,13 +77,13 @@ def llenaSitios(sistema):
 	#return None   # Solo para Espana
 	# procesa una comunidad
 	for comunidad in range(1,18):
-		url = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/index.xml2" % (sistema.fecha,comunidad)
+		url = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/index.xml2" % (comicio.fecha.year,comunidad)
 		comu_obj = None
 		try:
 			tree = etree.parse(url)
 			print "Parseado %s" % url
-			comu_obj = parseaSitio(sistema,tree,nacional)
-			path = "ficheros/%d/%02d/" % (sistema.fecha,comunidad)
+			comu_obj = parseaSitio(comicio,sistema,tree,nacional)
+			path = "ficheros/%d/%02d/" % (comicio.fecha.year,comunidad)
 			if not os.path.exists(path):
 				os.makedirs(path)
 
@@ -92,12 +92,12 @@ def llenaSitios(sistema):
 		# procesa una provincia
 		for provincia in range(1,53):
 				prov = None
-				url = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/%02d.xml2" % (sistema.fecha,comunidad,provincia)
+				url = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/%02d.xml2" % (comicio.fecha.year,comunidad,provincia)
 				try:
 					tree = etree.parse(url)
 					print "Parseado %s" % url
-					prov = parseaSitio(sistema,tree,comu_obj)
-					path = "ficheros/%d/%02d/%02d" % (sistema.fecha,comunidad,provincia)
+					prov = parseaSitio(comicio,sistema,tree,comu_obj)
+					path = "ficheros/%d/%02d/%02d" % (comicio.fecha.year,comunidad,provincia)
 					if not os.path.exists(path):
 						os.makedirs(path)
 				
@@ -109,10 +109,10 @@ def llenaSitios(sistema):
 				for municipio in range(1,1000):  # Esperamos que no haya mas de 1000 pueblos en una provincia
 					if rotos > 10:  # Si no existen 10 xmls seguidos podemos decir que hemos llegado al ultimo pueblo
 						break
-					url = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/%02d/%02d.xml2" % (sistema.fecha,comunidad,provincia,municipio)
+					url = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/%02d/%02d.xml2" % (comicio.fecha.year,comunidad,provincia,municipio)
 					try:
 						tree = None
-						path = "ficheros/%d/%02d/%02d/%02d.xml" % (sistema.fecha,comunidad,provincia,municipio)
+						path = "ficheros/%d/%02d/%02d/%02d.xml" % (comicio.fecha.year,comunidad,provincia,municipio)
 						if os.path.exists(path):
 							tree = etree.parse(path)
 							print "Parseado %s" % path
@@ -124,7 +124,7 @@ def llenaSitios(sistema):
 							localFile.write(u.read())
 							localFile.close()	
 
-						s = parseaSitio(sistema,tree,prov)
+						s = parseaSitio(comicio,sistema,tree,prov)
 						rotos = 0
 							
 					except IOError:
@@ -164,19 +164,12 @@ def aplicaCoefHare(orig,dest):
 
 
 def llenaSistemasBase():
-	s1 = Sistema(id=1,nombre='Generales 2011 ley Dhont',fecha=2011,formula='D',elecciones='G')
-	s1.save()
-	llenaSitios(s1)
-#
-#	s3 = Sistema(id=3,nombre='Generales 2011 coef Hare',fecha=2011,formula='H',elecciones='G')
-#	s3.save()
-#	sistema_base = Sistema.objects.filter(id = 1)
-#	aplicaCoefHare(sistema_base,s3)
-#
-#	s2 = Sistema(id=2,nombre='Generales 2008 ley Dhont',fecha=2008,formula='D',elecciones='G')
-#	s2.save()
-#	llenaSitios(s2)
-#
+	c = Comicio(id=1,nombre='Generales 2011',fecha=datetime.date(2011,11,20))
+	s = Sistema(id=1,nombre='ley D\'Hont',formula='D')
+	s.save()
+	c.save()
+	llenaSitios(s,c)
+
 
 	
 if __name__ == '__main__':

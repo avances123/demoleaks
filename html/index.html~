@@ -16,7 +16,7 @@
 
 {% block main %}
 <div id="mainindex">
-	<img src="http://chart.apis.google.com/chart?cht=map&chs=400&chld=ES|ES-CU" width="580" alt="" border="0" class="line" />
+	<img src="http://cristiandemocracia.files.wordpress.com/2010/10/runtimenews094-democracia.gif" width="580" alt="" border="0" class="line" />
 <div style="clear:both;"></div>
 </div><!--main-->
 {% endblock %}

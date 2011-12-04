@@ -52,6 +52,12 @@
 <li>Abstenciones: {{ sitio.votos_abstenciones }}</li>
 <li>En blanco: {{ sitio.votos_blancos }}</li>
 <li>Votos nulos: {{ sitio.votos_nulos }}</li>
+
+{% for p in lista_partidos %}
+    <li><a href="/{{comicio.id}}/{{sitio.id}}/{{ p.id }}/">{{ p.nombre }}</a>  Votos: {{ p.votos_numero }}</li>
+{% endfor %}
+
+   
 {% endblock %}
 
 {% block main %}

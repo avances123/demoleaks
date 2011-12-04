@@ -8,23 +8,27 @@ class Sistema(models.Model):
 		         	('D', 'Dhont'),
 			 	('H', 'Hare'),
 			 )
-	ELECCIONES_CHOICES = (
-		         	('G', 'Generales'),
-			 	('A', 'Autonomicas'),
-			 )
 
 
 	nombre = models.CharField(max_length=50)
-	fecha = models.IntegerField()
 	formula = models.CharField(max_length=1, choices=FORMULA_CHOICES)
-	elecciones = models.CharField(max_length=1, choices=ELECCIONES_CHOICES)
 
         def __unicode__(self):
 		return self.nombre
 
+class Comicio(models.Model):
+	nombre = models.CharField(max_length=50)
+	fecha = models.DateField()
+
+
 
 
 class Sitio(models.Model):
+
+	comicio = models.ForeignKey(Comicio)
+	contenido_en = models.ForeignKey('self',null=True)
+
+
 	nombre_sitio = models.CharField(max_length=200)
 	num_a_elegir = models.IntegerField()
 	tipo_sitio = models.IntegerField()
@@ -32,7 +36,6 @@ class Sitio(models.Model):
 	votos_abstenciones = models.IntegerField()
 	votos_nulos = models.IntegerField()
 	votos_blancos = models.IntegerField()
-	contenido_en = models.ForeignKey('self',null=True)
 
 	def __unicode__(self):
 		        return self.nombre_sitio
@@ -41,6 +44,8 @@ class Sitio(models.Model):
 class Partido(models.Model):
 	sistema = models.ForeignKey(Sistema)
 	sitio = models.ForeignKey(Sitio)
+	comicio = models.ForeignKey(Comicio)
+
 	id_partido = models.IntegerField()
 	nombre = models.CharField(max_length=200)
 	electos = models.IntegerField()
