@@ -1,6 +1,54 @@
 {% extends 'base.html' %}
 {% block title %}Resultados del comicio {{comicio.nombre}} {% endblock %}
 
+{% block gchart %}    
+<!--Load the AJAX API-->
+  <script type='text/javascript' src='https://www.google.com/jsapi'></script>
+  <script type='text/javascript'>
+   google.load('visualization', '1', {'packages': ['geomap']});
+   google.setOnLoadCallback(drawRegionsMap);
+
+	function selectHandler() {
+  			var selection = visualization.getSelection();
+  	      alert(regionData); 
+  	  	}
+   function drawRegionsMap() {
+      var data = new google.visualization.DataTable();
+      data.addRows(19);
+      data.addColumn('string', 'Codigo');
+      data.addColumn('number', 'Escaños');
+      data.addColumn('string', 'Comunidad');
+      var i=0;
+      {% for p in autonomias %}
+      	data.setValue(i, 0, '{{ p.codigo_ISO_3166 }}');
+      	data.setValue(i, 1, {{ p.num_a_elegir }});
+      	data.setValue(i, 2, '{{ p.nombre_sitio }}');
+      	i++;
+    	{% endfor %}
+    	
+      var options = {region:'ES',width:'580px',showLegend:false};
+
+      var container = document.getElementById('map_canvas');
+      var geochart = new google.visualization.GeoMap(container);
+      
+      google.visualization.events.addListener( 
+          geochart, 'regionClick', function(e) { 
+           	var rowindex = data.getFilteredRows([{column: 0, value: e['region']}]);  
+           	
+        		var location = data.getValue(rowindex[0], 2);
+        		j = rowindex + 1;
+        		this.location.href =  j;
+          });
+           
+      geochart.draw(data, options);
+	};
+  	
+
+  </script>
+{% endblock %}    
+
+
+
 {% block menu %}
 <ul>	
 	<li class="selected"><a href="/{{comicio.id}}">{{comicio.nombre}}</a></li>
@@ -19,7 +67,7 @@
 
 {% block main %}
 <div id="mainindex">
-	<img src="http://cristiandemocracia.files.wordpress.com/2010/10/runtimenews094-democracia.gif" width="580" alt="" border="0" class="line" />
+	<div id='map_canvas'></div>
 <div style="clear:both;"></div>
 </div><!--main-->
 {% endblock %}

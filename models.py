@@ -28,7 +28,7 @@ class Sitio(models.Model):
 	comicio = models.ForeignKey(Comicio)
 	contenido_en = models.ForeignKey('self',null=True)
 
-
+	codigo_ISO_3166 = models.CharField(max_length=8)
 	nombre_sitio = models.CharField(max_length=200)
 	num_a_elegir = models.IntegerField()
 	tipo_sitio = models.IntegerField()

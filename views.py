@@ -4,6 +4,7 @@ from django.template import Context, loader
 from django.shortcuts import render_to_response
 
 
+
 def index(request):
     	lista_comicios = Comicio.objects.all()
 	c = Context({'lista_comicios': lista_comicios,})
@@ -14,7 +15,8 @@ def comicio(request, comicio_id):
 	sitio = Sitio.objects.get(id = 1)  # Spain
 	sistema = Sistema.objects.get(id = 1)  # Ley Dhont
 	lista_partidos = Partido.objects.filter(sitio = sitio,sistema = sistema).order_by('-votos_numero')
-	c = Context({'comicio':comicio,'sitio': sitio,'lista_partidos':lista_partidos})
+	lista_comunidades = Sitio.objects.filter(tipo_sitio=2)
+	c = Context({'comicio':comicio,'sitio': sitio,'lista_partidos':lista_partidos,'autonomias':lista_comunidades})
 	return render_to_response('comicio.html',c)
 
 

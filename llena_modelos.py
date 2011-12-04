@@ -25,7 +25,7 @@ def parseaPartidos(comicio,sistema,sitio,tree):
 		x += 1
 	#print "Guardado %d partidos" % x
 
-def parseaSitio(comicio, sistema, tree, contenedor):
+def parseaSitio(comicio, sistema, tree, contenedor, iso=None):
         # Numero de escanios a elegir
 	num_a_elegir = 0
 	try:
@@ -44,7 +44,7 @@ def parseaSitio(comicio, sistema, tree, contenedor):
 
 	# Creamos el sitio
 	s = Sitio(
-			nombre_sitio=nombre_sitio,num_a_elegir=num_a_elegir,tipo_sitio=tipo_sitio,comicio=comicio,
+			nombre_sitio=nombre_sitio,num_a_elegir=num_a_elegir,tipo_sitio=tipo_sitio,comicio=comicio,codigo_ISO_3166=iso,
 			votos_contabilizados=contabilizados,votos_abstenciones=abstenciones,votos_nulos=nulos,votos_blancos=blancos,contenido_en=contenedor
 		)
 	s.save()
@@ -56,7 +56,27 @@ def parseaSitio(comicio, sistema, tree, contenedor):
 
 
 
-
+codigos_autonomias={
+	'1' : 'ES-AN',
+	'2' : 'ES-AR',
+	'3' : 'ES-AS',
+	'4' : 'ES-IB',
+	'5' : 'ES-CN',
+	'6' : 'ES-CB',
+	'7' : 'ES-CM',
+	'8' : 'ES-CL',
+	'9' : 'ES-CT',
+	'10' : 'ES-EX',
+	'11' : 'ES-GA',
+	'12' : 'ES-MD',
+	'13' : 'ES-NC',
+	'14' : 'ES-PV',
+	'15' : 'ES-MC',
+	'16' : 'ES-RI',
+	'17' : 'ES-VC',
+	#'18' : 'ES-CE',
+	#'19' : 'ES-ML',
+}
 
 
 def llenaSitios(sistema,comicio):
@@ -66,7 +86,7 @@ def llenaSitios(sistema,comicio):
 	try: 
 		tree = etree.parse(url)
 		print "Parseado %s" % url
-		nacional = parseaSitio(comicio,sistema,tree,nacional)
+		nacional = parseaSitio(comicio,sistema,tree,nacional,'ES')
 		path = "ficheros/%d/" % (comicio.fecha.year)
 		if not os.path.exists(path):
 			os.makedirs(path)
@@ -82,13 +102,14 @@ def llenaSitios(sistema,comicio):
 		try:
 			tree = etree.parse(url)
 			print "Parseado %s" % url
-			comu_obj = parseaSitio(comicio,sistema,tree,nacional)
+			comu_obj = parseaSitio(comicio,sistema,tree,nacional,codigos_autonomias[str(comunidad)])
 			path = "ficheros/%d/%02d/" % (comicio.fecha.year,comunidad)
 			if not os.path.exists(path):
 				os.makedirs(path)
 
 		except IOError:
 			pass
+		continue
 		# procesa una provincia
 		for provincia in range(1,53):
 				prov = None
