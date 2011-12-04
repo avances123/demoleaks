@@ -1,42 +1,5 @@
 {% extends 'base.html' %}
-{% block gchart %}    
-<!--Load the AJAX API-->
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-    
-      // Load the Visualization API and the piechart package.
-      google.load('visualization', '1.0', {'packages':['corechart']});
-      
-      // Set a callback to run when the Google Visualization API is loaded.
-      google.setOnLoadCallback(drawChart);
-      
-      // Callback that creates and populates a data table, 
-      // instantiates the pie chart, passes in the data and
-      // draws it.
-      function drawChart() {
 
-      // Create the data table.
-      var data = new google.visualization.DataTable();
-      data.addColumn('string', 'Topping');
-      data.addColumn('number', 'Slices');
-      
-      data.addRows([
-      {% for p in lista_partidos %}
-        ['{{ p.nombre }}', {{ p.votos_numero }}],
-      {% endfor %}
-      ]);
-
-      // Set chart options
-      var options = {'title':'Porcentaje de votos en {{ sitio.nombre_sitio }}',
-                     'width':582,
-                     'height':400};
-
-      // Instantiate and draw our chart, passing in some options.
-      var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-      chart.draw(data, options);
-    }
-    </script>
-{% endblock %}    
 {% block title %}Informacion del sitio: {{ sitio.nombre_sitio }} {% endblock %}
 
 {% block menu %}
@@ -52,18 +15,40 @@
 <li>Abstenciones: {{ sitio.votos_abstenciones }}</li>
 <li>En blanco: {{ sitio.votos_blancos }}</li>
 <li>Votos nulos: {{ sitio.votos_nulos }}</li>
-
-{% for p in lista_partidos %}
-    <li><a href="/{{comicio.id}}/{{sitio.id}}/{{ p.id }}/">{{ p.nombre }}</a>  Votos: {{ p.votos_numero }}</li>
-{% endfor %}
-
-   
 {% endblock %}
 
 {% block main %}
 <div id="mainindex">
 	<!--Div that will hold the pie chart-->
-    <div id="chart_div"></div>
+    <div id="map_canvas"></div>
 <div style="clear:both;"></div>
 </div><!--main-->
+{% endblock %}
+
+
+{% block slider %}
+<div id="slider">
+        
+	<!-- "previous page" action -->
+   <a class="prevPage browse left"></a>
+   	<!-- root element for scrollable -->
+      <div class="scrollable" id="infinite">	
+                
+      	<!-- root element for the items -->
+         <div class="items">
+         <!-- 1-5 -->
+         {% for p in lista_sistemas %}
+        		<a href="{{ p.id }}/"><img src="http://farm4.static.flickr.com/3089/2796719087_c3ee89a730_t.jpg" alt="" border="0"/></a>
+    		{% endfor %}
+          
+         </div>
+                
+      </div>
+            
+   <!-- "next page" action -->
+   <a class="nextPage browse right"></a>
+        
+ 	<img src="images/baner.jpg" alt="" border="0" />
+        
+</div><!-- slier -->
 {% endblock %}

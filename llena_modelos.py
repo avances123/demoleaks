@@ -79,6 +79,59 @@ codigos_autonomias={
 }
 
 
+codigos_provincias={
+'1':'ES-C',
+'2':'ES-VI',
+'3':'ES-AB',
+'4':'ES-AL',
+'5':'ES-A',
+'6':'ES-O',
+'7':'ES-AV',
+'8':'ES-BA',
+'9':'ES-PM',
+'10':'ES-B',
+'11':'ES-BU',
+'12':'ES-CC',
+'13':'ES-CA',
+'14':'ES-S',
+'15':'ES-CS',
+'16':'ES-CR',
+'17':'ES-CO',
+'18':'ES-CU',
+'19':'ES-GI',
+'20':'ES-GR',
+'21':'ES-GU',
+'22':'ES-SS',
+'23':'ES-H',
+'24':'ES-HU',
+'25':'ES-J',
+'26':'ES-LO',
+'27':'ES-GC',
+'28':'ES-LE',
+'29':'ES-L',
+'30':'ES-LU',
+'31':'ES-M',
+'32':'ES-MA',
+'33':'ES-MU',
+'34':'ES-NA',
+'35':'ES-OR',
+'36':'ES-P',
+'37':'ES-PO',
+'38':'ES-SA',
+'39':'ES-TF',
+'40':'ES-SG',
+'41':'ES-SE',
+'42':'ES-SO',
+'43':'ES-T',
+'44':'ES-TE',
+'45':'ES-TO',
+'46':'ES-V',
+'47':'ES-VA',
+'48':'ES-BI',
+'49':'ES-ZA',
+'50':'ES-Z',
+}
+
 def llenaSitios(sistema,comicio):
 	# fase nacional
 	nacional = None
@@ -109,7 +162,6 @@ def llenaSitios(sistema,comicio):
 
 		except IOError:
 			pass
-		continue
 		# procesa una provincia
 		for provincia in range(1,53):
 				prov = None
@@ -117,7 +169,7 @@ def llenaSitios(sistema,comicio):
 				try:
 					tree = etree.parse(url)
 					print "Parseado %s" % url
-					prov = parseaSitio(comicio,sistema,tree,comu_obj)
+					prov = parseaSitio(comicio,sistema,tree,comu_obj,codigos_provincias[str(provincia)])
 					path = "ficheros/%d/%02d/%02d" % (comicio.fecha.year,comunidad,provincia)
 					if not os.path.exists(path):
 						os.makedirs(path)

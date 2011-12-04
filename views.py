@@ -16,29 +16,34 @@ def comicio(request, comicio_id):
 	sistema = Sistema.objects.get(id = 1)  # Ley Dhont
 	lista_partidos = Partido.objects.filter(sitio = sitio,sistema = sistema).order_by('-votos_numero')
 	lista_comunidades = Sitio.objects.filter(tipo_sitio=2)
-	c = Context({'comicio':comicio,'sitio': sitio,'lista_partidos':lista_partidos,'autonomias':lista_comunidades})
+	c = Context({'comicio':comicio,'sitio': sitio,'lista_partidos':lista_partidos,'sitios':lista_comunidades})
 	return render_to_response('comicio.html',c)
 
 
-def sistema(request, sistema_id):
+def sistema(request,comicio_id,sitio_id, sistema_id):
 	# TODO explicar el algoritmo
-	# TODO poner Espana por defecto
 	sistema = Sistema.objects.get(id = sistema_id)
-	sitio = Sitio.objects.get(id = 1)  # Spain
-	lista_partidos = Partido.objects.filter(sitio = sitio,sistema = sistema).order_by('-votos_numero')
-	return HttpResponse("You're looking at poll %s." % sistema_id)
+	sitio = Sitio.objects.get(id = sitio_id)  
+	comicio = Comicio.objects.get(id = comicio_id)  
+	lista_partidos = Partido.objects.filter(sitio = sitio,sistema = sistema,comicio=comicio).order_by('-votos_numero')
+	lista_sistemas = Sistema.objects.all()
+	c = Context({'sitio': sitio,'lista_partidos':lista_partidos,'comicio':comicio,'lista_sistemas':lista_sistemas,'sistema':sistema})
+	return render_to_response('sistema.html',c)
 
 
 def sitio(request, sitio_id, comicio_id,muestra_sistema_id=None):
 	# TODO hay que pillar justo el sitio o 404
 	sitio = Sitio.objects.get(id = sitio_id)
 	comicio = Comicio.objects.get(id = comicio_id)
+	lista_sistemas = Sistema.objects.all()
 	if muestra_sistema_id:
 		sistema = Sistema.objects.get(id = muestra_sistema_id)
+		lista_provincias = None
 	else:
 		sistema = Sistema.objects.get(id = 1)
+		lista_provincias = Sitio.objects.filter(tipo_sitio = 3)
 	lista_partidos = Partido.objects.filter(sitio = sitio,sistema = sistema,comicio=comicio).order_by('-votos_numero')
-	c = Context({'sitio': sitio,'lista_partidos':lista_partidos,'comicio':comicio})
+	c = Context({'sitio': sitio,'lista_partidos':lista_partidos,'comicio':comicio,'sitios':lista_provincias,'lista_sistemas':lista_sistemas})
 	return render_to_response('sitio.html',c)
 
 def partido(request, partido_id):

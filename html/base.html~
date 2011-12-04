@@ -1,17 +1,65 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
+	<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>{% block title %}Formulas Electorales (Beta Version){% endblock %}</title>
 	<style type="text/css" media="all">
 		@import "/static/sample.css";
 		@import url(http://fonts.googleapis.com/css?family=Mate:400,400italic|Corben:400,700);
-
-
 	</style>
 	<script src="/static/images/jquery.tools.min.js" type="text/javascript"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+		$("#infinite").scrollable().circular();	
+	});
+	</script>
+	{% block gchart %}
+	<!--Load the AJAX API-->
+  <script type='text/javascript' src='https://www.google.com/jsapi'></script>
+  <script type='text/javascript'>
+   google.load('visualization', '1', {'packages': ['geomap']});
+   google.setOnLoadCallback(drawRegionsMap);
 
+	function selectHandler() {
+  			var selection = visualization.getSelection();
+  	      alert(regionData); 
+  	  	}
+   function drawRegionsMap() {
+      var data = new google.visualization.DataTable();
+      data.addRows({{sitios|length }});
+      data.addColumn('string', 'Codigo');
+      data.addColumn('number', 'Escaños');
+      data.addColumn('string', 'Comunidad');
+      data.addColumn('string', 'Link');
+      var i=0;
+      {% for p in sitios %}
+      	data.setValue(i, 0, '{{ p.codigo_ISO_3166 }}');
+      	data.setValue(i, 1, {{ p.num_a_elegir }});
+      	data.setValue(i, 2, '{{ p.nombre_sitio }}');
+      	data.setValue(i, 3, '{{ p.id }}');
+      	i++;
+    	{% endfor %}
+    	
+      var options = {region:'ES',width:'580px',showLegend:false};
 
+      var container = document.getElementById('map_canvas');
+      var geochart = new google.visualization.GeoMap(container);
+      
+      google.visualization.events.addListener( 
+          geochart, 'regionClick', function(e) { 
+           	var rowindex = data.getFilteredRows([{column: 0, value: e['region']}]);  
+           	
+        		var location = data.getValue(rowindex[0], 3);
+        		
+        		this.location.href =  location;
+          });
+           
+      geochart.draw(data, options);
+	};
+  	
+
+  </script>
+	{% endblock %}
 </head>
 <body>
 <div id="wrapper">
@@ -71,7 +119,34 @@
         
 			<div style="clear:both;"></div>
 		</div><!--container-->        
+      
+      {% block slider %}
+<div id="slider">
         
+	<!-- "previous page" action -->
+   <a class="prevPage browse left"></a>
+   	<!-- root element for scrollable -->
+      <div class="scrollable" id="infinite">	
+                
+      	<!-- root element for the items -->
+         <div class="items">
+         <!-- 1-5 -->
+         {% for p in lista_sistemas %}
+        		<a href="{{ p.id }}/"><img src="http://farm4.static.flickr.com/3089/2796719087_c3ee89a730_t.jpg" alt="" border="0"/></a>
+    		{% endfor %}
+          
+         </div>
+                
+      </div>
+            
+   <!-- "next page" action -->
+   <a class="nextPage browse right"></a>
+        
+ 	<img src="images/baner.jpg" alt="" border="0" />
+        
+</div><!-- slier -->
+{% endblock %}
+
       <div id="footer">
 		{% block footer %}
         	<span>Avances123</span>

@@ -1,10 +1,66 @@
-{% if sistema %}
-    <H1> {{ stistema.nombre }}   </H1>
-    <ul>
-    {% for p in lista_sitios %}
-        <li><a href="/sitio/{{ p.id }}/">{{ p.nombre }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No existe el sistema</p>
-{% endif %}
+{% extends 'base.html' %}
+{% block gchart %}    
+<!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+    
+      // Load the Visualization API and the piechart package.
+      google.load('visualization', '1.0', {'packages':['corechart']});
+      
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.setOnLoadCallback(drawChart);
+      
+      // Callback that creates and populates a data table, 
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      function drawChart() {
+
+      // Create the data table.
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Topping');
+      data.addColumn('number', 'Slices');
+      
+      data.addRows([
+      {% for p in lista_partidos %}
+        ['{{ p.nombre }}', {{ p.votos_numero }}],
+      {% endfor %}
+      ]);
+
+      // Set chart options
+      var options = {'title':'Porcentaje de votos en {{ sitio.nombre_sitio }}',
+                     'width':582,
+                     'height':400};
+
+      // Instantiate and draw our chart, passing in some options.
+      var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
+    }
+    </script>
+{% endblock %}    
+{% block title %}Informacion del sitio: {{ sitio.nombre_sitio }} {% endblock %}
+
+{% block menu %}
+<ul>	
+	<li><a href="/{{comicio.id}}">{{ comicio.nombre }}</a></li>
+	<li><a href="/{{comicio.id}}/{{sitio.id}}">{{ sitio.nombre_sitio }}</a></li>
+	<li class="selected"><a href="/{{comicio.id}}/{{sitio.id}}/{{sistema.id}}/">{{ sistema.nombre }}</a></li>
+</ul>
+{% endblock %}
+
+{% block sidebar %}
+<h4>Datos del sitio</h4>
+<li>Votos contabilizados: {{ sitio.votos_contabilizados }}</li>
+<li>Abstenciones: {{ sitio.votos_abstenciones }}</li>
+<li>En blanco: {{ sitio.votos_blancos }}</li>
+<li>Votos nulos: {{ sitio.votos_nulos }}</li>
+{% endblock %}
+
+{% block main %}
+<div id="mainindex">
+	<!--Div that will hold the pie chart-->
+    <div id="chart_div"></div>
+<div style="clear:both;"></div>
+</div><!--main-->
+{% endblock %}
+
+
