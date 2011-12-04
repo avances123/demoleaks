@@ -1,0 +1,72 @@
+
+
+Devel enviromment:
+------------------
+
+> INSTALL DEVEL ENVIROMMENT:
+
+    - Previous dependencies, install all:
+
+    sudo apt-get install python python-setuptools gettext ipython postgresql 
+
+    - I use virtualenvwraper. Install it
+
+    sudo apt-get install virtualenvwrapper
+
+    - Load virtualenvwrapper commands
+
+    source /etc/bash_completion.d/virtualenvwrapper
+
+    - Create the virtualenv project
+
+    mkvirtualenv -p python2.7 --clear electorals_formulas 
+
+    - Install all requirements to the the project virtualenv 
+
+    pip install --upgrade -r requirements.txt
+
+    - Some virtualenv usefull commands:
+        * mkvirtualenv [-i package] [-r requirements_file] [virtualenv options] ENVNAME - Create a new environment, in the WORKON_HOME.
+        * lsvirtualenv [-b] [-l] [-h] - List all of the environments.
+        * showvirtualenv [ENVNAME] - Show the details for a single virtualenv.
+        * rmvirtualenv ENVNAME - Remove an environment, in the WORKON_HOME.
+        * cpvirtualenv ENVNAME TARGETENVNAME - Duplicate an environment, in the WORKON_HOME.
+        * workon [ENVNAME] - List or change working virtual environments
+        * deactivate - Switch from a virtual environment to the system-installed version of Python.
+        (... see more at http://www.doughellmann.com/docs/virtualenvwrapper/command_ref.html#managing-environments)
+
+> CREATE DATABASE:
+
+    - Create de database:
+
+    sudo su postgres                                                                                                                ✘
+    createuser devel
+        ¿Será el nuevo rol un superusuario? (s/n) n
+        ¿Debe permitírsele al rol la creación de bases de datos? (s/n) s
+        ¿Debe permitírsele al rol la creación de otros roles? (s/n) n
+    createdb --owner=devel electorals_formulas
+    vi /etc/postgresql/X.X/main/pg_hba.conf 
+
+        (...)
+        # Put your actual configuration here
+        # ----------------------------------
+        #
+        # If you want to allow non-local connections, you need to add more
+        # "host" records. In that case you will also need to make PostgreSQL listen
+        # on a non-local interface via the listen_addresses configuration parameter,
+        # or via the -i or -h command line switches.
+        #
+
+        local electorals_formulas devel trust
+        local test_electorals_formulas devel trust # necessary for tests
+
+        (...)
+
+    /etc/init.d/postgresql restart
+    exit
+
+
+
+
+
+
