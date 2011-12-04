@@ -3,7 +3,7 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.views.generic import TemplateView
 from django.conf import settings
-from electorals.views.views import *
+from electoral.views.views import *
 
 urlpatterns = patterns('cuvitt.views',
 

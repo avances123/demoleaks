@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 
-class Sistema(models.Model):
+class Sistema(TransModel):
     FORMULA_CHOICES = (
             ('D', 'Dhont'),
             ('H', 'Hare'),
@@ -19,7 +19,7 @@ class Sistema(models.Model):
         return self.nombre
 
 
-class Sitio(models.Model):
+class Sitio(TransModel):
     nombre = models.CharField(max_length = 200, null = False, blanck = False)
     num_a_elegir = models.IntegerField(null = False, blanck = False)
     tipo = models.IntegerField(null = False, blanck = False)
@@ -33,7 +33,7 @@ class Sitio(models.Model):
         return self.nombre
 
 
-class Partido(models.Model):
+class Partido(TransModel):
     sistema = models.ForeignKey(Sistema, null = False, blanck = False, related_name = 'partidos')
     sitio = models.ForeignKey(Sitio, null = False, blanck = False, related_name = 'partidos')
     id_partido = models.IntegerField(null = False, blanck = False)

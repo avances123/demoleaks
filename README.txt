@@ -39,7 +39,7 @@ Devel enviromment:
 
     - Create de database:
 
-    sudo su postgres                                                                                                                ✘
+    sudo su postgres
     createuser devel
         ¿Será el nuevo rol un superusuario? (s/n) n
         ¿Debe permitírsele al rol la creación de bases de datos? (s/n) s

@@ -7,8 +7,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.messages import error, success
 from django.shortcuts import render_to_response, get_object_or_404
 
-from django.shortcuts import render_to_response
-from electorals_formulas.models import *
+from electoral.models.models import *
 
 
 class IndexView(TemplateView):
