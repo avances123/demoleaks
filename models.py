@@ -19,7 +19,8 @@ class Sistema(models.Model):
 class Comicio(models.Model):
 	nombre = models.CharField(max_length=50)
 	fecha = models.DateField()
-
+	pais = models.CharField(max_length=200)
+	tipo = models.CharField(max_length=200)  # TODO poner choices
 
 
 
@@ -36,6 +37,7 @@ class Sitio(models.Model):
 	votos_abstenciones = models.IntegerField()
 	votos_nulos = models.IntegerField()
 	votos_blancos = models.IntegerField()
+	democracia = models.DecimalField(max_digits=5,decimal_places=2,null=True)
 
 	def __unicode__(self):
 		        return self.nombre_sitio
@@ -46,6 +48,7 @@ class Partido(models.Model):
 	sitio = models.ForeignKey(Sitio)
 	comicio = models.ForeignKey(Comicio)
 
+	grado_democracia = models.DecimalField(max_digits=5,decimal_places=2,null=True)
 	id_partido = models.IntegerField()
 	nombre = models.CharField(max_length=200)
 	electos = models.IntegerField()

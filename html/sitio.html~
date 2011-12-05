@@ -20,35 +20,9 @@
 {% block main %}
 <div id="mainindex">
 	<!--Div that will hold the pie chart-->
-    <div id="map_canvas"></div>
+	<img src="http://chart.apis.google.com/chart?cht=map&chs=580x300&chco=676767|676767|FF4444&chld=ES|{{ sitio.codigo_ISO_3166 }}" width="580" alt="" border="0" class="line" />
 <div style="clear:both;"></div>
 </div><!--main-->
 {% endblock %}
 
 
-{% block slider %}
-<div id="slider">
-        
-	<!-- "previous page" action -->
-   <a class="prevPage browse left"></a>
-   	<!-- root element for scrollable -->
-      <div class="scrollable" id="infinite">	
-                
-      	<!-- root element for the items -->
-         <div class="items">
-         <!-- 1-5 -->
-         {% for p in lista_sistemas %}
-        		<a href="{{ p.id }}/"><img src="http://farm4.static.flickr.com/3089/2796719087_c3ee89a730_t.jpg" alt="" border="0"/></a>
-    		{% endfor %}
-          
-         </div>
-                
-      </div>
-            
-   <!-- "next page" action -->
-   <a class="nextPage browse right"></a>
-        
- 	<img src="images/baner.jpg" alt="" border="0" />
-        
-</div><!-- slier -->
-{% endblock %}

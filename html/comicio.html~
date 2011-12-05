@@ -1,11 +1,6 @@
 {% extends 'base.html' %}
-{% block title %}Resultados del comicio {{comicio.nombre}} {% endblock %}
 
-{% block gchart %}    
-
-{% endblock %}    
-
-
+{% block title %}Demoleak del comicio {{comicio.nombre}} {% endblock %}
 
 {% block menu %}
 <ul>	
@@ -15,12 +10,13 @@
 
 {% block sidebar %}
 <h4>Datos del comicio</h4>
-<h3>Generales</h3>
-    
-    {% for p in lista_comicios %}
-        <li><a href="{{ p.id }}/">{{ p.nombre }}</a></li>
-    {% endfor %}
-    
+
+<h3><a href="#">Celebrado en : {{ comicio.pais }}</a></h3>
+<h3><a href="#">El dia : {{ comicio.fecha }}</a></h3>
+<h3><a href="#">Tipo : {{ comicio.tipo }}</a></h3>
+
+ 
+
 {% endblock %}
 
 {% block main %}
@@ -29,6 +25,8 @@
 <div style="clear:both;"></div>
 </div><!--main-->
 {% endblock %}
-
-
+		    
+     <div id="footer">
+	       
+		</div><!--footer-->
 

@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% block title %}Comicios estudiados{% endblock %}
-
+{% block header %}
+<div id="header">	<h1>Que es DemoLeaks?</a></h1></div>
+{% endblock %}	
 {% block menu %}
 {% endblock %}
 
@@ -15,8 +17,25 @@
 {% endblock %}
 
 {% block main %}
-<div id="mainindex">
-	<img src="http://cristiandemocracia.files.wordpress.com/2010/10/runtimenews094-democracia.gif" width="580" alt="" border="0" class="line" />
+<div id="main">
+	<h2>Demo<span class="blue">leaks</span></h2>
+	<blockquote>
+	Todos pensamos que vivimos en una democracia, pero ninguna es perfecta, analiza aqui 
+	un comicio de la lista para ver los defectos que ha tenido.
+   </blockquote>
+   <img src="static/velikalinija.png" alt="" border="0" class="line"/>
+   <p> 
+   Si viviesemos en una democracia perfecta, en esta no habria politicos, todos seriamos diputados
+   y hariamos referendum en cada pequeña decision, como esto no es viable, delegamos nuestro poder
+   en una serie de ciudadanos,350 a dia de hoy, de suponemos gente entre nosotros "preparada" para
+   ejercer ese poder de una manera mas eficiente.
+   </p> 
+   <p> 
+   Este proceso de delegar el poder, supone una operacion matematica, una "funcion" que trasforme el 
+   numero de votos, en el numero de escaños.
+   </p>
 <div style="clear:both;"></div>
 </div><!--main-->
 {% endblock %}
+      {% block slider %}
+      {% endblock %}

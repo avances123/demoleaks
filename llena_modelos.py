@@ -3,13 +3,18 @@ import datetime,os
 from lxml import etree
 from operator import itemgetter, attrgetter  # Para ordenar listas
 import urllib2
+from decimal import *
 
 
 def parseaPartidos(comicio,sistema,sitio,tree):
         lista_partidos=[]
         partidos = tree.xpath('/escrutinio_sitio/resultados/partido')
-	x = 0
+	getcontext().prec = 3
+	democracia_sitio = Decimal(0)
+	suma_democracia = Decimal(0)
+	num_partidos_procesados = 0
         for partido in partidos:
+		electos = 0
                 nombre = partido.xpath('nombre')[0].text
 		try:
                 	electos = partido.xpath('electos')[0].text
@@ -18,12 +23,24 @@ def parseaPartidos(comicio,sistema,sitio,tree):
                 id_partido = partido.xpath('id_partido')[0].text
                 votos_numero = partido.xpath('votos_numero')[0].text
                 votos_porciento = partido.xpath('votos_porciento')[0].text
+		if sitio.num_a_elegir > 0:
+			porcentaje_electos = ( Decimal(electos) / Decimal(sitio.num_a_elegir) ) * 100
+			#grado_democracia = ( porcentaje_electos - Decimal(votos_porciento) ) / Decimal(votos_porciento) 
+			#print "porcentaje_electos" + str(porcentaje_electos) + " - votos_porciento" + votos_porciento
+			from math import fabs
+			grado_democracia =  Decimal(str(fabs((porcentaje_electos - Decimal(votos_porciento))  * 20 ))) # Esto puede ser mayor que 100
+			suma_democracia = grado_democracia + suma_democracia
+			grado_democracia = str(grado_democracia)
+		else:
+			grado_democracia = None
 
                 p = Partido(sistema=sistema,id_partido=id_partido,sitio=sitio,nombre=nombre,electos=electos,
-				votos_numero=votos_numero,votos_porciento=votos_porciento,comicio=comicio)
+				votos_numero=votos_numero,votos_porciento=votos_porciento,comicio=comicio,grado_democracia=grado_democracia)
                 p.save()
-		x += 1
-	#print "Guardado %d partidos" % x
+		num_partidos_procesados += 1
+
+	sitio.democracia = suma_democracia / num_partidos_procesados
+	sitio.save()
 
 def parseaSitio(comicio, sistema, tree, contenedor, iso=None):
         # Numero de escanios a elegir
@@ -237,7 +254,7 @@ def aplicaCoefHare(orig,dest):
 
 
 def llenaSistemasBase():
-	c = Comicio(id=1,nombre='Generales 2011',fecha=datetime.date(2011,11,20))
+	c = Comicio(id=1,nombre='Generales 2011',fecha=datetime.date(2011,11,20),pais='Spain',tipo='Generales')
 	s = Sistema(id=1,nombre='ley D\'Hont',formula='D')
 	s.save()
 	c.save()

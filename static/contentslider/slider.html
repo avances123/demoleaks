@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>JavaScript Slider Example</title>
+<link rel="stylesheet" type="text/css" href="slider.css" />
+<script type="text/javascript" src="slider.js"></script>
+</head>
+<body onload="autoScroll('newsslider','newssection',5,true)">
+<div id="wrapper">
+  <h2>News Ticker - <span class="link" onmousedown="cancelAutoScroll('newsslider')">Pause</span> | <span class="link" onmousedown="autoScroll('newsslider','newssection',5,true)">Resume</span></h2>
+  <div class="newsslider">
+    <div class="newsslidercontent" id="newsslider">
+      <div id="newssection-1" class="newssection upper">
+        <strong>5/04/2008:</strong> Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas ullamcorper nibh vitae erat. Nunc hendrerit viverra urna. Maecenas ullamcorper nibh vitae erat. Nunc hendrerit viverra... <a href="#">details here</a>
+      </div>
+      <div id="newssection-2" class="newssection upper">
+        <strong>5/02/2008:</strong> Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas ullamcorper nibh vitae erat. Nunc hendrerit viverra urna. Maecenas ullamcorper... <a href="#">details here</a>
+      </div>
+      <div id="newssection-3" class="newssection">
+        <strong>4/30/2008:</strong> Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas ullamcorper nibh vitae erat. Nunc hendrerit viverra urna. Maecenas ullamcorper nibh vitae erat. Nunc hendrerit... <a href="#">details here</a>
+      </div>
+    </div>
+  </div>
+
+  <hr />
+
+  <h2>Section Scroller - <span class="link" onmousedown="slideContent('section-1')">One</span> | <span class="link" onmousedown="slideContent('section-2')">Two</span> | <span class="link" onmousedown="slideContent('section-3')">Three</span> - <span class="link" onmouseover="scrollContent('slider',-1)" onmouseout="cancelScroll('slider')">Up</span> | <span class="link" onmouseover="scrollContent('slider',1)" onmouseout="cancelScroll('slider')">Down</span></h2>
+  <div class="slider">
+    <div class="slidercontent" id="slider">
+      <div id="section-1" class="section upper">
+        <strong>Content One:</strong> Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas ullamcorper nibh vitae erat. Nunc hendrerit viverra urna. Etiam sed ipsum. Quisque et urna. Praesent vehicula, libero non aliquet pretium, felis arcu luctus eros, ac semper quam turpis ut tellus. Maecenas eget pede ac nisi ultricies hendrerit. Etiam nec urna. Aliquam nec nisl. Nulla facilisi. Donec id est. Quisque faucibus ante sit amet nulla.
+        <br /><br />Phasellus tempor arcu suscipit nunc. Sed convallis justo sit amet eros. In ullamcorper arcu feugiat arcu. Morbi convallis, risus id aliquet ornare, arcu arcu blandit erat, ac accumsan sem nunc facilisis tellus. Praesent pulvinar, ante id ultrices tincidunt, augue metus dignissim dolor, ut luctus elit nisi sed lorem.
+      </div>
+      <div id="section-2" class="section upper">
+        <strong>Content Two:</strong> Pellentesque condimentum dignissim nisi. Donec in lectus. Sed at sapien. Aenean augue lectus, aliquet feugiat, fringilla ac, sollicitudin eu, odio. Pellentesque in magna quis tellus ornare porttitor. Morbi elementum fringilla dui. In augue. Integer laoreet, pede ac faucibus rhoncus, eros tellus ultricies nibh, ac rhoncus nisi erat at nunc. Cras vitae turpis. Vivamus fringilla hendrerit quam. Phasellus purus mauris, vulputate in, pellentesque sit amet, dapibus consectetuer, lorem. Suspendisse potenti. Nam eleifend velit a felis.
+      </div>
+      <div id="section-3" class="section">
+        <strong>Content Three:</strong> Etiam fermentum elit. Sed rhoncus, lorem ut feugiat rhoncus, sapien nisi imperdiet tortor, in varius magna augue eget turpis. Maecenas feugiat tortor ut est. Nulla nulla eros, venenatis quis, scelerisque in, viverra sed, ligula. Praesent dignissim, velit sed volutpat euismod, odio elit rhoncus eros, eu mattis magna massa non nunc. Quisque augue diam, lobortis sit amet, bibendum vitae, posuere et, sapien. Pellentesque eleifend eros sit amet erat.
+         <br /><br />Pellentesque vitae sem. Etiam ullamcorper tellus. Phasellus fermentum euismod enim. Proin velit est, hendrerit quis, feugiat quis, consequat ut, pede.
+      </div>
+    </div>
+  </div>
+  
+  <hr />
+  
+  <h2>Image Gallery - <span class="link" onmousedown="slideContent('imgsection-1')">One</span> | <span class="link" onmousedown="slideContent('imgsection-2')">Two</span> | <span class="link" onmousedown="slideContent('imgsection-3')">Three</span> - <span class="link" onmousedown="autoScroll('imgslider','imgsection',3,true)">Slideshow</span> | <span class="link" onmousedown="cancelAutoScroll('imgslider')">Cancel</span></h2>
+  <div class="slider">
+    <div class="slidercontent" id="imgslider">
+      <div id="imgsection-1" class="section upper">
+        <img src="images/1.jpg" width="476" height="205" alt="" />
+      </div>
+      <div id="imgsection-2" class="section upper">
+        <img src="images/2.jpg" width="476" height="205" alt="" />
+      </div>
+      <div id="imgsection-3" class="section">
+        <img src="images/3.jpg" width="476" height="205" alt="" />
+      </div>
+    </div>
+  </div>
+
+  <hr />
+
+  <h2>Text Scroller - <span class="link" onmouseover="scrollContent('textslider',-1)" onmouseout="cancelScroll('textslider')">Up</span> | <span class="link" onmouseover="scrollContent('textslider',1)" onmouseout="cancelScroll('textslider')">Down</span></h2>
+  <div class="slider">
+    <div class="slidercontent" id="textslider">
+      <div id="textsection-1" class="section">
+        <strong>Content One:</strong> Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas ullamcorper nibh vitae erat. Nunc hendrerit viverra urna. Etiam sed ipsum. Quisque et urna. Praesent vehicula, libero non aliquet pretium, felis arcu luctus eros, ac semper quam turpis ut tellus. Maecenas eget pede ac nisi ultricies hendrerit. Etiam nec urna. Aliquam nec nisl. Nulla facilisi. Donec id est. Quisque faucibus ante sit amet nulla.
+        <br /><br />Phasellus tempor arcu suscipit nunc. Sed convallis justo sit amet eros. In ullamcorper arcu feugiat arcu. Morbi convallis, risus id aliquet ornare, arcu arcu blandit erat, ac accumsan sem nunc facilisis tellus. Praesent pulvinar, ante id ultrices tincidunt, augue metus dignissim dolor, ut luctus elit nisi sed lorem.
+        <br /><br />Phasellus tempor arcu suscipit nunc. Sed convallis justo sit amet eros. In ullamcorper arcu feugiat arcu. Morbi convallis, risus id aliquet ornare, arcu arcu blandit erat, ac accumsan sem nunc facilisis tellus. Praesent pulvinar, ante id ultrices tincidunt, augue metus dignissim dolor, ut luctus elit nisi sed lorem.
+        <br /><br />Phasellus tempor arcu suscipit nunc. Sed convallis justo sit amet eros. In ullamcorper arcu feugiat arcu. Morbi convallis, risus id aliquet ornare, arcu arcu blandit erat, ac accumsan sem nunc facilisis tellus. Praesent pulvinar, ante id ultrices tincidunt, augue metus dignissim dolor, ut luctus elit nisi sed lorem.
+        <br /><br />Phasellus tempor arcu suscipit nunc. Sed convallis justo sit amet eros. In ullamcorper arcu feugiat arcu. Morbi convallis, risus id aliquet ornare, arcu arcu blandit erat, ac accumsan sem nunc facilisis tellus. Praesent pulvinar, ante id ultrices tincidunt, augue metus dignissim dolor, ut luctus elit nisi sed lorem.
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

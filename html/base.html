@@ -7,14 +7,19 @@
 		@import "/static/sample.css";
 		@import url(http://fonts.googleapis.com/css?family=Mate:400,400italic|Corben:400,700);
 	</style>
+
+	<link rel="stylesheet" type="text/css" href="/static/contentslider/slider.css" />
+
+	<script type="text/javascript" src="/static/contentslider/slider.js"></script>
+	
+	
 	<script src="/static/images/jquery.tools.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
 		$("#infinite").scrollable().circular();	
 	});
 	</script>
-	{% block gchart %}
-	<!--Load the AJAX API-->
+{% block gchart %}    
   <script type='text/javascript' src='https://www.google.com/jsapi'></script>
   <script type='text/javascript'>
    google.load('visualization', '1', {'packages': ['geomap']});
@@ -28,19 +33,19 @@
       var data = new google.visualization.DataTable();
       data.addRows({{sitios|length }});
       data.addColumn('string', 'Codigo');
-      data.addColumn('number', 'Escaños');
+      data.addColumn('number', 'Demoleak');
       data.addColumn('string', 'Comunidad');
       data.addColumn('string', 'Link');
       var i=0;
       {% for p in sitios %}
       	data.setValue(i, 0, '{{ p.codigo_ISO_3166 }}');
-      	data.setValue(i, 1, {{ p.num_a_elegir }});
+      	data.setValue(i, 1, {{ p.democracia }});
       	data.setValue(i, 2, '{{ p.nombre_sitio }}');
       	data.setValue(i, 3, '{{ p.id }}');
       	i++;
     	{% endfor %}
     	
-      var options = {region:'ES',width:'580px',showLegend:false};
+      var options = {region:'ES',width:'580px',showLegend:false,};
 
       var container = document.getElementById('map_canvas');
       var geochart = new google.visualization.GeoMap(container);
@@ -59,91 +64,193 @@
   	
 
   </script>
-	{% endblock %}
+<!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+    
+      // Load the Visualization API and the piechart package.
+      google.load('visualization', '1.0', {'packages':['corechart']});
+      
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.setOnLoadCallback(drawChart);
+      
+      // Callback that creates and populates a data table, 
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      function drawChart() {
+
+      // Create the data table.
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Topping');
+      data.addColumn('number', 'Slices');
+      
+      data.addRows([
+      {% for p in lista_partidos %}
+        ['{{ p.nombre }}', {{ p.votos_numero }}],
+      {% endfor %}
+      ]);
+
+      // Set chart options
+      var options = {'title':'Porcentaje de votos en {{ sitio.nombre_sitio }}',
+                     'width':560,
+                     'height':300};
+
+      // Instantiate and draw our chart, passing in some options.
+      var chart = new google.visualization.PieChart(document.getElementById('chart_div2'));
+      chart.draw(data, options);
+    }
+    </script>
+
+
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+    
+      // Load the Visualization API and the piechart package.
+      google.load('visualization', '1.0', {'packages':['corechart']});
+      
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.setOnLoadCallback(drawChart);
+      
+      // Callback that creates and populates a data table, 
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      function drawChart() {
+
+      // Create the data table.
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Topping');
+      data.addColumn('number', 'Slices');
+      
+      data.addRows([
+      {% for p in lista_partidos %}
+        ['{{ p.nombre }}', {{ p.electos }}],
+      {% endfor %}
+      ]);
+
+      // Set chart options
+      var options = {'title':'Reparto de escaños en {{ sitio.nombre_sitio }}',
+                     'width':560,
+                     'height':300};
+
+      // Instantiate and draw our chart, passing in some options.
+      var chart = new google.visualization.PieChart(document.getElementById('chart_div1'));
+      chart.draw(data, options);
+    }
+    </script>
+
+
+
+
+    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
+    <script type='text/javascript'>
+      google.load('visualization', '1', {packages:['gauge']});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Label');
+        data.addColumn('number', 'Value');
+        data.addRows(3);
+        data.setValue(0, 0, 'Democracia');
+        data.setValue(0, 1, {{sitio.democracia}});
+        
+
+        var chart = new google.visualization.Gauge(document.getElementById('reloj'));
+        var options = {width: 400, height: 120, redFrom: 80, redTo: 100,
+            yellowFrom:60, yellowTo: 80, minorTicks: 5};
+        chart.draw(data, options);
+      }
+    </script>
+    
+    
+    
+    
+    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
+    <script type='text/javascript'>
+      google.load('visualization', '1', {packages:['gauge']});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Label');
+        data.addColumn('number', 'Value');
+        data.addRows(3);
+        data.setValue(0, 0, 'Democracia');
+        data.setValue(0, 1, 80);
+        
+
+        var chart = new google.visualization.Gauge(document.getElementById(''));
+        var options = {width: 400, height: 120, redFrom: 80, redTo: 100,
+            yellowFrom:60, yellowTo: 80, minorTicks: 5};
+        chart.draw(data, options);
+      }
+    </script>
+{% endblock %}   
 </head>
 <body>
 <div id="wrapper">
 	<div id="content">
-	
-		<div id="header">
-			<h1>Como funcionan las formulas electorales</a></h1>            
-		</div><!-- header -->
-
-		<div id="menu">
-			{% block menu %}
-			<ul>	
-				<li class="selected"><a href="#">Generales 2011</a> /</li>
-				<li><a href="#">Andalucia</a> /</li>
-				<li><a href="#">Ley D'Hont</a> /</li>
-			</ul>
-			{% endblock %}
-		</div><!--menu-->  
-
-        
-        
+		{% block header %}
+		<div id="header">	<h1>DemoLeaks</a></h1></div><!-- header -->
+		{% endblock %}
+		<div id="menu">{% block menu %}{% endblock %}</div><!--menu-->  
 		<div id="container">
-		
 			<div id="sidebar">
-			{% block sidebar %}
-			{% endblock %}
+				{% block sidebar %}
+				{% endblock %}
 			</div><!--sidebar-->
-			
-			
+				
 			{% block main %}
-			<div id="main">
-        	<h2>/Sun<span class="blue">surf</span></h2>
-            
-            <blockquote>Duis sit amet risus quis mauris accumsan tincidunt. Phasellus 
-                        id magna. Nulla dapibus urna eget purus. Pellentesque 
-                        porttitor molestie felis.  
-            </blockquote>
-             
-             <img src="images/velikalinija.png" alt="" border="0" class="line"/>
-                        
-            <p>Proin diam lectus, elementum nec, iaculis non, eleifend a, risus. Curabitur varius auctor metus. 
-                Vestibulum cursus mattis tortor. Nullam auctor turpis ut ante. Duis sapien tellus, vehicula vitae, 
-                ultrices sit amet, iaculis a, neque. Aenean vestibulum mattis ligula. Nullam blandit imperdiet. </p>
-                
-               <p> Morbi dignissim. Etiam sed enim in tellus aliquet sollicitudin. Phasellus at augue. Vivamus in lacus 
-                nec nisi eleifend molestie. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per 
-                inceptos himenaeos. Etiam accumsan. Pellentesque laoreet lacus a massa. Aliquam mi. 
-                Suspendisse consequat scelerisque arcu.</p>
-                
-               <p> Vestibulum cursus mattis tortor. Nullam auctor turpis ut ante. Duis sapien tellus, vehicula vitae, 
-                ultrices sit amet, iaculis a, neque. Aenean vestibulum mattis ligula. Nullam blandit imperdiet 
-            </p>
-            <div style="clear:both;"></div>
-        </div><!--main-->
-        {% endblock %}
-        	
-        
+		
+<h3>Elige un sitio - <span class="link" onmouseover="scrollContent('slider',-1)" onmouseout="cancelScroll('slider')">Up</span> | <span class="link" onmouseover="scrollContent('slider',1)" onmouseout="cancelScroll('slider')">Down</span></h3>
+  <div class="slider">
+
+    <div class="slidercontent" id="slider">
+      <div id="section-1" class="section upper">
+        {% for i in lista_sitios %}
+      <a href="/{{ comicio.id }}/{{ i.id }}/">{{ i.nombre_sitio }}</a><br />
+      {% endfor %}  
+      </div>
+      
+    </div>
+  </div>
+
+
+			<div id="reloj_caja">
+					<div id="reloj"></div>
+   			</div>
+   			<div id="mainindex">
+				  <div id="stats">
+					<div id="chart_div2"></div>
+					</div>
 			<div style="clear:both;"></div>
+			</div><!--main-->
+        	{% endblock %}
+        	
+        	<div style="clear:both;"></div>
 		</div><!--container-->        
       
       {% block slider %}
-<div id="slider">
+		<div id="slider_flags">
         
-	<!-- "previous page" action -->
-   <a class="prevPage browse left"></a>
+		<!-- "previous page" action -->
+   	<a class="prevPage browse left"></a>
    	<!-- root element for scrollable -->
-      <div class="scrollable" id="infinite">	
-                
+      <div class="scrollable" id="infinite">	  
       	<!-- root element for the items -->
          <div class="items">
-         <!-- 1-5 -->
          {% for p in lista_sistemas %}
-        		<a href="/{{ comicio.id }}/{{ sitio.id }}/{{ p.id }}/"><img src="http://farm4.static.flickr.com/3089/2796719087_c3ee89a730_t.jpg" alt="" border="0"/></a>
-    		{% endfor %}
-          
+        		<a href="/{{ comicio.id }}/{{ sitio.id }}/{{ p.id }}/"><img src="/static/flag-icons/flags_iso/128/es.png" alt="" border="0"/></a>
+        		<a href="/{{ comicio.id }}/{{ sitio.id }}/{{ p.id }}/"><img src="/static/flag-icons/flags_iso/128/nl.png" alt="" border="0"/></a>
+        		<a href="/{{ comicio.id }}/{{ sitio.id }}/{{ p.id }}/"><img src="/static/flag-icons/flags_iso/128/us.png" alt="" border="0"/></a>
+        		<a href="/{{ comicio.id }}/{{ sitio.id }}/{{ p.id }}/"><img src="/static/flag-icons/flags_iso/128/mx.png" alt="" border="0"/></a>
+    		{% endfor %} 
          </div>
                 
       </div>
             
    <!-- "next page" action -->
    <a class="nextPage browse right"></a>
-        
- 	<img src="images/baner.jpg" alt="" border="0" />
-        
+   
 </div><!-- slier -->
 {% endblock %}
 

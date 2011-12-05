@@ -36,7 +36,27 @@
       chart.draw(data, options);
     }
     </script>
-{% endblock %}    
+
+    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
+    <script type='text/javascript'>
+      google.load('visualization', '1', {packages:['gauge']});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Label');
+        data.addColumn('number', 'Value');
+        data.addRows(3);
+        data.setValue(0, 0, 'Democracia');
+        data.setValue(0, 1, 80);
+        
+
+        var chart = new google.visualization.Gauge(document.getElementById('chart_div_gauge'));
+        var options = {width: 400, height: 120, redFrom: 80, redTo: 100,
+            yellowFrom:60, yellowTo: 80, minorTicks: 5};
+        chart.draw(data, options);
+      }
+    </script>
+{% endblock %}   
 {% block title %}Informacion del sitio: {{ sitio.nombre_sitio }} {% endblock %}
 
 {% block menu %}
@@ -59,8 +79,11 @@
 <div id="mainindex">
 	<!--Div that will hold the pie chart-->
     <div id="chart_div"></div>
+        
 <div style="clear:both;"></div>
 </div><!--main-->
 {% endblock %}
-
+{% block footer %}
+<div id="chart_div_gauge"></div>
+{% endblock %}
 
