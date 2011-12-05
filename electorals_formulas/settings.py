@@ -154,7 +154,7 @@ INSTALLED_APPS = (
 
     'django_coverage',
     'transhette',
-    'django-transmeta',
+    'transmeta',
 
     'electoral',
     # Uncomment the next line to enable admin documentation:
