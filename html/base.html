@@ -1,275 +1,42 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
+<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>{% block title %}Formulas Electorales (Beta Version){% endblock %}</title>
 	<style type="text/css" media="all">
-		@import "/static/sample.css";
 		@import url(http://fonts.googleapis.com/css?family=Mate:400,400italic|Corben:400,700);
 	</style>
-
-	<link rel="stylesheet" type="text/css" href="/static/contentslider/slider.css" />
-
-	<script type="text/javascript" src="/static/contentslider/slider.js"></script>
-	
-	
-	<script src="/static/images/jquery.tools.min.js" type="text/javascript"></script>
-	<script type="text/javascript">
-		$(document).ready(function() {
-		$("#infinite").scrollable().circular();	
-	});
-	</script>
-{% block gchart %}    
-  <script type='text/javascript' src='https://www.google.com/jsapi'></script>
-  <script type='text/javascript'>
-   google.load('visualization', '1', {'packages': ['geomap']});
-   google.setOnLoadCallback(drawRegionsMap);
-
-	function selectHandler() {
-  			var selection = visualization.getSelection();
-  	      alert(regionData); 
-  	  	}
-   function drawRegionsMap() {
-      var data = new google.visualization.DataTable();
-      data.addRows({{sitios|length }});
-      data.addColumn('string', 'Codigo');
-      data.addColumn('number', 'Demoleak');
-      data.addColumn('string', 'Comunidad');
-      data.addColumn('string', 'Link');
-      var i=0;
-      {% for p in sitios %}
-      	data.setValue(i, 0, '{{ p.codigo_ISO_3166 }}');
-      	data.setValue(i, 1, {{ p.democracia }});
-      	data.setValue(i, 2, '{{ p.nombre_sitio }}');
-      	data.setValue(i, 3, '{{ p.id }}');
-      	i++;
-    	{% endfor %}
-    	
-      var options = {region:'ES',width:'580px',showLegend:false,};
-
-      var container = document.getElementById('map_canvas');
-      var geochart = new google.visualization.GeoMap(container);
-      
-      google.visualization.events.addListener( 
-          geochart, 'regionClick', function(e) { 
-           	var rowindex = data.getFilteredRows([{column: 0, value: e['region']}]);  
-           	
-        		var location = data.getValue(rowindex[0], 3);
-        		
-        		this.location.href =  location;
-          });
-           
-      geochart.draw(data, options);
-	};
-  	
-
-  </script>
-<!--Load the AJAX API-->
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-    
-      // Load the Visualization API and the piechart package.
-      google.load('visualization', '1.0', {'packages':['corechart']});
-      
-      // Set a callback to run when the Google Visualization API is loaded.
-      google.setOnLoadCallback(drawChart);
-      
-      // Callback that creates and populates a data table, 
-      // instantiates the pie chart, passes in the data and
-      // draws it.
-      function drawChart() {
-
-      // Create the data table.
-      var data = new google.visualization.DataTable();
-      data.addColumn('string', 'Topping');
-      data.addColumn('number', 'Slices');
-      
-      data.addRows([
-      {% for p in lista_partidos %}
-        ['{{ p.nombre }}', {{ p.votos_numero }}],
-      {% endfor %}
-      ]);
-
-      // Set chart options
-      var options = {'title':'Porcentaje de votos en {{ sitio.nombre_sitio }}',
-                     'width':560,
-                     'height':300};
-
-      // Instantiate and draw our chart, passing in some options.
-      var chart = new google.visualization.PieChart(document.getElementById('chart_div2'));
-      chart.draw(data, options);
-    }
-    </script>
-
-
-
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-    
-      // Load the Visualization API and the piechart package.
-      google.load('visualization', '1.0', {'packages':['corechart']});
-      
-      // Set a callback to run when the Google Visualization API is loaded.
-      google.setOnLoadCallback(drawChart);
-      
-      // Callback that creates and populates a data table, 
-      // instantiates the pie chart, passes in the data and
-      // draws it.
-      function drawChart() {
-
-      // Create the data table.
-      var data = new google.visualization.DataTable();
-      data.addColumn('string', 'Topping');
-      data.addColumn('number', 'Slices');
-      
-      data.addRows([
-      {% for p in lista_partidos %}
-        ['{{ p.nombre }}', {{ p.electos }}],
-      {% endfor %}
-      ]);
-
-      // Set chart options
-      var options = {'title':'Reparto de escaños en {{ sitio.nombre_sitio }}',
-                     'width':560,
-                     'height':300};
-
-      // Instantiate and draw our chart, passing in some options.
-      var chart = new google.visualization.PieChart(document.getElementById('chart_div1'));
-      chart.draw(data, options);
-    }
-    </script>
-
-
-
-
-    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
-    <script type='text/javascript'>
-      google.load('visualization', '1', {packages:['gauge']});
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Label');
-        data.addColumn('number', 'Value');
-        data.addRows(3);
-        data.setValue(0, 0, 'Democracia');
-        data.setValue(0, 1, {{sitio.democracia}});
-        
-
-        var chart = new google.visualization.Gauge(document.getElementById('reloj'));
-        var options = {width: 400, height: 120, redFrom: 80, redTo: 100,
-            yellowFrom:60, yellowTo: 80, minorTicks: 5};
-        chart.draw(data, options);
-      }
-    </script>
-    
-    
-    
-    
-    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
-    <script type='text/javascript'>
-      google.load('visualization', '1', {packages:['gauge']});
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Label');
-        data.addColumn('number', 'Value');
-        data.addRows(3);
-        data.setValue(0, 0, 'Democracia');
-        data.setValue(0, 1, 80);
-        
-
-        var chart = new google.visualization.Gauge(document.getElementById(''));
-        var options = {width: 400, height: 120, redFrom: 80, redTo: 100,
-            yellowFrom:60, yellowTo: 80, minorTicks: 5};
-        chart.draw(data, options);
-      }
-    </script>
-{% endblock %}   
+	<link rel="stylesheet" href="/static/blueprint/screen.css" type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="/static/blueprint/print.css" type="text/css" media="print"> 
+	<!--[if lt IE 8]>
+	<link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection">
+	<![endif]-->
 </head>
 <body>
-<div id="wrapper">
-	<div id="content">
-		{% block header %}
-		<div id="header">	<h1>DemoLeaks</a></h1></div><!-- header -->
-		{% endblock %}
-		<div id="menu">{% block menu %}{% endblock %}</div><!--menu-->  
-		<div id="container">
-			<div id="sidebar">
-				{% block sidebar %}
-				{% endblock %}
-			</div><!--sidebar-->
-				
-			{% block main %}
-		
-<h3>Elige un sitio - <span class="link" onmouseover="scrollContent('slider',-1)" onmouseout="cancelScroll('slider')">Up</span> | <span class="link" onmouseover="scrollContent('slider',1)" onmouseout="cancelScroll('slider')">Down</span></h3>
-  <div class="slider">
-
-    <div class="slidercontent" id="slider">
-      <div id="section-1" class="section upper">
-        {% for i in lista_sitios %}
-      <a href="/{{ comicio.id }}/{{ i.id }}/">{{ i.nombre_sitio }}</a><br />
-      {% endfor %}  
-      </div>
-      
-    </div>
-  </div>
+	<div class="container showgrid">
+		<div class="span-24">
+			Demoleaks
+		</div>
+		<div class="span-24">
+			GENERALES 2011 > MURCIA > D'HONT
+		</div>
+		<div class="span-24">
+			<img src="/static/flag-icons/flags_iso/32/es.png" />
+		</div>
+		<div class="span-24">
+			ATRIBUTOS SITIO
+		</div>
+		<div class="span-24">
+			GRAFICOS DE TARTA
+		</div>
+		<div class="span-24">
+			DEMOLEAK DE CADA PARTIDO
+		</div>
+		<div class="span-24">
+			LISTA DE SITIOS CONTENIDOS
+		</div>
 
 
-			<div id="reloj_caja">
-					<div id="reloj"></div>
-   			</div>
-   			<div id="mainindex">
-				  <div id="stats">
-					<div id="chart_div2"></div>
-					</div>
-			<div style="clear:both;"></div>
-			</div><!--main-->
-        	{% endblock %}
-        	
-        	<div style="clear:both;"></div>
-		</div><!--container-->        
-      
-      {% block slider %}
-		<div id="slider_flags">
-        
-		<!-- "previous page" action -->
-   	<a class="prevPage browse left"></a>
-   	<!-- root element for scrollable -->
-      <div class="scrollable" id="infinite">	  
-      	<!-- root element for the items -->
-         <div class="items">
-         {% for p in lista_sistemas %}
-        		<a href="/{{ comicio.id }}/{{ sitio.id }}/{{ p.id }}/"><img src="/static/flag-icons/flags_iso/128/es.png" alt="" border="0"/></a>
-        		<a href="/{{ comicio.id }}/{{ sitio.id }}/{{ p.id }}/"><img src="/static/flag-icons/flags_iso/128/nl.png" alt="" border="0"/></a>
-        		<a href="/{{ comicio.id }}/{{ sitio.id }}/{{ p.id }}/"><img src="/static/flag-icons/flags_iso/128/us.png" alt="" border="0"/></a>
-        		<a href="/{{ comicio.id }}/{{ sitio.id }}/{{ p.id }}/"><img src="/static/flag-icons/flags_iso/128/mx.png" alt="" border="0"/></a>
-    		{% endfor %} 
-         </div>
-                
-      </div>
-            
-   <!-- "next page" action -->
-   <a class="nextPage browse right"></a>
-   
-</div><!-- slier -->
-{% endblock %}
-
-      <div id="footer">
-		{% block footer %}
-        	<span>Avances123</span>
-            
-            <ul>
-            	<li><a href="#">Home</a> |</li>
-                <li><a href="#">Site Map</a> |</li>
-                <li><a href="#">Accessibility</a> |</li>
-                <li><a href="#">Contact</a></li>
-            </ul>
-		{% endblock %}        
-		</div><!--footer-->
-	</div><!-- content -->
-</div><!-- wrapper -->
-
-
-
+	</div>
 </body>
 </html>
