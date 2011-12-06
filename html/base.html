@@ -1,19 +1,117 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>{% block title %}Formulas Electorales (Beta Version){% endblock %}</title>
-	<style type="text/css" media="all">
-		@import url(http://fonts.googleapis.com/css?family=Mate:400,400italic|Corben:400,700);
-	</style>
-	<link rel="stylesheet" href="/static/blueprint/screen.css" type="text/css" media="screen, projection">
-	<link rel="stylesheet" href="/static/blueprint/print.css" type="text/css" media="print"> 
-	<!--[if lt IE 8]>
-	<link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection">
-	<![endif]-->
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>{% block title %}Formulas Electorales (Beta Version){% endblock %}</title>
+		<link rel="stylesheet" href="/static/blueprint/screen.css" type="text/css" media="screen, projection">
+		<link rel="stylesheet" href="/static/blueprint/print.css" type="text/css" media="print"> 
+		<!--[if lt IE 8]>
+		<link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection">
+		<![endif]-->
+		<style type="text/css" media="all">
+			@import "/static/style.css";
+			@import url(http://fonts.googleapis.com/css?family=Mate:400,400italic|Corben:400,700);
+		</style>
+		<link type="text/css" href="/static/jquery-ui/css/jquery-ui.css" rel="stylesheet" />     
+		<script type="text/javascript" src="/static/jquery-ui/js/jquery-1.6.2.min.js"></script>
+		<script type="text/javascript" src="/static/jquery-ui/js/jquery-ui-1.8.16.custom.min.js"></script>
+
+
+		<!-- jquery-ui para la progress bar-->
+		<script type="text/javascript">
+			$(function(){
+				// Progressbar
+				$("#progressbar-n").progressbar({
+					"value": 80
+				});
+				// http://jqueryui.com/demos/progressbar/#animated
+				$("#progressbar-n").css({ 'background': '#bbbbbb' });
+				$("#progressbar-n > div").css({  'background': 'red'   });
+
+			});
+
+		</script>
+
+
+
+		<!-- AJAX piechart votos-->
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		<script type="text/javascript">
+
+			// Load the Visualization API and the piechart package.
+		google.load('visualization', '1.0', {'packages':['corechart']});
+
+		// Set a callback to run when the Google Visualization API is loaded.
+		google.setOnLoadCallback(drawChart);
+
+		// Callback that creates and populates a data table, 
+		// instantiates the pie chart, passes in the data and
+		// draws it.
+		function drawChart() {
+
+			// Create the data table.
+			var data = new google.visualization.DataTable();
+			data.addColumn('string', 'Partido');
+			data.addColumn('number', 'Votos');
+
+			data.addRows([
+					['Murcia', 60],
+					['Madrid', 60],
+					['Galicia',60],
+					]);
+
+			// Set chart options
+			var options = {'title':'Porcentaje de votos en Murcia',
+				'width':390,
+				'height':200};
+
+			// Instantiate and draw our chart, passing in some options.
+			var chart = new google.visualization.PieChart(document.getElementById('chart_votos'));
+			chart.draw(data, options);
+		}
+
+		</script>
+		<!-- AJAX piechart escaños-->
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		<script type="text/javascript">
+
+			// Load the Visualization API and the piechart package.
+		google.load('visualization', '1.0', {'packages':['corechart']});
+
+		// Set a callback to run when the Google Visualization API is loaded.
+		google.setOnLoadCallback(drawChart);
+
+		// Callback that creates and populates a data table, 
+		// instantiates the pie chart, passes in the data and
+		// draws it.
+		function drawChart() {
+
+			// Create the data table.
+			var data = new google.visualization.DataTable();
+			data.addColumn('string', 'Partido');
+			data.addColumn('number', 'Electos');
+
+			data.addRows([
+					['Murcia', 70],
+					['Madrid', 60],
+					['Galicia',20],
+					]);
+
+			// Set chart options
+			var options = {'title':'Porcentaje de Escaños en Murcia',
+				'width':390,
+				'height':200};
+
+			// Instantiate and draw our chart, passing in some options.
+			var chart = new google.visualization.PieChart(document.getElementById('chart_electos'));
+			chart.draw(data, options);
+		}
+
+		</script>
+
 </head>
 <body>
-	<div class="container showgrid">
+	<div class="container">
 		<div class="span-24">
 			Demoleaks
 		</div>
@@ -26,12 +124,36 @@
 		<div class="span-24">
 			ATRIBUTOS SITIO
 		</div>
+
+		<!-- Los dos graficos piechart con votos/escaños-->
 		<div class="span-24">
-			GRAFICOS DE TARTA
+			<div class="span-10 prepend-1 append-1">
+				
+				<div id="chart_votos">
+				</div>
+			</div>
+			<div class="span-10 prepend-1 append-1 last">
+				
+				<div id="chart_electos">
+				</div>
+			</div>
+
 		</div>
+
+		<!-- Lista de partido y su grafica -->
 		<div class="span-24">
-			DEMOLEAK DE CADA PARTIDO
+			<div class="span-6">
+				PSOE
+			</div>
+			<div class="span-18 last">
+				<div class="span-9">
+					<div id="progressbar-n"></div>
+				</div>
+			</div>
+
 		</div>
+
+
 		<div class="span-24">
 			LISTA DE SITIOS CONTENIDOS
 		</div>
