@@ -1,0 +1,65 @@
+.text { text-shadow: 1px 1px 1px #666; filter: Shadow(Color=#666666, Direction=135, Strength=5); } 
+
+
+body {
+
+	background:#111111;
+	font-family: 'Signika';
+	color:#000000;
+}
+
+a {
+	color:#ffffff;
+	text-decoration:none;
+}
+
+a:hover {
+	color:#ffbc00;
+	text-decoration:none;
+}
+	
+#logo h1 {
+	font-family: 'Unlock';
+	margin-top: 100px;
+	text-shadow: 2px 2px 2px #999;
+}
+
+
+.menu{display:block}
+.menu *{
+	display:block;
+	height:1px;
+	overflow:hidden;
+	font-size:.01em;
+background:#ffffff}
+.menu1{
+	margin-left:3px;
+	margin-right:3px;
+	padding-left:1px;
+	padding-right:1px;
+	border-left:1px solid #5f5858;
+	border-right:1px solid #5f5858;
+background:#a59999}
+.menu2{
+	margin-left:1px;
+	margin-right:1px;
+	padding-right:1px;
+	padding-left:1px;
+	border-left:1px solid #161414;
+	border-right:1px solid #161414;
+background:#b3a6a6}
+.menu3{
+	margin-left:1px;
+	margin-right:1px;
+	border-left:1px solid #b3a6a6;
+border-right:1px solid #b3a6a6;}
+.menu4{
+	border-left:1px solid #5f5858;
+border-right:1px solid #5f5858}
+.menu5{
+	border-left:1px solid #a59999;
+border-right:1px solid #a59999}
+.menufg{
+background:#ffffff;
+padding-left: 5px;
+}
