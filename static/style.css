@@ -208,7 +208,7 @@ input.login {
 .newsletter {
 	float: left;
 	height: 33px;
-	padding: 15px 0 0 15px;
+	padding: 10px 0 0 15px;
 	width: 192px;
 	background: #6E6E6E url(/static/images/newsletterbg.gif) no-repeat;
 	color: #FFF;
