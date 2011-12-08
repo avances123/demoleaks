@@ -4,5 +4,29 @@
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
 
-from electorals.models.models import *
+from electoral.models import *
+
+
+class SistemaAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(Sistema, SistemaAdmin)
+
+
+class ComicioAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(Comicio, ComicioAdmin)
+
+
+class SitioAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(Sitio, SitioAdmin)
+
+
+class PartidoAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(Partido, PartidoAdmin)
 

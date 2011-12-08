@@ -44,9 +44,12 @@ TIME_ZONE = 'Europe/Madrid'
 LANGUAGE_CODE = 'es'
 
 LANGUAGES = (
-    ('es', _(u'Español')),
-    ('en', _(u'Inglés')),
+    ('es', 'Spanish'),
+    ('en', 'English'),
 )
+
+MODELTRANSLATION_TRANSLATION_REGISTRY = "electorals_formulas.translation"
+
 BASEDIR = os.path.dirname(os.path.abspath(__file__))
 
 SITE_ID = 1
@@ -154,7 +157,7 @@ INSTALLED_APPS = (
 
     'django_coverage',
     'transhette',
-    'transmeta',
+    'modeltranslation',
 
     'electoral',
     # Uncomment the next line to enable admin documentation:

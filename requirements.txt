@@ -10,4 +10,4 @@ django-coverage>=1.2
 
 # I18n and L10n libs
 transhette>=0.5.10
-django-transmeta>=0.6.3
+django-modeltranslation==0.3.2

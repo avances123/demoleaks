@@ -6,8 +6,6 @@ from django.conf import settings
 from electoral.views.views import *
 
 urlpatterns = patterns('cuvitt.views',
-
     # Home
     url(r'^$', IndexView.as_view(), name='index'),
-
-}
+)

@@ -7,18 +7,18 @@ from django.core.urlresolvers import reverse
 from django.contrib.messages import error, success
 from django.shortcuts import render_to_response, get_object_or_404
 
-from electoral.models.models import *
+from electoral.models import *
 
 
 class IndexView(TemplateView):
     template_name = ''
 
     def get(self, request, *args, **kwargs):
-        context = self.get_context()
+        context = self.get_context_data()
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
-        context = self.get_context()
+        context = self.get_context_data()
         return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):

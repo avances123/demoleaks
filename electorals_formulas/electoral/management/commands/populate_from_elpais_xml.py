@@ -1,15 +1,171 @@
+# -*- coding: utf-8 -*-
+from django.utils.translation import ugettext_lazy as _
 from django.core.management.base import BaseCommand, CommandError
+
+from electoral.models.models import *
+
+import urllib
+from xml.etree.ElementTree import parse, ParseError
+import datetime
+
+
+COMUNIDADES = [
+    (1, 'ES-AN'),
+    (2, 'ES-AR'),
+    (3, 'ES-AS'),
+    (4, 'ES-IB'),
+    (5, 'ES-CN'),
+    (6, 'ES-CB'),
+    (7, 'ES-CM'),
+    (8, 'ES-CL'),
+    (9, 'ES-CT'),
+    (10, 'ES-EX'),
+    (11, 'ES-GA'),
+    (12, 'ES-MD'),
+    (13, 'ES-NC'),
+    (14, 'ES-PV'),
+    (15, 'ES-MC'),
+    (16, 'ES-RI'),
+    (17, 'ES-VC'),
+    #(18, 'ES-CE'),
+    #(19, 'ES-ML'),
+]
+
+PROVINCIAS = [
+    (1, 'ES-C'),
+    (2, 'ES-VI'),
+    (3, 'ES-AB'),
+    (4, 'ES-AL'),
+    (5, 'ES-A'),
+    (6, 'ES-O'),
+    (7, 'ES-AV'),
+    (8, 'ES-BA'),
+    (9, 'ES-PM'),
+    (10, 'ES-B'),
+    (11, 'ES-BU'),
+    (12, 'ES-CC'),
+    (13, 'ES-CA'),
+    (14, 'ES-S'),
+    (15, 'ES-CS'),
+    (16, 'ES-CR'),
+    (17, 'ES-CO'),
+    (18, 'ES-CU'),
+    (19, 'ES-GI'),
+    (20, 'ES-GR'),
+    (21, 'ES-GU'),
+    (22, 'ES-SS'),
+    (23, 'ES-H'),
+    (24, 'ES-HU'),
+    (25, 'ES-J'),
+    (26, 'ES-LO'),
+    (27, 'ES-GC'),
+    (28, 'ES-LE'),
+    (29, 'ES-L'),
+    (30, 'ES-LU'),
+    (31, 'ES-M'),
+    (32, 'ES-MA'),
+    (33, 'ES-MU'),
+    (34, 'ES-NA'),
+    (35, 'ES-OR'),
+    (36, 'ES-P'),
+    (37, 'ES-PO'),
+    (38, 'ES-SA'),
+    (39, 'ES-TF'),
+    (40, 'ES-SG'),
+    (41, 'ES-SE'),
+    (42, 'ES-SO'),
+    (43, 'ES-T'),
+    (44, 'ES-TE'),
+    (45, 'ES-TO'),
+    (46, 'ES-V'),
+    (47, 'ES-VA'),
+    (48, 'ES-BI'),
+    (49, 'ES-ZA'),
+    (50, 'ES-Z'),
+]
 
 class Command(BaseCommand):
     args = u'<populate_from_elpais>'
     help = u'Populate database from ElPais.com XML file'
 
     def handle(self, *args, **options):
-        #for poll_id in args:
-        #    try:
-        #        poll = Poll.objects.get(pk=int(poll_id))
-        #    except Poll.DoesNotExist:
-        #        raise CommandError('Poll "%s" does not exist' % poll_id)
+        
+        # Comicio        
+        comicio = Comicio(nombre=u'Elecciones Generales', fecha=datetime.date(2011,11,20), pais=u'España', tipo='G')
+        comicio.save()
+        self.stdout.write(u'! Created comicio:\t%s\n' % comicio)
 
-        self.stdout.write(u'Successfully populate database from ElPais.com XML"\n')
+        # Sistema
+        sistema = Sistema(nombre=u'Ley D\'Hont', formula='D', elecciones='G', fecha=datetime.date(2011,11,20))
+        sistema.save()
+        self.stdout.write(u'! Created sistema:\t%s\n' % sistema)
+        
+        # Pais
+        url = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/index.xml2" % (comicio.fecha.year)
+        pais = self._get_Sitio(url, codigo_ISO_3166='ES_es', comicio=comicio, contenido_en=None)
 
+        # Comunidades
+        for com in COMUNIDADES:
+            urlc = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/index.xml2" % (comicio.fecha.year, com[0])
+            comunidad = self._get_Sitio(urlc, codigo_ISO_3166=com[1], comicio=comicio, contenido_en=pais)
+
+            # Provincias
+            for prov in PROVINCIAS:
+                    urlp = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/%02d.xml2" % (comicio.fecha.year, 
+                                    com[0], prov[0])
+                    try:
+                        provincia = self._get_Sitio(urlp, codigo_ISO_3166=prov[1], comicio=comicio, contenido_en=comunidad)
+
+                        # Municipios
+                        errors = 0
+                        for mun in range(1,2001): # I suppouse that a province has almost 2000 villages
+                            urlm = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/%02d/%02d.xml2" % (comicio.fecha.year,
+                                            com[0], prov[0], mun)
+                            try:
+                                municipio = self._get_Sitio(urlm, codigo_ISO_3166="", comicio=comicio, contenido_en=provincia)
+                            except ParseError:
+                                #self.stderr.write(u'E Parsing:\t%s\n' % urlm)
+                                if ++errors > 9: break
+
+                    except ParseError:
+                        #self.stderr.write(u'E Parsing:\t%s\n' % urlp)
+                        pass
+                
+    def _get_Sitio(self, url, codigo_ISO_3166='', comicio=None, contenido_en=None):
+        tree = parse(urllib.urlopen(url)).getroot()
+
+        # Sitio: Spain
+        nombre = tree.find('nombre_sitio').text
+        try:                    
+            num_a_elegir = int(tree.find('num_a_elegir').text)
+        except AttributeError:  # Municipios
+            num_a_elegir = 0
+        tipo = tree.find('tipo_sitio').text
+        votos_contabilizados = int(tree.find('votos/contabilizados/cantidad').text)
+        votos_abstenciones = int(tree.find('votos/abstenciones/cantidad').text)
+        votos_nulos = int(tree.find('votos/nulos/cantidad').text)
+        votos_blancos = int(tree.find('votos/blancos/cantidad').text)
+        
+        sitio = Sitio(nombre=nombre, num_a_elegir=num_a_elegir, tipo=tipo, votos_contabilizados=votos_contabilizados, 
+                    votos_abstenciones=votos_abstenciones, votos_nulos=votos_nulos ,votos_blancos=votos_blancos, 
+                    codigo_ISO_3166=codigo_ISO_3166, comicio=comicio, contenido_en=contenido_en)        
+        sitio.save()
+        self.stdout.write(u'! Created sitio:\t%s -> %s\n' % ((contenido_en if contenido_en else ""), sitio))
+
+        tree_partidos = tree.findall('resultados/partido')
+        for tree_partido in tree_partidos:
+            id_partido = tree_partido.find('id_partido').text
+            nombre =  tree_partido.find('nombre').text
+            try:
+                electos = tree_partido.find('electos').text
+            except AttributeError:  # Municipios
+                electos = 0
+            votos_numero = tree_partido.find('votos_numero').text
+            votos_porciento = tree_partido.find('votos_porciento').text
+            
+            partido = Partido(id_partido=int(id_partido), nombre=nombre, electos=int(electos), votos_numero=int(votos_numero), 
+                            votos_porciento=float(votos_porciento), sitio=sitio)
+            partido.save()
+            self.stdout.write(u'! Created partido:\t%s -> %s\n' % ((sitio if sitio else ""), partido))
+
+        return sitio
