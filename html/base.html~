@@ -1,272 +1,241 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>{% block title %}Formulas Electorales (Beta Version){% endblock %}</title>
-	<style type="text/css" media="all">
-		@import "/static/sample.css";
-		@import url(http://fonts.googleapis.com/css?family=Mate:400,400italic|Corben:400,700);
-	</style>
+		<meta name="author" content="Fabio Rueda" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>{% block title %}Formulas Electorales (Beta Version){% endblock %}</title>
+		<link rel="stylesheet" href="/static/blueprint/screen.css" type="text/css" media="screen, projection">
+		<link rel="stylesheet" href="/static/blueprint/print.css" type="text/css" media="print"> 
+		<!--[if lt IE 8]>
+		<link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection">
+		<![endif]-->
+		<style type="text/css" media="all">
+			@import "/static/style.css";
+			@import url(http://fonts.googleapis.com/css?family=Unlock|Signika:400,600,700);
+		</style>
+		<link type="text/css" href="/static/jquery-ui/css/jquery-ui.css" rel="stylesheet" />     
+		<script type="text/javascript" src="/static/jquery-ui/js/jquery-1.6.2.min.js"></script>
+		<script type="text/javascript" src="/static/jquery-ui/js/jquery-ui-1.8.16.custom.min.js"></script>
 
-	<link rel="stylesheet" type="text/css" href="/static/contentslider/slider.css" />
 
-	<script type="text/javascript" src="/static/contentslider/slider.js"></script>
-	
-	
-	<script src="/static/images/jquery.tools.min.js" type="text/javascript"></script>
-	<script type="text/javascript">
-		$(document).ready(function() {
-		$("#infinite").scrollable().circular();	
-	});
-	</script>
-{% block gchart %}    
-  <script type='text/javascript' src='https://www.google.com/jsapi'></script>
-  <script type='text/javascript'>
-   google.load('visualization', '1', {'packages': ['geomap']});
-   google.setOnLoadCallback(drawRegionsMap);
+		<!-- jquery-ui para la progress bar-->
+		<script type="text/javascript">
+			$(function(){
+				// Progressbar
+				$("#progressbar-n").progressbar({
+					"value": 80
+				});
+				// http://jqueryui.com/demos/progressbar/#animated
+				$("#progressbar-n").css({ 'background': '#bbbbbb' });
+				$("#progressbar-n > div").css({  'background': 'red'   });
 
-	function selectHandler() {
-  			var selection = visualization.getSelection();
-  	      alert(regionData); 
-  	  	}
-   function drawRegionsMap() {
-      var data = new google.visualization.DataTable();
-      data.addRows({{sitios|length }});
-      data.addColumn('string', 'Codigo');
-      data.addColumn('number', 'Demoleak');
-      data.addColumn('string', 'Comunidad');
-      data.addColumn('string', 'Link');
-      var i=0;
-      {% for p in sitios %}
-      	data.setValue(i, 0, '{{ p.codigo_ISO_3166 }}');
-      	data.setValue(i, 1, {{ p.democracia }});
-      	data.setValue(i, 2, '{{ p.nombre_sitio }}');
-      	data.setValue(i, 3, '{{ p.id }}');
-      	i++;
-    	{% endfor %}
-    	
-      var options = {region:'ES',width:'580px',showLegend:false,};
-
-      var container = document.getElementById('map_canvas');
-      var geochart = new google.visualization.GeoMap(container);
-      
-      google.visualization.events.addListener( 
-          geochart, 'regionClick', function(e) { 
-           	var rowindex = data.getFilteredRows([{column: 0, value: e['region']}]);  
-           	
-        		var location = data.getValue(rowindex[0], 3);
-        		
-        		this.location.href =  location;
-          });
-           
-      geochart.draw(data, options);
-	};
-  	
-
-  </script>
-<!--Load the AJAX API-->
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-    
-      // Load the Visualization API and the piechart package.
-      google.load('visualization', '1.0', {'packages':['corechart']});
-      
-      // Set a callback to run when the Google Visualization API is loaded.
-      google.setOnLoadCallback(drawChart);
-      
-      // Callback that creates and populates a data table, 
-      // instantiates the pie chart, passes in the data and
-      // draws it.
-      function drawChart() {
-
-      // Create the data table.
-      var data = new google.visualization.DataTable();
-      data.addColumn('string', 'Topping');
-      data.addColumn('number', 'Slices');
-      
-      data.addRows([
-      {% for p in lista_partidos %}
-        ['{{ p.nombre }}', {{ p.votos_numero }}],
-      {% endfor %}
-      ]);
-
-      // Set chart options
-      var options = {'title':'Porcentaje de votos en {{ sitio.nombre_sitio }}',
-                     'width':560,
-                     'height':300};
-
-      // Instantiate and draw our chart, passing in some options.
-      var chart = new google.visualization.PieChart(document.getElementById('chart_div2'));
-      chart.draw(data, options);
-    }
-    </script>
+			});
+		</script>
 
 
 
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-    
-      // Load the Visualization API and the piechart package.
-      google.load('visualization', '1.0', {'packages':['corechart']});
-      
-      // Set a callback to run when the Google Visualization API is loaded.
-      google.setOnLoadCallback(drawChart);
-      
-      // Callback that creates and populates a data table, 
-      // instantiates the pie chart, passes in the data and
-      // draws it.
-      function drawChart() {
+		<!-- AJAX piechart votos-->
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		<script type="text/javascript">
 
-      // Create the data table.
-      var data = new google.visualization.DataTable();
-      data.addColumn('string', 'Topping');
-      data.addColumn('number', 'Slices');
-      
-      data.addRows([
-      {% for p in lista_partidos %}
-        ['{{ p.nombre }}', {{ p.electos }}],
-      {% endfor %}
-      ]);
+			// Load the Visualization API and the piechart package.
+		google.load('visualization', '1.0', {'packages':['corechart']});
 
-      // Set chart options
-      var options = {'title':'Reparto de escaños en {{ sitio.nombre_sitio }}',
-                     'width':560,
-                     'height':300};
+		// Set a callback to run when the Google Visualization API is loaded.
+		google.setOnLoadCallback(drawChart);
 
-      // Instantiate and draw our chart, passing in some options.
-      var chart = new google.visualization.PieChart(document.getElementById('chart_div1'));
-      chart.draw(data, options);
-    }
-    </script>
+		// Callback that creates and populates a data table, 
+		// instantiates the pie chart, passes in the data and
+		// draws it.
+		function drawChart() {
 
+			// Create the data table.
+			var data = new google.visualization.DataTable();
+			data.addColumn('string', 'Partido');
+			data.addColumn('number', 'Votos');
 
+			data.addRows([
+					['Murcia', 60],
+					['Madrid', 60],
+					['Galicia',60],
+					]);
 
+			// Set chart options
+			var options = {'title':'Porcentaje de votos en Murcia',
+				'width':390,
+				'height':200};
 
-    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
-    <script type='text/javascript'>
-      google.load('visualization', '1', {packages:['gauge']});
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Label');
-        data.addColumn('number', 'Value');
-        data.addRows(3);
-        data.setValue(0, 0, 'Democracia');
-        data.setValue(0, 1, {{sitio.democracia}});
-        
+			// Instantiate and draw our chart, passing in some options.
+			var chart = new google.visualization.PieChart(document.getElementById('chart_votos'));
+			chart.draw(data, options);
+		}
 
-        var chart = new google.visualization.Gauge(document.getElementById('reloj'));
-        var options = {width: 400, height: 120, redFrom: 80, redTo: 100,
-            yellowFrom:60, yellowTo: 80, minorTicks: 5};
-        chart.draw(data, options);
-      }
-    </script>
-    
-    
-    
-    
-    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
-    <script type='text/javascript'>
-      google.load('visualization', '1', {packages:['gauge']});
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Label');
-        data.addColumn('number', 'Value');
-        data.addRows(3);
-        data.setValue(0, 0, 'Democracia');
-        data.setValue(0, 1, 80);
-        
+		</script>
+		<!-- AJAX piechart escaños-->
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		<script type="text/javascript">
 
-        var chart = new google.visualization.Gauge(document.getElementById(''));
-        var options = {width: 400, height: 120, redFrom: 80, redTo: 100,
-            yellowFrom:60, yellowTo: 80, minorTicks: 5};
-        chart.draw(data, options);
-      }
-    </script>
-{% endblock %}   
+			// Load the Visualization API and the piechart package.
+		google.load('visualization', '1.0', {'packages':['corechart']});
+
+		// Set a callback to run when the Google Visualization API is loaded.
+		google.setOnLoadCallback(drawChart);
+
+		// Callback that creates and populates a data table, 
+		// instantiates the pie chart, passes in the data and
+		// draws it.
+		function drawChart() {
+
+			// Create the data table.
+			var data = new google.visualization.DataTable();
+			data.addColumn('string', 'Partido');
+			data.addColumn('number', 'Electos');
+
+			data.addRows([
+					['Murcia', 70],
+					['Madrid', 60],
+					['Galicia',20],
+					]);
+
+			// Set chart options
+			var options = {'title':'Porcentaje de Escaños en Murcia',
+				'width':390,
+				'height':200};
+
+			// Instantiate and draw our chart, passing in some options.
+			var chart = new google.visualization.PieChart(document.getElementById('chart_electos'));
+			chart.draw(data, options);
+		}
+
+		</script>
+
 </head>
 <body>
-<div id="wrapper">
-	<div id="content">
-		{% block header %}
-		<div id="header">	<h1>DemoLeaks</a></h1></div><!-- header -->
-		{% endblock %}
-		<div id="menu">{% block menu %}{% endblock %}</div><!--menu-->  
-		<div id="container">
-			<div id="sidebar">
-				{% block sidebar %}
-				{% endblock %}
-			</div><!--sidebar-->
-				
-			{% block main %}
+	<div class="content">
+		<div class="header_right">
+			<div class="top_info">
+				<div class="top_info_right">
+					<p><b>You are not Logged in!</b> <a href="#">Log in</a>  or <a href="#">register</a> to start downloading music!</p>					
+				</div>		
+			</div>
+					
+			<div class="bar">
+				<ul>
+					<li class="slogan"></li>
+					<li><a href="#" accesskey="b">Generales 2011</a></li>
+					<li><a href="#" accesskey="a">Murcia</a></li>
+					<li class="active"><a href="#" accesskey="p">Cartagena</a></li>
+					
+				</ul>
+			</div>
+		</div>
+			
+		<div class="logo">
+			<h1><a href="#" title="The best music on the net!">Demo<span class="red">Leaks</span></a></h1>
+			<p>Analizando nuestra democracia</p>
+		</div>
 		
-<h3>Elige un sitio - <span class="link" onmouseover="scrollContent('slider',-1)" onmouseout="cancelScroll('slider')">Up</span> | <span class="link" onmouseover="scrollContent('slider',1)" onmouseout="cancelScroll('slider')">Down</span></h3>
-  <div class="slider">
+		<div class="search_field">
+			<form method="post" action="?">
+				<p> <span class="search">Busca demoleaks</span>&nbsp;&nbsp; <input type="text" name="search" class="search" /> <input type="submit" value="Buscar" class="button" /></p>
+			</form>
+		</div>
+		
+		<div class="newsletter">
+			<p>Aqui van las banderitas</p>
+		</div>
+		
+		<div class="subheader">
+        	<div class="subheader_izq">
+		  		<div class="nombre_sitio"><a href="#" title="Cartagena">Cartagena</a></div>
+          		<div class="atributos_sitio">
+        			<ul> 
+            			<li>Numero de votos contabilizados:  <span class="numero">454548</span></li>
+           				<li>Numero de votos en blanco:  <span class="numero">454548</span></li>
+            			<li>Numero de votos nulos:  <span class="numero">454548</span></li>
+            			<li>Numero de abstenciones:  <span class="numero">454548</span></li>
+            		</ul>
+            	</div>
+        	</div>
+            <div class="subheader_der">
+		  		Aqui va las graficas de distintos indices
+        	</div>
+		</div>
 
-    <div class="slidercontent" id="slider">
-      {% for i in lista_sitios %}
-      <a href="/{{ comicio.id }}/{{ i.id }}/">{{ i.nombre_sitio }}</a><br />
-      {% endfor %}   
-    </div>
-  </div>
-
-
-			<div id="reloj_caja">
-					<div id="reloj"></div>
-   			</div>
-   			<div id="mainindex">
-				  <div id="stats">
-					<div id="chart_div2"></div>
-					</div>
-			<div style="clear:both;"></div>
-			</div><!--main-->
-        	{% endblock %}
-        	
-        	<div style="clear:both;"></div>
-		</div><!--container-->        
-      
-      {% block slider %}
-		<div id="slider_flags">
-        
-		<!-- "previous page" action -->
-   	<a class="prevPage browse left"></a>
-   	<!-- root element for scrollable -->
-      <div class="scrollable" id="infinite">	  
-      	<!-- root element for the items -->
-         <div class="items">
-         {% for p in lista_sistemas %}
-        		<a href="/{{ comicio.id }}/{{ sitio.id }}/{{ p.id }}/"><img src="/static/flag-icons/flags_iso/128/es.png" alt="" border="0"/></a>
-        		<a href="/{{ comicio.id }}/{{ sitio.id }}/{{ p.id }}/"><img src="/static/flag-icons/flags_iso/128/nl.png" alt="" border="0"/></a>
-        		<a href="/{{ comicio.id }}/{{ sitio.id }}/{{ p.id }}/"><img src="/static/flag-icons/flags_iso/128/us.png" alt="" border="0"/></a>
-        		<a href="/{{ comicio.id }}/{{ sitio.id }}/{{ p.id }}/"><img src="/static/flag-icons/flags_iso/128/mx.png" alt="" border="0"/></a>
-    		{% endfor %} 
-         </div>
-                
-      </div>
+	
+   		<div class="contenedor_gcharts">
+			
+		</div>
+    
+    
+    
+    	
+		<div class="left">
+			<div class="left_articles">
+            <div class="lt"></div>
+			<div class="lbox">
+				<h2>Featured Artist: <span class="yellow">Sonia</span></h2>
+				<div class="thumb">
+					<img src="images/sonia.jpg" alt="" />
+					<p><img src="images/play.gif" alt="Play" /> Sonia</p>
+				</div>
+					
+				<p>Sonia, a Croatian dance and trance artist released a number of quality tunes which rely on strong rhythm and heavy riffs.</p>
+				<p>We suggest downloading and listening a dance track called <a href="http://www.solucija.com/Sonia_-_Last_night.mp3">Last Night</a></p>
+			</div>
             
-   <!-- "next page" action -->
-   <a class="nextPage browse right"></a>
-   
-</div><!-- slier -->
-{% endblock %}
-
-      <div id="footer">
-		{% block footer %}
-        	<span>Avances123</span>
             
-            <ul>
-            	<li><a href="#">Home</a> |</li>
-                <li><a href="#">Site Map</a> |</li>
-                <li><a href="#">Accessibility</a> |</li>
-                <li><a href="#">Contact</a></li>
-            </ul>
-		{% endblock %}        
-		</div><!--footer-->
-	</div><!-- content -->
-</div><!-- wrapper -->
-
-
-
+				<h2><a href="#">Eurodance TOP 10</a></h2>
+				<p><a href="#">Lorem ipsum dolor sit amet</a>, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. <a href="#">Ut wisi enim ad minim veniam</a>, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex.</p>
+				<p><a href="#">Lorem ipsum dolor sit amet</a>, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. <a href="#">Ut wisi enim ad minim veniam</a>, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex.</p>
+			</div>
+						
+			<div class="lt"></div>
+			<div class="lbox">
+				<h2>Featured Artist: <span class="yellow">Sonia</span></h2>
+				<div class="thumb">
+					<img src="images/sonia.jpg" alt="" />
+					<p><img src="images/play.gif" alt="Play" /> Sonia</p>
+				</div>
+					
+				<p>Sonia, a Croatian dance and trance artist released a number of quality tunes which rely on strong rhythm and heavy riffs.</p>
+				<p>We suggest downloading and listening a dance track called <a href="http://www.solucija.com/Sonia_-_Last_night.mp3">Last Night</a></p>
+			</div>
+								
+			<div class="lt"></div>
+			<div class="lbox">
+			<h2>Featured Artist: <span class="yellow">Andreas Viklund</span></h2>
+			
+			<div class="thumb">
+			<img src="images/andreas.jpg" alt="" />
+			<p><img src="images/play.gif" alt="Play" /> Andreas Viklund</p>
+			</div>
+			
+			
+			<p><a href="http://andreasviklund.com">Andreas Viklund</a>, a music producer from northern Sweden released a number of great songs under his own name and participated in making several <a href="http://en.wikipedia.org/wiki/Lagoona">Lagoona</a> dance and techno albums along with Björn Karlsson.</p>
+			<p>We strongly suggest you listen to the song <a href="http://andreasviklund.com/music/lagoona/">Into my dream (Kaveh Azizi rmx)</a></p>
+			
+			</div>
+		</div>	
+		<div class="right">
+						
+			<div class="rt"></div>
+			<div class="right_articles">
+				<p><img src="images/image.gif" alt="Image" title="Image" class="image" /><b>Lorem ipsum dolor sit amet</b><br />consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam <a href="#">erat volutpat</a>. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis <a href="#">nisl ut aliquip ex</a>.</p>
+			</div>
+			<div class="rt"></div>
+			<div class="right_articles">
+				<p><img src="images/image.gif" alt="Image" title="Image" class="image" /><b>Lorem ipsum dolor sit amet</b><br />consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam <a href="#">erat volutpat</a>. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis <a href="#">nisl ut aliquip ex</a>.</p>
+			</div>
+			<div class="rt"></div>
+			<div class="right_articles">
+				<p><img src="images/image.gif" alt="Image" title="Image" class="image" /><b>Lorem ipsum dolor sit amet</b><br />consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam <a href="#">erat volutpat</a>. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis <a href="#">nisl ut aliquip ex</a>.</p>
+			</div>
+		</div>	
+		<div class="footer">
+			<p><a href="#">RSS Feed</a> | <a href="#">Contact</a> | <a href="#">Accessibility</a> | <a href="#">Products</a> | <a href="#">Disclaimer</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> and <a href="http://validator.w3.org/check?uri=referer">XHTML</a><br />
+			&copy; Copyright 2006 Internet Music, Design: Luka Cvrk - <a href="http://www.solucija.com/" title="What's your solution?">Solucija</a></p>
+		</div>
+	</div>
 </body>
 </html>
