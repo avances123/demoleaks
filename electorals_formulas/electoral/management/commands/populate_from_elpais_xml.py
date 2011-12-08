@@ -102,36 +102,38 @@ class Command(BaseCommand):
         
         # Pais
         url = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/index.xml2" % (comicio.fecha.year)
-        pais = self._get_Sitio(url, codigo_ISO_3166='ES_es', comicio=comicio, contenido_en=None)
+        pais = self._get_Sitio(url, codigo_ISO_3166='ES_es', comicio=comicio, parent=None)
 
         # Comunidades
         for com in COMUNIDADES:
             urlc = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/index.xml2" % (comicio.fecha.year, com[0])
-            comunidad = self._get_Sitio(urlc, codigo_ISO_3166=com[1], comicio=comicio, contenido_en=pais)
+            comunidad = self._get_Sitio(urlc, codigo_ISO_3166=com[1], comicio=comicio, parent=pais)
 
             # Provincias
             for prov in PROVINCIAS:
-                    urlp = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/%02d.xml2" % (comicio.fecha.year, 
+                urlp = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/%02d.xml2" % (comicio.fecha.year, 
                                     com[0], prov[0])
-                    try:
-                        provincia = self._get_Sitio(urlp, codigo_ISO_3166=prov[1], comicio=comicio, contenido_en=comunidad)
+                try:
+                    provincia = self._get_Sitio(urlp, codigo_ISO_3166=prov[1], comicio=comicio, parent=comunidad)
 
-                        # Municipios
-                        errors = 0
-                        for mun in range(1,2001): # I suppouse that a province has almost 2000 villages
-                            urlm = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/%02d/%02d.xml2" % (comicio.fecha.year,
-                                            com[0], prov[0], mun)
-                            try:
-                                municipio = self._get_Sitio(urlm, codigo_ISO_3166="", comicio=comicio, contenido_en=provincia)
-                            except ParseError:
-                                #self.stderr.write(u'E Parsing:\t%s\n' % urlm)
-                                if ++errors > 9: break
+                    # Municipios
+                    errors = 0
+                    for mun in range(1,2001): # I suppouse that a province has almost 2000 villages
+                        urlm = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/%02d/%02d.xml2" % (comicio.fecha.year,
+                                        com[0], prov[0], mun)
+                        try:
+                            municipio = self._get_Sitio(urlm, codigo_ISO_3166="", comicio=comicio, parent=provincia)
+                            errors = 0  # Set errors to default value
+                        except ParseError:
+                            #self.stderr.write(u'E Parsing:\t%s\n' % urlm)
+                            errors += 1
+                            if errors > 9: break # if I found more than 10 consecutive error 
 
-                    except ParseError:
-                        #self.stderr.write(u'E Parsing:\t%s\n' % urlp)
-                        pass
+                except ParseError:
+                    #self.stderr.write(u'E Parsing:\t%s\n' % urlp)
+                    pass
                 
-    def _get_Sitio(self, url, codigo_ISO_3166='', comicio=None, contenido_en=None):
+    def _get_Sitio(self, url, codigo_ISO_3166='', comicio=None, parent=None):
         tree = parse(urllib.urlopen(url)).getroot()
 
         # Sitio: Spain
@@ -148,9 +150,9 @@ class Command(BaseCommand):
         
         sitio = Sitio(nombre=nombre, num_a_elegir=num_a_elegir, tipo=tipo, votos_contabilizados=votos_contabilizados, 
                     votos_abstenciones=votos_abstenciones, votos_nulos=votos_nulos ,votos_blancos=votos_blancos, 
-                    codigo_ISO_3166=codigo_ISO_3166, comicio=comicio, contenido_en=contenido_en)        
+                    codigo_ISO_3166=codigo_ISO_3166, comicio=comicio, parent=parent)        
         sitio.save()
-        self.stdout.write(u'! Created sitio:\t%s -> %s\n' % ((contenido_en if contenido_en else ""), sitio))
+        self.stdout.write(u'! Created sitio:\t%s -> %s\n' % ((parent if parent else ""), sitio))
 
         tree_partidos = tree.findall('resultados/partido')
         for tree_partido in tree_partidos:

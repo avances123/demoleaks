@@ -3,6 +3,7 @@
 
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
+from mptt.admin import MPTTModelAdmin
 
 from electoral.models import *
 
@@ -19,8 +20,8 @@ class ComicioAdmin(admin.ModelAdmin):
 admin.site.register(Comicio, ComicioAdmin)
 
 
-class SitioAdmin(admin.ModelAdmin):
-    pass
+class SitioAdmin(MPTTModelAdmin):
+    pass 
 
 admin.site.register(Sitio, SitioAdmin)
 

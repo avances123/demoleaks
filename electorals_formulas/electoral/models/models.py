@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
+from mptt.models import MPTTModel, TreeForeignKey
 
 class Sistema(models.Model):
     FORMULA_CHOICES = (
@@ -55,7 +56,7 @@ class Comicio(models.Model):
         verbose_name = _(u'Comicio')
 
 
-class Sitio(models.Model):
+class Sitio(MPTTModel):
     comicio = models.ForeignKey(Comicio, null = True, blank = False, related_name = 'sitios',
                 verbose_name=_(u'Comicio'))
     codigo_ISO_3166 = models.CharField(max_length = 8, null=True, blank = False,
@@ -74,15 +75,18 @@ class Sitio(models.Model):
                 verbose_name=_(u'Votos Nulos'))
     votos_blancos = models.IntegerField(null = False, blank = False,
                 verbose_name=_(u'Votos Blancos'))
-    contenido_en = models.ForeignKey('self', null = True, blank = False, related_name = 'sitios',
+    parent = TreeForeignKey('self', null = True, blank = False, related_name = 'sitios',
                 verbose_name=_(u'Contenido en'))
 
     def __unicode__(self):
         return "%s (%s)" % (self.nombre, self.comicio)
 
+    class MPTTMeta:
+        order_insertion_by = ['comicio', 'nombre']
+
     class Meta:
         app_label = 'electoral'
-        ordering = ['comicio','nombre',]
+        ordering = ['comicio', 'nombre']
         verbose_name = _(u'Sitio')
 
 

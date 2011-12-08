@@ -91,6 +91,9 @@ STATIC_URL = '/static/'
 # Examples: "http://foo.com/static/admin/", "/static/admin/".
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
+# Admin MPTT level indent in px
+MPTT_ADMIN_LEVEL_INDENT = 30
+
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
@@ -158,6 +161,7 @@ INSTALLED_APPS = (
     'django_coverage',
     'transhette',
     'modeltranslation',
+    'mptt',
 
     'electoral',
     # Uncomment the next line to enable admin documentation:
