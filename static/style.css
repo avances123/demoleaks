@@ -97,6 +97,7 @@ input.button {
 	background: #ABC43C url(/static/images/button.gif) no-repeat;
 	color: #FFF;
 	font: bold 1.1em Arial, Helvetica, Sans-Serif;
+	padding-top: 7px;
 }
 
 input.login { 
@@ -372,6 +373,7 @@ input.login {
 	width: 150px;
 	float: right;
 	display: block;
+	margin-top: 17px;
 }
 
 .barra_partido {
@@ -411,3 +413,38 @@ input.login {
 
 
 
+ /* allow room for 3 columns */
+  .wrapper ul
+  {
+    width: 744px;
+  }
+
+  /* float & allow room for the widest item */
+  .wrapper ul li
+  {
+    float: left;
+    width: 140px;
+  }
+
+  /* stop the float */
+  .wrapper br
+  {
+    clear: left;
+  }
+
+  /* separate the list from subsequent markup */
+  div.wrapper
+  {
+    margin-bottom: 1em;
+  }
+  
+  
+.lista_sitios {
+	clear: both;
+	margin: 3px 0 10px 0;
+	padding: 8px;
+	background: #f4f4f4;
+	color: #808080;
+	border-bottom: 1px solid #ccc;
+	
+}

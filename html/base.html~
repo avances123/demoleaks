@@ -4,9 +4,6 @@
 		<meta name="author" content="Fabio Rueda" />
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>{% block title %}Formulas Electorales (Beta Version){% endblock %}</title>
-		<!--[if lt IE 8]>
-		<link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection">
-		<![endif]-->
 		<style type="text/css" media="all">
 			@import "/static/style.css";
 			@import url(http://fonts.googleapis.com/css?family=Unlock|Signika:400,600,700);
@@ -15,32 +12,42 @@
 		<script type="text/javascript" src="/static/jquery-ui/js/jquery-1.6.2.min.js"></script>
 		<script type="text/javascript" src="/static/jquery-ui/js/jquery-ui-1.8.16.custom.min.js"></script>
 
-
+		{% block demoleakbar %}
 		<!-- jquery-ui para la progress bar-->
 		<script type="text/javascript">
 			$(function(){
 				// Progressbar
 				$("#progressbar-n").progressbar({
-					"value": 80
+					"value": {{ sitio.democracia }}
 				});
 				// http://jqueryui.com/demos/progressbar/#animated
 				$("#progressbar-n").css({ 'background': 'white' });
-				$("#progressbar-n > div").css({  'background': 'red'   });
+				{% if sitio.democracia < 12 %}
+					$("#progressbar-n > div").css({  'background': 'green'   });
+				{% else %}
+					$("#progressbar-n > div").css({  'background': 'red'   });
+				{% endif %}
+
 
 			});
 		</script>
+		{% endblock %}
+		
+		
+		{% for p in lista_partidos %}
 		<script type="text/javascript">
 			$(function(){
 				// Progressbar
-				$("#progressbar-pp").progressbar({
-					"value": 80
+				$("#progressbar-{{p.id}}").progressbar({
+					"value": {{ p.grado_democracia }}
 				});
 				// http://jqueryui.com/demos/progressbar/#animated
-				$("#progressbar-pp").css({ 'background': 'white' });
-				$("#progressbar-pp > div").css({  'background': 'blue'   });
+				$("#progressbar-{{p.id}}").css({ 'background': 'white' });
+				$("#progressbar-{{p.id}} > div").css({  'background': 'green'   });
 
 			});
 		</script>
+		{% endfor %}
 
 
 		<!-- AJAX piechart votos-->
@@ -62,15 +69,15 @@
 			var data = new google.visualization.DataTable();
 			data.addColumn('string', 'Partido');
 			data.addColumn('number', 'Votos');
-
+			
 			data.addRows([
-					['Murcia', 60],
-					['Madrid', 60],
-					['Galicia',60],
+					{% for p in lista_partidos %}
+					['{{p.nombre}}',{{ p.votos_numero }}],
+					{% endfor %}
 					]);
 
 			// Set chart options
-			var options = {'title':'Porcentaje de votos en Murcia',
+			var options = {'title':'Porcentaje de votos en {{ sitio.nombre_sitio }}',
 				'width':360,
 				'height':200,
 				'backgroundColor':'#f4f4f4'
@@ -103,13 +110,13 @@
 			data.addColumn('number', 'Electos');
 
 			data.addRows([
-					['Murcia', 70],
-					['Madrid', 60],
-					['Galicia',20],
+					{% for p in lista_partidos %}
+					['{{p.nombre}}',{{ p.electos }}],
+					{% endfor %}
 					]);
 
 			// Set chart options
-			var options = {'title':'Porcentaje de Escaños en Murcia',
+			var options = {'title':'Porcentaje de Escaños en {{ sitio.nombre_sitio }}',
 				'width':365,
 				'height':200,
 			    'backgroundColor':'#f4f4f4'
@@ -135,16 +142,16 @@
 			<div class="bar">
 				<ul>
 					<li class="slogan"></li>
-					<li><a href="#" accesskey="b">Generales 2011</a></li>
-					<li><a href="#" accesskey="a">Murcia</a></li>
-					<li class="active"><a href="#" accesskey="p">Cartagena</a></li>
+					<li><a href="#" accesskey="b">{{ comicio.nombre }}</a></li>
+					<li><a href="#" accesskey="a">{{continente.nombre_sitio}}</a></li>
+					<li class="active"><a href="#" accesskey="p">{{ sitio.nombre_sitio }}</a></li>
 					
 				</ul>
 			</div>
 		</div>
 			
 		<div class="logo">
-			<h1><a href="#" title="The best music on the net!">Demo<span class="red">Leaks</span></a></h1>
+			<h1><a href="#" title="Demoleaks">Demo<span class="red">Leaks</span></a></h1>
 			<p>Analizando nuestra democracia</p>
 		</div>
 		
@@ -164,26 +171,35 @@
 		
 		<div class="subheader">
         	<div class="subheader_izq">
-		  		<div class="nombre_sitio"><a href="#" title="Cartagena">Cartagena</a></div>
+		  		<div class="nombre_sitio"><a href="#" title="{{ sitio.nombre_sitio }}">{{ sitio.nombre_sitio }}</a></div>
           		<div class="atributos_sitio">
         			<ul> 
             			<li>Numero de votos contabilizados:  </li>
+            			<li>Numero de abstenciones:</li>
            				<li>Numero de votos en blanco:  </li>
             			<li>Numero de votos nulos: </li>
-            			<li>Numero de abstenciones:</li>
+            			
             		</ul>
             	</div>
             	<div class="atributos_sitio_valores">
         			<ul> 
-            			<li><span class="numero">3424242</span></li>
-           				<li><span class="numero">242346</span> </li>
-            			<li><span class="numero">0</span></li>
-            			<li><span class="numero">434</span></li>
+            			<li><span class="numero">{{ sitio.votos_contabilizados}}</span></li>
+            			<li><span class="numero">{{ sitio.votos_abstenciones }}</span></li>
+           				<li><span class="numero">{{ sitio.votos_blancos}}</span> </li>
+            			<li><span class="numero">{{ sitio.votos_nulos}}</span></li>
+            			
             		</ul>
             	</div>
         	</div>
+        
             <div class="subheader_der">
-            	<div class="barra_nivel">
+            	<div class="atributos_sitio">
+            	<ul> 
+            			<li><h1>Demoleak</h1></li>
+            			</ul>
+        			</div> 
+            	<div class="barra_nivel" style="display:inline">
+            		
 					<div id="progressbar-n"></div>
 				</div>
         	</div>
@@ -206,18 +222,20 @@
 				<h2><a href="#">Lista de partidos</a></h2>
 				<p>Aqui puedes ver uno a uno datos estadisticos sobre cada partido</p>
 			</div>
-						
+			
+			{% for p in lista_partidos %}			
 			<div class="lt"></div>
 			<div class="lbox">
-				<h2>Partido Popular: <span class="yellow">PP</span></h2>
+				<h2>{{ p.nombre }}</h2>
 				<div class="thumb">
 					<img src="/static/partidos/pp.png" alt="" />
 					
 				</div>
 				<div class="barra_partido">
-					<div id="progressbar-pp"></div>
+					<div id="progressbar-{{p.id}}"></div>
 				</div>	
 			</div>
+			{% endfor %}
 			
 		</div>	
 		<div class="right">
@@ -231,6 +249,23 @@
 				<p><img src="/static/images/image.gif" alt="Image" title="Image" class="image" /><b>Un partido con anomalia</b><br />consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam <a href="#">erat volutpat</a>. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis <a href="#">nisl ut aliquip ex</a>.</p>
 			</div>
 		</div>	
+		
+		<div class="lista_sitios">
+        	
+          		
+          		<div class="wrapper">
+        			<ul> 
+        				{% for s in lista_sitios %}
+            			<li><a href="/{{comicio.id}}/{{s.id}}"> {{s.nombre_sitio}}</a></li>
+            			{% endfor %}
+            		</ul>
+            		<br />
+            	</div>
+        
+		</div>
+		
+		
+		
 		<div class="footer">
 			<p><a href="#">RSS Feed</a> | <a href="#">Contact</a> | <a href="#">Accessibility</a> | <a href="#">Products</a> | <a href="#">Disclaimer</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> and <a href="http://validator.w3.org/check?uri=referer">XHTML</a><br />
 			&copy; Copyright 2006 Internet Music, Design: Luka Cvrk - <a href="http://www.solucija.com/" title="What's your solution?">Solucija</a></p>

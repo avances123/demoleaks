@@ -35,6 +35,7 @@ def sistema(request,comicio_id,sitio_id, sistema_id):
 def sitio(request, sitio_id, comicio_id,muestra_sistema_id=None):
 	# TODO hay que pillar justo el sitio o 404
 	sitio = Sitio.objects.get(id = sitio_id)
+	continente = Sitio.objects.get(id = sitio.contenido_en.id)
 	comicio = Comicio.objects.get(id = comicio_id)
 	lista_sistemas = Sistema.objects.all()
 	if muestra_sistema_id:
@@ -44,8 +45,9 @@ def sitio(request, sitio_id, comicio_id,muestra_sistema_id=None):
 		sistema = Sistema.objects.get(id = 1)
 		lista_provincias = Sitio.objects.filter(tipo_sitio = 3)
 	lista_sitios = Sitio.objects.filter(contenido_en = sitio).order_by('nombre_sitio')
-	lista_partidos = Partido.objects.filter(sitio = sitio,sistema = sistema,comicio=comicio).order_by('-votos_numero')
-	c = Context({'sitio': sitio,'lista_sitios':lista_sitios,'lista_partidos':lista_partidos,'comicio':comicio,'sitios':lista_provincias,'lista_sistemas':lista_sistemas})
+	print lista_sitios
+	lista_partidos = Partido.objects.filter(sitio = sitio,sistema = sistema,comicio=comicio).order_by('-votos_numero')[:5]
+	c = Context({'sitio': sitio,'lista_sitios':lista_sitios,'lista_partidos':lista_partidos,'comicio':comicio,'sitios':lista_provincias,'lista_sistemas':lista_sistemas,'continente':continente})
 	return render_to_response('sitio.html',c)
 
 def partido(request, partido_id):
