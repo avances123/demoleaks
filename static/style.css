@@ -249,7 +249,7 @@ input.login {
 		padding: 3px 12px;
 		margin: 0 0 15px 0;
 		background: #6E6E6E url(/static/images/lb.gif) no-repeat bottom left;
-		height: 178px;
+		height: 90px;
 	}
 	
 	.lbox a {
@@ -265,8 +265,7 @@ input.login {
 	
 .thumb {
 	float: left;
-	width: 150px;
-	border: 1px solid #d4d4d4;
+	width: 150px;	
 	color: #fff;
 	background: #6e6e6e;
 	margin: 0 15px 15px 0;
@@ -343,8 +342,15 @@ input.login {
 .atributos_sitio {
 	margin-top: 10px;
 	margin-left: 20px;
+	float:left;
 }
 
+.atributos_sitio_valores {
+	margin-top: 10px;
+	margin-left: 20px;
+	float:left;
+	text-align:right;
+}
 
 .numero{
 	color: #C3593C;
@@ -358,6 +364,22 @@ input.login {
 	width: 360px;
 	float: left;
 	display: block;
+	padding-top: 17px;
+}
+
+
+.barra_nivel {
+	width: 150px;
+	float: right;
+	display: block;
+}
+
+.barra_partido {
+	width: 200px;
+	float: right;
+	display: block;
+	margin-right: 20px;
+	margin-top: 5px;
 }
 
 .subheader_izq {
@@ -383,5 +405,9 @@ input.login {
 	background: #f4f4f4;
 	color: #808080;
 	border-bottom: 1px solid #ccc;
-	height: 220px;
+	height: 200px;
 }
+
+
+
+

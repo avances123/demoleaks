@@ -4,8 +4,6 @@
 		<meta name="author" content="Fabio Rueda" />
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>{% block title %}Formulas Electorales (Beta Version){% endblock %}</title>
-		<link rel="stylesheet" href="/static/blueprint/screen.css" type="text/css" media="screen, projection">
-		<link rel="stylesheet" href="/static/blueprint/print.css" type="text/css" media="print"> 
 		<!--[if lt IE 8]>
 		<link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection">
 		<![endif]-->
@@ -26,12 +24,23 @@
 					"value": 80
 				});
 				// http://jqueryui.com/demos/progressbar/#animated
-				$("#progressbar-n").css({ 'background': '#bbbbbb' });
+				$("#progressbar-n").css({ 'background': 'white' });
 				$("#progressbar-n > div").css({  'background': 'red'   });
 
 			});
 		</script>
+		<script type="text/javascript">
+			$(function(){
+				// Progressbar
+				$("#progressbar-pp").progressbar({
+					"value": 80
+				});
+				// http://jqueryui.com/demos/progressbar/#animated
+				$("#progressbar-pp").css({ 'background': 'white' });
+				$("#progressbar-pp > div").css({  'background': 'blue'   });
 
+			});
+		</script>
 
 
 		<!-- AJAX piechart votos-->
@@ -62,8 +71,10 @@
 
 			// Set chart options
 			var options = {'title':'Porcentaje de votos en Murcia',
-				'width':390,
-				'height':200};
+				'width':360,
+				'height':200,
+				'backgroundColor':'#f4f4f4'
+				};
 
 			// Instantiate and draw our chart, passing in some options.
 			var chart = new google.visualization.PieChart(document.getElementById('chart_votos'));
@@ -99,8 +110,10 @@
 
 			// Set chart options
 			var options = {'title':'Porcentaje de Escaños en Murcia',
-				'width':390,
-				'height':200};
+				'width':365,
+				'height':200,
+			    'backgroundColor':'#f4f4f4'
+				};
 
 			// Instantiate and draw our chart, passing in some options.
 			var chart = new google.visualization.PieChart(document.getElementById('chart_electos'));
@@ -141,6 +154,8 @@
 			</form>
 		</div>
 		
+
+		
 		<div class="newsletter">
 			<p>Aqui van las banderitas</p>
 		</div>
@@ -150,21 +165,32 @@
 		  		<div class="nombre_sitio"><a href="#" title="Cartagena">Cartagena</a></div>
           		<div class="atributos_sitio">
         			<ul> 
-            			<li>Numero de votos contabilizados:  <span class="numero">454548</span></li>
-           				<li>Numero de votos en blanco:  <span class="numero">454548</span></li>
-            			<li>Numero de votos nulos:  <span class="numero">454548</span></li>
-            			<li>Numero de abstenciones:  <span class="numero">454548</span></li>
+            			<li>Numero de votos contabilizados:  </li>
+           				<li>Numero de votos en blanco:  </li>
+            			<li>Numero de votos nulos: </li>
+            			<li>Numero de abstenciones:</li>
+            		</ul>
+            	</div>
+            	<div class="atributos_sitio_valores">
+        			<ul> 
+            			<li><span class="numero">3424242</span></li>
+           				<li><span class="numero">242346</span> </li>
+            			<li><span class="numero">0</span></li>
+            			<li><span class="numero">434</span></li>
             		</ul>
             	</div>
         	</div>
             <div class="subheader_der">
-		  		Aqui va las graficas de distintos indices
+            	<div class="barra_nivel">
+					<div id="progressbar-n"></div>
+				</div>
         	</div>
 		</div>
 
 	
    		<div class="contenedor_gcharts">
-			
+			<div id="chart_votos" style="float: left;margin-right: 18px;"></div>
+			<div id="chart_electos"></div>
 		</div>
     
     
@@ -172,64 +198,35 @@
     	
 		<div class="left">
 			<div class="left_articles">
-            <div class="lt"></div>
-			<div class="lbox">
-				<h2>Featured Artist: <span class="yellow">Sonia</span></h2>
-				<div class="thumb">
-					<img src="images/sonia.jpg" alt="" />
-					<p><img src="images/play.gif" alt="Play" /> Sonia</p>
-				</div>
-					
-				<p>Sonia, a Croatian dance and trance artist released a number of quality tunes which rely on strong rhythm and heavy riffs.</p>
-				<p>We suggest downloading and listening a dance track called <a href="http://www.solucija.com/Sonia_-_Last_night.mp3">Last Night</a></p>
-			</div>
             
             
-				<h2><a href="#">Eurodance TOP 10</a></h2>
-				<p><a href="#">Lorem ipsum dolor sit amet</a>, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. <a href="#">Ut wisi enim ad minim veniam</a>, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex.</p>
-				<p><a href="#">Lorem ipsum dolor sit amet</a>, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. <a href="#">Ut wisi enim ad minim veniam</a>, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex.</p>
+            
+				<h2><a href="#">Lista de partidos</a></h2>
+				<p>Aqui puedes ver uno a uno datos estadisticos sobre cada partido</p>
 			</div>
 						
 			<div class="lt"></div>
 			<div class="lbox">
-				<h2>Featured Artist: <span class="yellow">Sonia</span></h2>
+				<h2>Partido Popular: <span class="yellow">PP</span></h2>
 				<div class="thumb">
-					<img src="images/sonia.jpg" alt="" />
-					<p><img src="images/play.gif" alt="Play" /> Sonia</p>
-				</div>
+					<img src="/static/partidos/pp.png" alt="" />
 					
-				<p>Sonia, a Croatian dance and trance artist released a number of quality tunes which rely on strong rhythm and heavy riffs.</p>
-				<p>We suggest downloading and listening a dance track called <a href="http://www.solucija.com/Sonia_-_Last_night.mp3">Last Night</a></p>
-			</div>
-								
-			<div class="lt"></div>
-			<div class="lbox">
-			<h2>Featured Artist: <span class="yellow">Andreas Viklund</span></h2>
-			
-			<div class="thumb">
-			<img src="images/andreas.jpg" alt="" />
-			<p><img src="images/play.gif" alt="Play" /> Andreas Viklund</p>
+				</div>
+				<div class="barra_partido">
+					<div id="progressbar-pp"></div>
+				</div>	
 			</div>
 			
-			
-			<p><a href="http://andreasviklund.com">Andreas Viklund</a>, a music producer from northern Sweden released a number of great songs under his own name and participated in making several <a href="http://en.wikipedia.org/wiki/Lagoona">Lagoona</a> dance and techno albums along with Björn Karlsson.</p>
-			<p>We strongly suggest you listen to the song <a href="http://andreasviklund.com/music/lagoona/">Into my dream (Kaveh Azizi rmx)</a></p>
-			
-			</div>
 		</div>	
 		<div class="right">
 						
 			<div class="rt"></div>
 			<div class="right_articles">
-				<p><img src="images/image.gif" alt="Image" title="Image" class="image" /><b>Lorem ipsum dolor sit amet</b><br />consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam <a href="#">erat volutpat</a>. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis <a href="#">nisl ut aliquip ex</a>.</p>
+				<p><img src="/static/images/image.gif" alt="Image" title="Image" class="image" /><b>Un sitio con anomalia</b><br />consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam <a href="#">erat volutpat</a>. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis <a href="#">nisl ut aliquip ex</a>.</p>
 			</div>
 			<div class="rt"></div>
 			<div class="right_articles">
-				<p><img src="images/image.gif" alt="Image" title="Image" class="image" /><b>Lorem ipsum dolor sit amet</b><br />consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam <a href="#">erat volutpat</a>. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis <a href="#">nisl ut aliquip ex</a>.</p>
-			</div>
-			<div class="rt"></div>
-			<div class="right_articles">
-				<p><img src="images/image.gif" alt="Image" title="Image" class="image" /><b>Lorem ipsum dolor sit amet</b><br />consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam <a href="#">erat volutpat</a>. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis <a href="#">nisl ut aliquip ex</a>.</p>
+				<p><img src="/static/images/image.gif" alt="Image" title="Image" class="image" /><b>Un partido con anomalia</b><br />consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam <a href="#">erat volutpat</a>. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis <a href="#">nisl ut aliquip ex</a>.</p>
 			</div>
 		</div>	
 		<div class="footer">
