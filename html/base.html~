@@ -142,8 +142,8 @@
 			<div class="bar">
 				<ul>
 					<li class="slogan"></li>
-					<li><a href="#" accesskey="b">{{ comicio.nombre }}</a></li>
-					<li><a href="#" accesskey="a">{{continente.nombre_sitio}}</a></li>
+					<li><a href="/{{ comicio.id}}" accesskey="b">{{ comicio.nombre }}</a></li>
+					<li><a href="/{{ comicio.id}}/{{ continente.id }}" accesskey="a">{{continente.nombre_sitio}}</a></li>
 					<li class="active"><a href="#" accesskey="p">{{ sitio.nombre_sitio }}</a></li>
 					
 				</ul>
