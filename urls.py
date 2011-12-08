@@ -3,6 +3,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = patterns('',
 		    url(r'^$', 'formulas_electorales.views.index'),
+		    url(r'^search/$', 'formulas_electorales.views.buscar'),
 		    url(r'^(?P<comicio_id>\d+)/$', 'formulas_electorales.views.comicio'),
 		    url(r'^(?P<comicio_id>\d+)/(?P<sitio_id>\d+)/$', 'formulas_electorales.views.sitio'),
 		    url(r'^(?P<comicio_id>\d+)/(?P<sitio_id>\d+)/(?P<sistema_id>\d+)/$', 'formulas_electorales.views.sistema'),

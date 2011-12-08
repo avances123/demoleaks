@@ -1,4 +1,5 @@
 from django.db import models
+from django import forms
 
 # Create your models here.
 
@@ -58,3 +59,7 @@ class Partido(models.Model):
 	def __unicode__(self):
 		return self.nombre
 
+
+
+class BusquedaForm(forms.Form):
+	busqueda = forms.CharField(max_length=100)
