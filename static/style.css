@@ -167,7 +167,7 @@ input.login {
 	}
 	
 	.bar li.active { 
-		background: #FFF url(/static/images/bar.gif) no-repeat center bottom; 
+		#background: #FFF url(/static/images/bar.gif) no-repeat center bottom; 
 		color: #C3593C;
 		font-weight: bold; 
 		padding-bottom: 8px; 
@@ -208,7 +208,7 @@ input.login {
 .newsletter {
 	float: left;
 	height: 33px;
-	padding: 10px 0 0 15px;
+	padding: 8px 0 0 15px;
 	width: 192px;
 	background: #6E6E6E url(/static/images/newsletterbg.gif) no-repeat;
 	color: #FFF;
