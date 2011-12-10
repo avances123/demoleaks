@@ -260,6 +260,13 @@ def llenaSistemasBase():
 	c.save()
 	llenaSitios(s,c)
 
+	c = Comicio(id=2,nombre='Generales 2008',fecha=datetime.date(2008,11,20),pais='Spain',tipo='Generales')
+	s = Sistema(id=1,nombre='ley D\'Hont',formula='D')
+	s.save()
+	c.save()
+	llenaSitios(s,c)
+
+
 
 	
 if __name__ == '__main__':
