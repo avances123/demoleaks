@@ -43,7 +43,15 @@
 				});
 				// http://jqueryui.com/demos/progressbar/#animated
 				$("#progressbar-{{p.id}}").css({ 'background': 'white' });
-				$("#progressbar-{{p.id}} > div").css({  'background': 'green'   });
+				{% if p.grado_democracia > 70 %}
+				$("#progressbar-{{p.id}} > div").css({  'background': 'red'   });
+				{% endif %}
+				{% if  p.grado_democracia > 40 and p.grado_democracia < 70 %}
+				$("#progressbar-{{p.id}} > div").css({  'background': 'yellow'   });
+				{% endif %}
+				{% if p.grado_democracia < 40 %}
+					$("#progressbar-{{p.id}} > div").css({  'background': 'green'   });
+				{% endif %}
 
 			});
 		</script>
