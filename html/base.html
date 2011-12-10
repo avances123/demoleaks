@@ -171,6 +171,7 @@
 		</div>
 		
 		<div class="subheader">
+			{% block primer_cuadro %}
         	<div class="subheader_izq">
 		  		<div class="nombre_sitio"><a href="#" title="{{ sitio.nombre_sitio }}">{{ sitio.nombre_sitio }}</a></div>
           		<div class="atributos_sitio">
@@ -191,6 +192,7 @@
             			
             		</ul>
             	</div>
+            	
         	</div>
         
             <div class="subheader_der">
@@ -204,6 +206,7 @@
 					<div id="progressbar-n"></div>
 				</div>
         	</div>
+        	{% endblock %}
 		</div>
 
 	
@@ -216,13 +219,12 @@
     
     	
 		<div class="left">
+			{% block listado_inferior %}
 			<div class="left_articles">
-            
-            
-            
 				<h2><a href="#">Lista de partidos</a></h2>
 				<p>Aqui puedes ver uno a uno datos estadisticos sobre cada partido</p>
 			</div>
+			
 			
 			{% for p in lista_partidos %}			
 			<div class="lt"></div>
@@ -237,6 +239,7 @@
 				</div>	
 			</div>
 			{% endfor %}
+			{% endblock %}
 			
 		</div>	
 		<div class="right">
