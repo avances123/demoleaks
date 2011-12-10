@@ -1,0 +1,183 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-12-10 17:06+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: electoral/models/models.py:8
+msgid "D'hont"
+msgstr ""
+
+#: electoral/models/models.py:9
+msgid "Hare"
+msgstr ""
+
+#: electoral/models/models.py:12 electoral/models/models.py:35
+msgid "Generales"
+msgstr ""
+
+#: electoral/models/models.py:13 electoral/models/models.py:37
+msgid "Autonomicas"
+msgstr ""
+
+#: electoral/models/models.py:16 electoral/models/models.py:42
+#: electoral/models/models.py:65 electoral/models/models.py:99
+msgid "Nombre"
+msgstr ""
+
+#: electoral/models/models.py:18 electoral/models/models.py:44
+msgid "Fecha"
+msgstr ""
+
+#: electoral/models/models.py:20
+msgid "Fórmula"
+msgstr ""
+
+#: electoral/models/models.py:22
+msgid "Elecciones"
+msgstr ""
+
+#: electoral/models/models.py:30
+msgid "Sistema Electoral"
+msgstr ""
+
+#: electoral/models/models.py:36
+msgid "Senado"
+msgstr ""
+
+#: electoral/models/models.py:38
+msgid "Municipales"
+msgstr ""
+
+#: electoral/models/models.py:46
+msgid "País"
+msgstr ""
+
+#: electoral/models/models.py:48 electoral/models/models.py:69
+msgid "Tipo"
+msgstr ""
+
+#: electoral/models/models.py:56 electoral/models/models.py:61
+msgid "Comicio"
+msgstr ""
+
+#: electoral/models/models.py:63
+msgid "Código ISO 3166"
+msgstr ""
+
+#: electoral/models/models.py:67
+msgid "Número a elegir"
+msgstr ""
+
+#: electoral/models/models.py:71
+msgid "Votos Contabilizados"
+msgstr ""
+
+#: electoral/models/models.py:73
+msgid "Abstenciones"
+msgstr ""
+
+#: electoral/models/models.py:75
+msgid "Votos Nulos"
+msgstr ""
+
+#: electoral/models/models.py:77
+msgid "Votos Blancos"
+msgstr ""
+
+#: electoral/models/models.py:79
+msgid "Contenido en"
+msgstr ""
+
+#: electoral/models/models.py:90 electoral/models/models.py:95
+msgid "Sitio"
+msgstr ""
+
+#: electoral/models/models.py:97
+msgid "ID Partido"
+msgstr ""
+
+#: electoral/models/models.py:101
+msgid "Electos"
+msgstr ""
+
+#: electoral/models/models.py:103
+msgid "Número de votos"
+msgstr ""
+
+#: electoral/models/models.py:105
+msgid "Porcentaje de votos"
+msgstr ""
+
+#: electoral/models/models.py:107
+msgid "Residuo"
+msgstr ""
+
+#: electoral/models/models.py:115
+msgid "Partido"
+msgstr ""
+
+#: electoral/templates/404.html:4
+msgid "Error 404 - Página no encontrada."
+msgstr ""
+
+#: electoral/templates/base.html:34
+msgid "No estás loggeado"
+msgstr ""
+
+#: electoral/templates/base.html:34
+msgid "Ir al formulario de log in"
+msgstr ""
+
+#: electoral/templates/base.html:34
+msgid "Log in"
+msgstr ""
+
+#: electoral/templates/base.html:34
+msgid "o"
+msgstr ""
+
+#: electoral/templates/base.html:34
+msgid "Ir al formulario de registro"
+msgstr ""
+
+#: electoral/templates/base.html:34
+msgid "registrate"
+msgstr ""
+
+#: electoral/templates/base.html:50
+msgid "Analizando nuestra democracia"
+msgstr ""
+
+#: electoral/templates/base.html:56
+msgid "Busca demoleaks"
+msgstr ""
+
+#: electoral/templates/base.html:74
+msgid "Demoleaks creado por:"
+msgstr ""
+
+#: electoral/templates/base.html:74
+msgid "Visita el blog de avances123"
+msgstr ""
+
+#: electoral/templates/base.html:74
+msgid "y"
+msgstr ""
+
+#: electoral/templates/base.html:74
+msgid "Visita el blog de bameda"
+msgstr ""
