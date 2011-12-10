@@ -249,7 +249,15 @@ input.login {
 	.left_articles {
 		margin: 0 0 15px 0;
 		padding: 0 0 0 10px;
+
 	}
+
+.left_articles h1 {
+		margin: 0 0 15px 0;
+		padding: 0 0 0 10px;
+		font-size:large;
+	}
+
 
 	.lt {
 		height: 10px;

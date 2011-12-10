@@ -225,7 +225,7 @@
 		<div class="left">
 			{% block listado_inferior %}
 			<div class="left_articles">
-				<h2><a href="#">Lista de partidos</a></h2>
+				<h1>Lista de partidos</h1>
 				<p>Aqui puedes ver uno a uno datos estadisticos sobre cada partido</p>
 			</div>
 			
@@ -245,16 +245,17 @@
 			{% endfor %}
 			{% endblock %}
 			<div class="left_articles">
-				<h2><a href="#">Lista de sitios</a></h2>
-				<p>Estudia uno de estos sitios</p>
+				<h1>Lista de sitios</h1>
+				
 			</div>
 		</div>	
 		<div class="right">
-						
+			{% for i in lista_anomalias %}
 			<div class="rt"></div>
 			<div class="right_articles">
-				<p><img src="/static/images/image.gif" alt="Image" title="Image" class="image" /><b>Un sitio con anomalia</b><br />consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam <a href="#">erat volutpat</a>. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis <a href="#">nisl ut aliquip ex</a>.</p>
+				<p><b>{{ i.nombre }}</b> Ha obtenido demasiados escaños en {{ i.sitio }}.</p>
 			</div>
+			{% endfor %}
 			<div class="rt"></div>
 			<div class="right_articles">
 				<p><img src="/static/images/image.gif" alt="Image" title="Image" class="image" /><b>Un partido con anomalia</b><br />consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam <a href="#">erat volutpat</a>. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis <a href="#">nisl ut aliquip ex</a>.</p>

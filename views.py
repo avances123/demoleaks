@@ -5,6 +5,8 @@ from django.shortcuts import render_to_response
 from django.core.context_processors import csrf
 
 
+	
+
 
 
 def index(request):
@@ -41,8 +43,16 @@ def sitio(request, sitio_id, comicio_id,muestra_sistema_id=None):
 	lista_sitios = Sitio.objects.filter(contenido_en = sitio).order_by('nombre_sitio')
 	print lista_sitios
 	lista_partidos = Partido.objects.filter(sitio = sitio,sistema = sistema,comicio=comicio).order_by('-votos_numero')[:5]
-	c = Context({'sitio': sitio,'lista_sitios':lista_sitios,'lista_partidos':lista_partidos,'comicio':comicio,'sitios':lista_provincias,'lista_sistemas':lista_sistemas,'continente':continente})
+	lista_anomalias = Partido.objects.filter(comicio = comicio).filter(grado_democracia__isnull=False).order_by('-grado_democracia')[:5]
+	for i in lista_anomalias:
+		print i.nombre
+		print i.sitio
+	c = Context({'sitio': sitio,'lista_sitios':lista_sitios,'lista_partidos':lista_partidos,'comicio':comicio,'sitios':lista_provincias,'lista_sistemas':lista_sistemas,'continente':continente,'lista_anomalias':lista_anomalias})
 	return render_to_response('sitio.html',c)
+
+
+
+
 
 def partido(request, partido_id):
 	return HttpResponse("You're looking at poll %s." % partido_id)
