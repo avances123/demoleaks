@@ -61,7 +61,7 @@ def comicio(request, comicio_id):
 	lista_sitios = Sitio.objects.filter(contenido_en = sitio).order_by('nombre_sitio')
 	lista_partidos = Partido.objects.filter(sitio = sitio,sistema = sistema,comicio=comicio).order_by('-votos_numero')[:5]
 	c = Context({'sitio': sitio,'lista_sitios':lista_sitios,'lista_partidos':lista_partidos,'comicio':comicio,'lista_sistemas':lista_sistemas,'continente':continente})
-	return render_to_response('sitio.html',c)
+	return render_to_response('comicio.html',c)
 
 
 

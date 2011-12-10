@@ -138,21 +138,24 @@
 					<p><b>You are not Logged in!</b> <a href="#">Log in</a>  or <a href="#">register</a> to start downloading music!</p>					
 				</div>		
 			</div>
-					
+			{% block menutrio %}		
 			<div class="bar">
 				<ul>
 					<li class="slogan"></li>
-					{% block menutrio %}
+					
 					<li><a href="/{{ comicio.id}}" accesskey="b">{{ comicio.nombre }}</a></li>
 					<li><a href="/{{ comicio.id}}/{{ continente.id }}" accesskey="a">{{continente.nombre_sitio}}</a></li>
-					<li class="active"><a href="#" accesskey="p">{{ sitio.nombre_sitio }}</a></li>
-					{% endblock %}
+					{% if sitio.id != continente.id %}
+					<li class="active"><a href="/{{ comicio.id}}/{{ continente.id }}/{{ sitio.id}}" accesskey="p">{{ sitio.nombre_sitio }}</a></li>
+					{% endif  %}
+					
 				</ul>
 			</div>
+			{% endblock %}
 		</div>
 			
 		<div class="logo">
-			<h1><a href="#" title="Demoleaks">Demo<span class="red">Leaks</span></a></h1>
+			<h1><a href="/" title="Demoleaks">Demo<span class="red">Leaks</span></a></h1>
 			<p>Analizando nuestra democracia</p>
 		</div>
 		
