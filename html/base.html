@@ -266,10 +266,13 @@
 		</div>	
 		<div class="right">
 			{% for i in lista_anomalias %}
+			{% if i.sitio.tipo_sitio == 3 %}
 			<div class="rt"></div>
 			<div class="right_articles">
 				<p><b>{{ i.nombre }}</b> Ha obtenido demasiados escaños en {{ i.sitio }}.</p>
+				
 			</div>
+			{% endif 	%}
 			{% endfor %}
 			<div class="rt"></div>
 			<div class="right_articles">

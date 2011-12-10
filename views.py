@@ -11,11 +11,8 @@ from django.core.context_processors import csrf
 
 def index(request):
     	lista_comicios = Comicio.objects.all()
-	lista_anomalias = Partido.objects.filter(grado_democracia__isnull=False).order_by('-grado_democracia')[:5]
-	print lista_anomalias
-	print lista_comicios
+	lista_anomalias = Partido.objects.filter(grado_democracia__isnull=False).order_by('-grado_democracia')[:7]
 	c = Context({'lista_comicios': lista_comicios,'lista_anomalias':lista_anomalias})
-	print c
 	return render_to_response('index.html',c)
 
 
