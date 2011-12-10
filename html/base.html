@@ -249,12 +249,11 @@
 			{% for p in lista_partidos %}			
 			<div class="lt"></div>
 			<div class="lbox">
-				<h2>{{ p.nombre }}</h2>
-				<div class="thumb">
-					<img src="/static/partidos/pp.png" alt="" />
-					
+				<div style="float:left">
+					<h2>{{ p.nombre }}</h2>
 				</div>
 				<div class="barra_partido">
+					{{ p.grado_democracia }}
 					<div id="progressbar-{{p.id}}"></div>
 				</div>	
 			</div>
@@ -262,20 +261,7 @@
 			{% endblock %}
 			
 			
-			<div class="left_articles">
-				{% if sitio.tipo_sitio == 1 %}
-				<h1>Lista de Comunidades Autonomas</h1>
-				{% endif %}	
-				{% if sitio.tipo_sitio == 2 %}
-				<h1>Lista de Provincias</h1>
-				{% endif %}	
-				{% if sitio.tipo_sitio == 3 %}
-				<h1>Lista de Municipios</h1>
-				{% endif %}
-				{% if sitio.tipo_sitio == 5 %}
-				
-				{% endif %}	
-			</div>
+			
 			
 		</div>	
 		<div class="right">
@@ -293,6 +279,20 @@
 		
 		<div class="lista_sitios">
         	
+	<div style="margin-bottom:10px">
+				{% if sitio.tipo_sitio == 1 %}
+				<h1>Lista de Comunidades Autonomas</h1>
+				{% endif %}	
+				{% if sitio.tipo_sitio == 2 %}
+				<h1>Lista de Provincias</h1>
+				{% endif %}	
+				{% if sitio.tipo_sitio == 3 %}
+				<h1>Lista de Municipios</h1>
+				{% endif %}
+				{% if sitio.tipo_sitio == 5 %}
+				
+				{% endif %}	
+			</div>
           		
           		<div class="wrapper">
         			<ul> 
