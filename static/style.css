@@ -359,6 +359,13 @@ input.login {
 	margin-left: 20px;
 }
 
+.caja_barra_demoleak {
+	margin-top: 32px;
+	margin-left: 20px;
+	float:left;
+}
+
+
 
 .atributos_sitio {
 	margin-top: 10px;
@@ -390,7 +397,7 @@ input.login {
 
 
 .barra_nivel {
-	width: 150px;
+	width: 200px;
 	float: right;
 	display: block;
 	margin-top: 17px;
@@ -467,4 +474,10 @@ input.login {
 	color: #808080;
 	border-bottom: 1px solid #ccc;
 	
+}
+
+
+.bandera {
+margin-right: 5px;
+float:left;
 }

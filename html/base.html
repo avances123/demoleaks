@@ -143,7 +143,7 @@
 		<div class="header_right">
 			<div class="top_info">
 				<div class="top_info_right">
-					<p><b>You are not Logged in!</b> <a href="#">Log in</a>  or <a href="#">register</a> to start downloading music!</p>					
+					<p><b>You are not Logged in!</b> <a href="#">Log in</a>  or <a href="#">register</a> losvueltos</p>					
 				</div>		
 			</div>
 			{% block menutrio %}		
@@ -180,6 +180,13 @@
 			<div class="bandera">
 				<p><img src="/static/flag-icons/flags_iso/24/es.png" /></p>
 			</div>
+			<div class="bandera">
+				<p><img src="/static/flag-icons/flags_iso/24/fr.png" /></p>
+			</div>
+			<div class="bandera">
+				<p><img src="/static/flag-icons/flags_iso/24/pl.png" /></p>
+			</div>
+
 		</div>
 		
 		<div class="subheader">
@@ -190,7 +197,7 @@
         			<ul> 
             			<li>Numero de votos contabilizados:  </li>
             			<li>Numero de abstenciones:</li>
-           			<li>Numero de votos en blanco:  </li>
+           				<li>Numero de votos en blanco:  </li>
             			<li>Numero de votos nulos: </li>
             			
             		</ul>
@@ -209,13 +216,13 @@
         	</div>
         
             <div class="subheader_der">
-            	<div class="atributos_sitio">
+            	<div class="caja_barra_demoleak">
             	<ul> 
-            			<li><h1>Demoleak</h1></li>
+            			<li><h1>Demoleak Medio</h1></li>
             			</ul>
         			</div> 
             	<div class="barra_nivel" style="display:inline">
-            		
+            		{{ sitio.democracia }}
 					<div id="progressbar-n"></div>
 				</div>
         	</div>
@@ -253,10 +260,23 @@
 			</div>
 			{% endfor %}
 			{% endblock %}
+			
+			
 			<div class="left_articles">
-				<h1>Lista de sitios</h1>
+				{% if sitio.tipo_sitio == 1 %}
+				<h1>Lista de Comunidades Autonomas</h1>
+				{% endif %}	
+				{% if sitio.tipo_sitio == 2 %}
+				<h1>Lista de Provincias</h1>
+				{% endif %}	
+				{% if sitio.tipo_sitio == 3 %}
+				<h1>Lista de Municipios</h1>
+				{% endif %}
+				{% if sitio.tipo_sitio == 5 %}
 				
+				{% endif %}	
 			</div>
+			
 		</div>	
 		<div class="right">
 			{% for i in lista_anomalias %}
