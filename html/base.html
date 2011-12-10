@@ -142,10 +142,11 @@
 			<div class="bar">
 				<ul>
 					<li class="slogan"></li>
+					{% block menutrio %}
 					<li><a href="/{{ comicio.id}}" accesskey="b">{{ comicio.nombre }}</a></li>
 					<li><a href="/{{ comicio.id}}/{{ continente.id }}" accesskey="a">{{continente.nombre_sitio}}</a></li>
 					<li class="active"><a href="#" accesskey="p">{{ sitio.nombre_sitio }}</a></li>
-					
+					{% endblock %}
 				</ul>
 			</div>
 		</div>
@@ -209,12 +210,12 @@
         	{% endblock %}
 		</div>
 
-	
+		{% block contenedor_gcharts %}
    		<div class="contenedor_gcharts">
 			<div id="chart_votos" style="float: left;margin-right: 18px;"></div>
 			<div id="chart_electos"></div>
 		</div>
-    
+		{% endblock %}    
     
     
     	

@@ -1,30 +1,9 @@
 {% extends 'base.html' %}
 
-{% block title %}Demoleak del comicio {{comicio.nombre}} {% endblock %}
-
-{% block menu %}
-<ul>	
-	<li class="selected"><a href="/{{comicio.id}}">{{comicio.nombre}}</a></li>
-</ul>
+{% block menutrio %}
+<li><a href="/{{ comicio.id}}" accesskey="b">{{ comicio.nombre }}</a></li>
+<li class="active"><a href="/{{ comicio.id}}/{{ continente.id }}" accesskey="p">{{ sitio.nombre_sitio }}</a></li>
 {% endblock %}
 
-{% block sidebar %}
-<h4>Datos del comicio</h4>
 
-<h3><a href="#">Celebrado en : {{ comicio.pais }}</a></h3>
-<h3><a href="#">El dia : {{ comicio.fecha }}</a></h3>
-<h3><a href="#">Tipo : {{ comicio.tipo }}</a></h3>
-
-{% endblock %}
-
-{% block main %}
-<div id="mainindex">
-	<div id='map_canvas'></div>
-<div style="clear:both;"></div>
-</div><!--main-->
-{% endblock %}
-		    
-     <div id="footer">
-	       
-		</div><!--footer-->
 

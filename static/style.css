@@ -144,6 +144,10 @@ input.login {
 	background: inherit;
 }
 
+.logo h1 {
+	font-size: x-large;
+}
+
 
 .top_info {
 	width: 540px;

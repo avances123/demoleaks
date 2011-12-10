@@ -12,16 +12,6 @@ def index(request):
 	c = Context({'lista_comicios': lista_comicios,})
 	return render_to_response('index.html',c)
 
-def comicio(request, comicio_id):
-	comicio = Comicio.objects.get(id = comicio_id)
-	sitio = Sitio.objects.get(id = 1)  # Spain
-	sistema = Sistema.objects.get(id = 1)  # Ley Dhont
-	lista_partidos = Partido.objects.filter(sitio = sitio,sistema = sistema).order_by('-votos_numero')
-	lista_comunidades = Sitio.objects.filter(tipo_sitio=2)
-	lista_sistemas = Sistema.objects.all()
-	c = Context({'lista_sistemas':lista_sistemas,'comicio':comicio,'sitio': sitio,'lista_partidos':lista_partidos,'sitios':lista_comunidades})
-	return render_to_response('comicio.html',c)
-
 
 def sistema(request,comicio_id,sitio_id, sistema_id):
 	# TODO explicar el algoritmo
@@ -36,7 +26,10 @@ def sistema(request,comicio_id,sitio_id, sistema_id):
 def sitio(request, sitio_id, comicio_id,muestra_sistema_id=None):
 	# TODO hay que pillar justo el sitio o 404
 	sitio = Sitio.objects.get(id = sitio_id)
-	continente = Sitio.objects.get(id = sitio.contenido_en.id)
+	if sitio.contenido_en == None:
+		continente = sitio
+	else:
+		continente = Sitio.objects.get(id = sitio.contenido_en.id)
 	comicio = Comicio.objects.get(id = comicio_id)
 	lista_sistemas = Sistema.objects.all()
 	if muestra_sistema_id:
@@ -54,6 +47,27 @@ def sitio(request, sitio_id, comicio_id,muestra_sistema_id=None):
 def partido(request, partido_id):
 	return HttpResponse("You're looking at poll %s." % partido_id)
 
+
+def comicio(request, comicio_id):
+	comicio = Comicio.objects.get(id = comicio_id)
+	sitio = Sitio.objects.get(contenido_en = None,comicio = comicio)  # Mayor continente
+	if sitio.contenido_en == None:
+		continente = sitio
+	else:
+		continente = Sitio.objects.get(id = sitio.contenido_en.id)
+	comicio = Comicio.objects.get(id = comicio_id)
+	lista_sistemas = Sistema.objects.all()
+	sistema = Sistema.objects.get(id = 1)
+	lista_sitios = Sitio.objects.filter(contenido_en = sitio).order_by('nombre_sitio')
+	lista_partidos = Partido.objects.filter(sitio = sitio,sistema = sistema,comicio=comicio).order_by('-votos_numero')[:5]
+	c = Context({'sitio': sitio,'lista_sitios':lista_sitios,'lista_partidos':lista_partidos,'comicio':comicio,'lista_sistemas':lista_sistemas,'continente':continente})
+	return render_to_response('sitio.html',c)
+
+
+
+
+
+################ Busquedas  ######################
 
 
 def split_query_into_keywords(query):
