@@ -27,8 +27,8 @@ if settings.DEBUG:
             url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, }),
         )
 
-# Added transhette url
-if 'transhette' in settings.INSTALLED_APPS:
+# Added rosetta url
+if 'rosetta' in settings.INSTALLED_APPS:
     urlpatterns += patterns('',
-            url(r'^trans/', include('transhette.urls')),
+            url(r'^translation/', include('rosetta.urls')),
         )

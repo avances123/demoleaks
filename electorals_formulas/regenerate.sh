@@ -7,4 +7,9 @@ echo  "drop database electorals_formulas; create database electorals_formulas;" 
 echo no | python manage.py syncdb
 
 # POPULATE DATABASE FROM ELPAIS XMLS
-python manage.py populate_from_elpais_xml
+if [ "$1" == "--populate" ]; then
+    python manage.py populate_from_elpais_xml
+fi
+
+# REGENERATE ALL.POs
+django-admin.py makemessages -a

@@ -11,7 +11,7 @@ from electoral.models import *
 
 
 class IndexView(TemplateView):
-    template_name = ''
+    template_name = 'electoral/index.html'
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
