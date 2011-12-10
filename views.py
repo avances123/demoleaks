@@ -71,7 +71,8 @@ def comicio(request, comicio_id):
 	sistema = Sistema.objects.get(id = 1)
 	lista_sitios = Sitio.objects.filter(contenido_en = sitio).order_by('nombre_sitio')
 	lista_partidos = Partido.objects.filter(sitio = sitio,sistema = sistema,comicio=comicio).order_by('-votos_numero')[:5]
-	c = Context({'sitio': sitio,'lista_sitios':lista_sitios,'lista_partidos':lista_partidos,'comicio':comicio,'lista_sistemas':lista_sistemas,'continente':continente})
+	lista_anomalias = Partido.objects.filter(comicio = comicio).filter(grado_democracia__isnull=False).order_by('-grado_democracia')[:5]
+	c = Context({'sitio': sitio,'lista_sitios':lista_sitios,'lista_partidos':lista_partidos,'comicio':comicio,'lista_sistemas':lista_sistemas,'continente':continente,'lista_anomalias':lista_anomalias})
 	return render_to_response('comicio.html',c)
 
 
