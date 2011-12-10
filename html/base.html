@@ -182,17 +182,18 @@
         			<ul> 
             			<li>Numero de votos contabilizados:  </li>
             			<li>Numero de abstenciones:</li>
-           				<li>Numero de votos en blanco:  </li>
+           			<li>Numero de votos en blanco:  </li>
             			<li>Numero de votos nulos: </li>
             			
             		</ul>
             	</div>
             	<div class="atributos_sitio_valores">
-        			<ul> 
-            			<li><span class="numero">{{ sitio.votos_contabilizados}}</span></li>
-            			<li><span class="numero">{{ sitio.votos_abstenciones }}</span></li>
-           				<li><span class="numero">{{ sitio.votos_blancos}}</span> </li>
-            			<li><span class="numero">{{ sitio.votos_nulos}}</span></li>
+			<ul> 
+				{% load humanize %}
+            			<li><span class="numero">{{ sitio.votos_contabilizados|intcomma}}</span></li>
+            			<li><span class="numero">{{ sitio.votos_abstenciones|intcomma }}</span></li>
+           				<li><span class="numero">{{ sitio.votos_blancos|intcomma}}</span> </li>
+            			<li><span class="numero">{{ sitio.votos_nulos|intcomma}}</span></li>
             			
             		</ul>
             	</div>
