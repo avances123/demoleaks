@@ -168,8 +168,9 @@
 		</div>
 		
 		<div class="search_field">
-			<form method="post" action="/search/">
-				{% csrf_token %}
+			<form method="get" action=".">
+				{{ form.as_table }}
+				
 				<p> <span class="search">Busca demoleaks</span>&nbsp;&nbsp; <input type="text" name="search" class="search" /> <input type="submit" value="Buscar" class="button" /></p>
 			</form>
 		</div>
