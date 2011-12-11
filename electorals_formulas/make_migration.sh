@@ -2,33 +2,38 @@
 
 case "$1" in
     --initial | -i) 
-        rm -rf migration
-        mkdir migration
-    
-        python manage.py schemamigration migration --initial
-        python manage.py migrate migration
+        rm -rf countries/migration
+        rm -rf electoral/migrations
+        
+        python manage.py schemamigration countries --initial
+        python manage.py schemamigration electoral --initial
     ;;   
     --migrate | -m)
-        python manage.py schemamigration migration --auto
-        python manage.py migrate migration --auto
+        python manage.py migrate countries
+        python manage.py migrate electoral
     ;;
     --list | -l)
-        python manage.py migrate --list        
+        python manage.py migrate --list 
     ;;
     --shell | -s)
         python manage.py shell
-
     ;;
-    *)
+    --help | -h)
         echo ""
         echo "make-migration help information."
         echo ""
         echo "   sh make-migration.sh [option]"
         echo ""
-        echo "      --initial | -i      Create initial migration structure."
-        echo "      --migrate | -m      Update exiting migration."
-        echo "      --list | -l         List all migrations."
+        echo "      --initial | -i      Make initial migration scheme."
+        echo "      --auto | -a |       Make migration scheme."
+        echo "      --migrate | -m      Load exiting migration scheme."
+        echo "      --list | -l         List all migrations schemes."
         echo "      --shell | -s        Show the django-south shell"
+        echo "      --help | -h         Show this help text."
         echo ""
+    ;;
+    --auto | -a | *)
+        python manage.py schemamigration countries --auto 
+        python manage.py schemamigration electoral --auto
     ;; 
 esac

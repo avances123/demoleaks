@@ -144,6 +144,10 @@ input.login {
 	background: inherit;
 }
 
+.logo h1 {
+	font-size: x-large;
+}
+
 
 .top_info {
 	width: 540px;
@@ -244,8 +248,16 @@ input.login {
 }
 	.left_articles {
 		margin: 0 0 15px 0;
-		padding: 0 0 0 10px;
+		padding: 0 0 0 0px;
+
 	}
+
+.left_articles h1 {
+		margin: 0 0 15px 0;
+		padding: 0 0 0 10px;
+		font-size:large;
+	}
+
 
 	.lt {
 		height: 10px;
@@ -258,7 +270,7 @@ input.login {
 		padding: 3px 12px;
 		margin: 0 0 15px 0;
 		background: #6E6E6E url(/static/images/lb.gif) no-repeat bottom left;
-		height: 90px;
+		height: 50px;
 	}
 	
 	.lbox a {
@@ -347,6 +359,13 @@ input.login {
 	margin-left: 20px;
 }
 
+.caja_barra_demoleak {
+	margin-top: 32px;
+	margin-left: 20px;
+	float:left;
+}
+
+
 
 .atributos_sitio {
 	margin-top: 10px;
@@ -378,7 +397,7 @@ input.login {
 
 
 .barra_nivel {
-	width: 150px;
+	width: 200px;
 	float: right;
 	display: block;
 	margin-top: 17px;
@@ -389,7 +408,7 @@ input.login {
 	float: right;
 	display: block;
 	margin-right: 20px;
-	margin-top: 5px;
+	margin-top: 2px;
 }
 
 .subheader_izq {
@@ -455,4 +474,10 @@ input.login {
 	color: #808080;
 	border-bottom: 1px solid #ccc;
 	
+}
+
+
+.bandera {
+margin-right: 5px;
+float:left;
 }
