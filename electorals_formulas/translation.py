@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 from modeltranslation.translator import translator, TranslationOptions
 
+from countries.models import *
 from electoral.models import *
 
+class CountryTranslationOptions(TranslationOptions):
+        fields = ('name', 'printable_name')
 
-class SistemaTranslationOptions(TranslationOptions):
-    fields = ('nombre',)
-
-translator.register(Sistema, SistemaTranslationOptions)
+translator.register(Country, CountryTranslationOptions)
 
 
 class ComicioTranslationOptions(TranslationOptions):
-    fields = ('nombre', 'pais')
+    fields = ('nombre',)
 
 translator.register(Comicio, ComicioTranslationOptions)
 

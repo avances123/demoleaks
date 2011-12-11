@@ -8,7 +8,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
 
-    # Uncomment the admin/doc line below to enable admin documentation:
+    # U'comment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Django admin tools
@@ -27,8 +27,8 @@ if settings.DEBUG:
             url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, }),
         )
 
-# Added rosetta url
-if 'rosetta' in settings.INSTALLED_APPS:
+# Added transhette url
+if 'transhette' in settings.INSTALLED_APPS:
     urlpatterns += patterns('',
-            url(r'^translation/', include('rosetta.urls')),
+            url(r'^translation/', include('transhette.urls')),
         )

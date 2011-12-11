@@ -137,6 +137,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 )
 
 ROOT_URLCONF = 'electorals_formulas.urls'
@@ -159,10 +160,11 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
 
     'django_coverage',
-    'rosetta',
+    'transhette',
     'modeltranslation',
     'mptt',
 
+    'countries',
     'electoral',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',

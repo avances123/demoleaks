@@ -8,7 +8,7 @@ echo no | python manage.py syncdb
 
 # POPULATE DATABASE FROM ELPAIS XMLS
 if [ "$1" == "--populate" ]; then
-    python manage.py populate_from_elpais_xml
+    python manage.py populate_from_elpais_xml 2008 2011
 fi
 
 # REGENERATE ALL.POs

@@ -2,6 +2,7 @@
 from django.utils.translation import ugettext_lazy as _
 from django.core.management.base import BaseCommand, CommandError
 
+from  countries.models import Country
 from electoral.models.models import *
 
 import urllib
@@ -85,55 +86,53 @@ PROVINCIAS = [
 ]
 
 class Command(BaseCommand):
-    args = u'<populate_from_elpais>'
+    args = u'<populate_from_elpais year ...>'
     help = u'Populate database from ElPais.com XML file'
 
     def handle(self, *args, **options):
-        
-        # Comicio        
-        comicio = Comicio(nombre=u'Elecciones Generales', fecha=datetime.date(2011,11,20), pais=u'España', tipo='G')
-        comicio.save()
-        self.stdout.write(u'! Created comicio:\t%s\n' % comicio)
+        for year in args:    
+            # Comicio
+            pais = Country.objects.get(pk='ES') 
+            comicio = Comicio(nombre=u'Elecciones Generales', pais=pais, tipo='G')
 
-        # Sistema
-        sistema = Sistema(nombre=u'Ley D\'Hont', formula='D', elecciones='G', fecha=datetime.date(2011,11,20))
-        sistema.save()
-        self.stdout.write(u'! Created sistema:\t%s\n' % sistema)
-        
-        # Pais
-        url = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/index.xml2" % (comicio.fecha.year)
-        pais = self._get_Sitio(url, codigo_ISO_3166='ES_es', comicio=comicio, parent=None)
+            # Pais
+            url = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/index.xml2" % (int(year))
+            sitio_pais = self._get_Sitio(url, codigo_ISO_3166='ES_es', parent=None)
+            comicio.sitio = sitio_pais
 
-        # Comunidades
-        for com in COMUNIDADES:
-            urlc = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/index.xml2" % (comicio.fecha.year, com[0])
-            comunidad = self._get_Sitio(urlc, codigo_ISO_3166=com[1], comicio=comicio, parent=pais)
+            self.stdout.write(u'! Created comicio:\t%s\n' % comicio)
+            comicio.save()
 
-            # Provincias
-            for prov in PROVINCIAS:
-                urlp = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/%02d.xml2" % (comicio.fecha.year, 
-                                    com[0], prov[0])
-                try:
-                    provincia = self._get_Sitio(urlp, codigo_ISO_3166=prov[1], comicio=comicio, parent=comunidad)
+            # Comunidades
+            for com in COMUNIDADES:
+                urlc = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/index.xml2" % (int(year), com[0])
+                sitio_comunidad = self._get_Sitio(urlc, codigo_ISO_3166=com[1], parent=sitio_pais)
 
-                    # Municipios
-                    errors = 0
-                    for mun in range(1,2001): # I suppouse that a province has almost 2000 villages
-                        urlm = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/%02d/%02d.xml2" % (comicio.fecha.year,
-                                        com[0], prov[0], mun)
-                        try:
-                            municipio = self._get_Sitio(urlm, codigo_ISO_3166="", comicio=comicio, parent=provincia)
-                            errors = 0  # Set errors to default value
-                        except ParseError:
-                            #self.stderr.write(u'E Parsing:\t%s\n' % urlm)
-                            errors += 1
-                            if errors > 9: break # if I found more than 10 consecutive error 
+                # Provincias
+                for prov in PROVINCIAS:
+                    urlp = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/%02d.xml2" % (int(year), 
+                                        com[0], prov[0])
+                    try:
+                        sitio_provincia = self._get_Sitio(urlp, codigo_ISO_3166=prov[1], parent=sitio_comunidad)
 
-                except ParseError:
-                    #self.stderr.write(u'E Parsing:\t%s\n' % urlp)
-                    pass
+                        # Municipios
+                        errors = 0
+                        for mun in range(1,2001): # I suppouse that a province has almost 2000 villages
+                            urlm = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/%02d/%02d.xml2" % (int(year),
+                                            com[0], prov[0], mun)
+                            try:
+                                sitio_municipio = self._get_Sitio(urlm, codigo_ISO_3166="", parent=sitio_provincia)
+                                errors = 0  # Set errors to default value
+                            except ParseError:
+                                #self.stderr.write(u'E Parsing:\t%s\n' % urlm)
+                                errors += 1
+                                if errors > 9: break # if I found more than 10 consecutive error 
+
+                    except ParseError:
+                        #self.stderr.write(u'E Parsing:\t%s\n' % urlp)
+                        pass
                 
-    def _get_Sitio(self, url, codigo_ISO_3166='', comicio=None, parent=None):
+    def _get_Sitio(self, url, codigo_ISO_3166='', parent=None):
         tree = parse(urllib.urlopen(url)).getroot()
 
         # Sitio: Spain
@@ -150,7 +149,7 @@ class Command(BaseCommand):
         
         sitio = Sitio(nombre=nombre, num_a_elegir=num_a_elegir, tipo=tipo, votos_contabilizados=votos_contabilizados, 
                     votos_abstenciones=votos_abstenciones, votos_nulos=votos_nulos ,votos_blancos=votos_blancos, 
-                    codigo_ISO_3166=codigo_ISO_3166, comicio=comicio, parent=parent)        
+                    codigo_ISO_3166=codigo_ISO_3166, parent=parent)        
         sitio.save()
         self.stdout.write(u'! Created sitio:\t%s -> %s\n' % ((parent if parent else ""), sitio))
 
@@ -168,6 +167,6 @@ class Command(BaseCommand):
             partido = Partido(id_partido=int(id_partido), nombre=nombre, electos=int(electos), votos_numero=int(votos_numero), 
                             votos_porciento=float(votos_porciento), sitio=sitio)
             partido.save()
-            self.stdout.write(u'! Created partido:\t%s -> %s\n' % ((sitio if sitio else ""), partido))
+            self.stdout.write(u'! Created partido:\t%s -> %s\n' % ((sitio if sitio else ''), partido))
 
         return sitio

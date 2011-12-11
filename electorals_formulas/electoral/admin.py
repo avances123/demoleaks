@@ -8,26 +8,25 @@ from mptt.admin import MPTTModelAdmin
 from electoral.models import *
 
 
-class SistemaAdmin(admin.ModelAdmin):
-    pass
-
-admin.site.register(Sistema, SistemaAdmin)
-
-
 class ComicioAdmin(admin.ModelAdmin):
-    pass
+    date_hierarchy = 'fecha'
+    prepopulated_fields = {"slug": ("nombre",)}
 
 admin.site.register(Comicio, ComicioAdmin)
 
 
 class SitioAdmin(MPTTModelAdmin):
-    pass 
+    search_fields = ['nombre', 'codigo_ISO_3166', 'tipo', 'parent__nombre']
+    list_filter = ['tipo', 'parent__nombre']
+    prepopulated_fields = {"slug": ("nombre",)}
 
 admin.site.register(Sitio, SitioAdmin)
 
 
 class PartidoAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ['nombre', 'sitio__nombre']
+    list_filter = ['sitio__nombre']
+    prepopulated_fields = {"slug": ("nombre",)}
 
 admin.site.register(Partido, PartidoAdmin)
 

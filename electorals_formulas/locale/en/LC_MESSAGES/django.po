@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-10 17:06+0100\n"
+"POT-Creation-Date: 2011-12-11 12:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,116 +17,110 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: electoral/models/models.py:8
-msgid "D'hont"
+#: countries/models/models.py:32 countries/models/models.py:71
+msgid "Country"
 msgstr ""
 
-#: electoral/models/models.py:9
-msgid "Hare"
+#: countries/models/models.py:57
+msgid "US State"
 msgstr ""
 
-#: electoral/models/models.py:12 electoral/models/models.py:35
+#: countries/models/models.py:77
+msgid "Province"
+msgstr ""
+
+#: electoral/models/models.py:12
 msgid "Generales"
 msgstr ""
 
-#: electoral/models/models.py:13 electoral/models/models.py:37
-msgid "Autonomicas"
-msgstr ""
-
-#: electoral/models/models.py:16 electoral/models/models.py:42
-#: electoral/models/models.py:65 electoral/models/models.py:99
-msgid "Nombre"
-msgstr ""
-
-#: electoral/models/models.py:18 electoral/models/models.py:44
-msgid "Fecha"
-msgstr ""
-
-#: electoral/models/models.py:20
-msgid "Fórmula"
-msgstr ""
-
-#: electoral/models/models.py:22
-msgid "Elecciones"
-msgstr ""
-
-#: electoral/models/models.py:30
-msgid "Sistema Electoral"
-msgstr ""
-
-#: electoral/models/models.py:36
+#: electoral/models/models.py:13
 msgid "Senado"
 msgstr ""
 
-#: electoral/models/models.py:38
+#: electoral/models/models.py:14
+msgid "Autonomicas"
+msgstr ""
+
+#: electoral/models/models.py:15
 msgid "Municipales"
 msgstr ""
 
-#: electoral/models/models.py:46
-msgid "País"
+#: electoral/models/models.py:19 electoral/models/models.py:51
+#: electoral/models/models.py:94
+msgid "Nombre"
 msgstr ""
 
-#: electoral/models/models.py:48 electoral/models/models.py:69
+#: electoral/models/models.py:21 electoral/models/models.py:53
+#: electoral/models/models.py:96
+msgid "Slug"
+msgstr ""
+
+#: electoral/models/models.py:23
+msgid "Pais"
+msgstr ""
+
+#: electoral/models/models.py:25
+msgid "Fecha"
+msgstr ""
+
+#: electoral/models/models.py:27 electoral/models/models.py:57
 msgid "Tipo"
 msgstr ""
 
-#: electoral/models/models.py:56 electoral/models/models.py:61
-msgid "Comicio"
-msgstr ""
-
-#: electoral/models/models.py:63
-msgid "Código ISO 3166"
-msgstr ""
-
-#: electoral/models/models.py:67
-msgid "Número a elegir"
-msgstr ""
-
-#: electoral/models/models.py:71
-msgid "Votos Contabilizados"
-msgstr ""
-
-#: electoral/models/models.py:73
-msgid "Abstenciones"
-msgstr ""
-
-#: electoral/models/models.py:75
-msgid "Votos Nulos"
-msgstr ""
-
-#: electoral/models/models.py:77
-msgid "Votos Blancos"
-msgstr ""
-
-#: electoral/models/models.py:79
-msgid "Contenido en"
-msgstr ""
-
-#: electoral/models/models.py:90 electoral/models/models.py:95
+#: electoral/models/models.py:29 electoral/models/models.py:78
+#: electoral/models/models.py:90
 msgid "Sitio"
 msgstr ""
 
-#: electoral/models/models.py:97
+#: electoral/models/models.py:37
+msgid "Comicio"
+msgstr ""
+
+#: electoral/models/models.py:49
+msgid "Código ISO 3166"
+msgstr ""
+
+#: electoral/models/models.py:55
+msgid "Número a elegir"
+msgstr ""
+
+#: electoral/models/models.py:59
+msgid "Votos Contabilizados"
+msgstr ""
+
+#: electoral/models/models.py:61
+msgid "Abstenciones"
+msgstr ""
+
+#: electoral/models/models.py:63
+msgid "Votos Nulos"
+msgstr ""
+
+#: electoral/models/models.py:65
+msgid "Votos Blancos"
+msgstr ""
+
+#: electoral/models/models.py:67
+msgid "Contenido en"
+msgstr ""
+
+#: electoral/models/models.py:92
 msgid "ID Partido"
 msgstr ""
 
-#: electoral/models/models.py:101
+#: electoral/models/models.py:98
 msgid "Electos"
 msgstr ""
 
-#: electoral/models/models.py:103
+#: electoral/models/models.py:100
 msgid "Número de votos"
 msgstr ""
 
-#: electoral/models/models.py:105
+#: electoral/models/models.py:102
 msgid "Porcentaje de votos"
 msgstr ""
 
-#: electoral/models/models.py:107
-msgid "Residuo"
-msgstr ""
-
-#: electoral/models/models.py:115
+#: electoral/models/models.py:110
 msgid "Partido"
 msgstr ""
 
