@@ -160,6 +160,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
 
     'django_coverage',
+    'south',
     'transhette',
     'modeltranslation',
     'mptt',
