@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-11 21:43+0100\n"
+"POT-Creation-Date: 2011-12-12 01:33+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -176,31 +176,31 @@ msgstr ""
 msgid "Visita el blog de bameda"
 msgstr ""
 
-#: electoral/templates/electoral/index.html:14
+#: electoral/templates/electoral/base_electoral.html:15
 msgid "Numero de votos contabilizados:"
 msgstr ""
 
-#: electoral/templates/electoral/index.html:15
+#: electoral/templates/electoral/base_electoral.html:16
 msgid "Numero de abstenciones:"
 msgstr ""
 
-#: electoral/templates/electoral/index.html:16
+#: electoral/templates/electoral/base_electoral.html:17
 msgid "Numero de votos en blanco:"
 msgstr ""
 
-#: electoral/templates/electoral/index.html:17
+#: electoral/templates/electoral/base_electoral.html:18
 msgid "Numero de votos nulos:"
 msgstr ""
 
-#: electoral/templates/electoral/index.html:53
+#: electoral/templates/electoral/base_electoral.html:54
 msgid "Lista de partidos"
 msgstr ""
 
-#: electoral/templates/electoral/index.html:54
+#: electoral/templates/electoral/base_electoral.html:55
 msgid "Aqui puedes ver uno a uno datos estadisticos sobre cada partido"
 msgstr ""
 
-#: electoral/templates/electoral/index.html:77
+#: electoral/templates/electoral/base_electoral.html:78
 msgid ""
 "<b>Un sitio con anomalia</b><br />consectetuer adipiscing elit, sed diam "
 "nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam <a href=\"#"
@@ -208,7 +208,7 @@ msgid ""
 "tation ullamcorper suscipit lobortis <a href=\"#\">nisl ut aliquip ex</a>."
 msgstr ""
 
-#: electoral/templates/electoral/index.html:81
+#: electoral/templates/electoral/base_electoral.html:82
 msgid ""
 "<b>Un partido con anomalia</b><br />consectetuer adipiscing elit, sed diam "
 "nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam <a href=\"#"
