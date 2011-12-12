@@ -14,21 +14,21 @@ class SitioView(TemplateView):
     template_name = 'electoral/sitio.html'
 
     def get(self, request, sitio_id, *args, **kwargs):
-        context = self.get_context_data()
+        context = self.get_context_data(sitio_id)
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
         context = self.get_context_data()
         return self.render_to_response(context)
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self,sitio_id, **kwargs):
         sitio = get_object_or_404(Sitio,id=sitio_id)
         context = super(SitioView,self).get_context_data(**kwargs)
         context.update({'sitio':sitio})
         return context
 
-    def dispatch(self, request, *args, **kwargs):
-        return super(IndexView, self).dispatch(request, *args, **kwargs)
+
+
 
 
 class IndexView(TemplateView):
@@ -45,6 +45,4 @@ class IndexView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
 
-    def dispatch(self, request, *args, **kwargs):
-        return super(IndexView, self).dispatch(request, *args, **kwargs)
 
