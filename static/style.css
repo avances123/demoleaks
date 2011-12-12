@@ -34,7 +34,7 @@ a.title {
 h1 {
 	#font: bold 2em "Trebuchet MS", Arial, Helvetica, sans-serif;
 	font-family:'Signika';
-	font-size:small;
+	#font-size:small;
 	letter-spacing: -1px; 
 	padding: 2px 0 0 0px;
 	margin: 0;

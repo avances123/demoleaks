@@ -11,7 +11,7 @@ from django.core.context_processors import csrf
 
 def index(request):
     	lista_comicios = Comicio.objects.all()
-	lista_anomalias = Partido.objects.filter(grado_democracia__isnull=False).order_by('-grado_democracia')[:7]
+	lista_anomalias = Partido.objects.filter(demoleak__isnull=False).order_by('-demoleak')[:7]
 	c = Context({'lista_comicios': lista_comicios,'lista_anomalias':lista_anomalias})
 	return render_to_response('index.html',c)
 
@@ -44,7 +44,7 @@ def sitio(request, sitio_id, comicio_id,muestra_sistema_id=None):
 	lista_sitios = Sitio.objects.filter(contenido_en = sitio).order_by('nombre_sitio')
 	print lista_sitios
 	lista_partidos = Partido.objects.filter(sitio = sitio,sistema = sistema,comicio=comicio).order_by('-votos_numero')[:5]
-	lista_anomalias = Partido.objects.filter(comicio = comicio).filter(grado_democracia__isnull=False).order_by('-grado_democracia')[:5]
+	lista_anomalias = Partido.objects.filter(comicio = comicio).filter(demoleak__isnull=False).order_by('-demoleak')[:5]
 	for i in lista_anomalias:
 		print i.nombre
 		print i.sitio
@@ -71,7 +71,7 @@ def comicio(request, comicio_id):
 	sistema = Sistema.objects.get(id = 1)
 	lista_sitios = Sitio.objects.filter(contenido_en = sitio).order_by('nombre_sitio')
 	lista_partidos = Partido.objects.filter(sitio = sitio,sistema = sistema,comicio=comicio).order_by('-votos_numero')[:5]
-	lista_anomalias = Partido.objects.filter(comicio = comicio).filter(grado_democracia__isnull=False).order_by('-grado_democracia')[:5]
+	lista_anomalias = Partido.objects.filter(comicio = comicio).filter(demoleak__isnull=False).order_by('-demoleak')[:5]
 	c = Context({'sitio': sitio,'lista_sitios':lista_sitios,'lista_partidos':lista_partidos,'comicio':comicio,'lista_sistemas':lista_sistemas,'continente':continente,'lista_anomalias':lista_anomalias})
 	return render_to_response('comicio.html',c)
 

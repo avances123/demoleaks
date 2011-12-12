@@ -18,11 +18,11 @@
 			$(function(){
 				// Progressbar
 				$("#progressbar-n").progressbar({
-					"value": {{ sitio.democracia }}
+					"value": {{ sitio.demoleak }}
 				});
 				// http://jqueryui.com/demos/progressbar/#animated
 				$("#progressbar-n").css({ 'background': 'white' });
-				{% if sitio.democracia < 12 %}
+				{% if sitio.demoleak < 10 %}
 					$("#progressbar-n > div").css({  'background': 'green'   });
 				{% else %}
 					$("#progressbar-n > div").css({  'background': 'red'   });
@@ -39,17 +39,17 @@
 			$(function(){
 				// Progressbar
 				$("#progressbar-{{p.id}}").progressbar({
-					"value": {{ p.grado_democracia }}
+					"value": {{ p.demoleak }}
 				});
 				// http://jqueryui.com/demos/progressbar/#animated
 				$("#progressbar-{{p.id}}").css({ 'background': 'white' });
-				{% if p.grado_democracia > 70 %}
+				{% if p.demoleak > 70 %}
 				$("#progressbar-{{p.id}} > div").css({  'background': 'red'   });
 				{% endif %}
-				{% if  p.grado_democracia > 40 and p.grado_democracia < 70 %}
+				{% if  p.demoleak > 40 and p.demoleak < 70 %}
 				$("#progressbar-{{p.id}} > div").css({  'background': 'yellow'   });
 				{% endif %}
-				{% if p.grado_democracia < 40 %}
+				{% if p.demoleak < 40 %}
 					$("#progressbar-{{p.id}} > div").css({  'background': 'green'   });
 				{% endif %}
 
@@ -219,11 +219,11 @@
             <div class="subheader_der">
             	<div class="caja_barra_demoleak">
             	<ul> 
-            			<li><h1>Demoleak Medio</h1></li>
+            			<li><h1>Demoleak</h1></li>
             			</ul>
         			</div> 
             	<div class="barra_nivel" style="display:inline">
-            		{{ sitio.democracia }}
+            		{{ sitio.demoleak }}
 					<div id="progressbar-n"></div>
 				</div>
         	</div>
@@ -254,7 +254,7 @@
 					<h2>{{ p.nombre }}</h2>
 				</div>
 				<div class="barra_partido">
-					{{ p.grado_democracia }}
+					{{ p.demoleak }}
 					<div id="progressbar-{{p.id}}"></div>
 				</div>	
 			</div>

@@ -25,21 +25,19 @@ def parseaPartidos(comicio,sistema,sitio,tree):
                 votos_porciento = partido.xpath('votos_porciento')[0].text
 		if sitio.num_a_elegir > 0:
 			porcentaje_electos = ( Decimal(electos) / Decimal(sitio.num_a_elegir) ) * 100
-			#grado_democracia = ( porcentaje_electos - Decimal(votos_porciento) ) / Decimal(votos_porciento) 
-			#print "porcentaje_electos" + str(porcentaje_electos) + " - votos_porciento" + votos_porciento
-			from math import fabs
-			grado_democracia =  Decimal(str(fabs((porcentaje_electos - Decimal(votos_porciento))  * 20 ))) # Esto puede ser mayor que 100
-			suma_democracia = grado_democracia + suma_democracia
-			grado_democracia = str(grado_democracia)
+			demoleak =  porcentaje_electos - Decimal(votos_porciento)
+			if demoleak > 0:
+				suma_democracia = demoleak + suma_democracia
+			demoleak = str(demoleak)
 		else:
-			grado_democracia = None
+			demoleak = None
 
                 p = Partido(sistema=sistema,id_partido=id_partido,sitio=sitio,nombre=nombre,electos=electos,
-				votos_numero=votos_numero,votos_porciento=votos_porciento,comicio=comicio,grado_democracia=grado_democracia)
+				votos_numero=votos_numero,votos_porciento=votos_porciento,comicio=comicio,demoleak=demoleak)
                 p.save()
 		num_partidos_procesados += 1
 
-	sitio.democracia = suma_democracia / num_partidos_procesados
+	sitio.demoleak = suma_democracia
 	sitio.save()
 
 def parseaSitio(comicio, sistema, tree, contenedor, iso=None):
