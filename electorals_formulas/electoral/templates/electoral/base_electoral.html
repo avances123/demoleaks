@@ -1,85 +1,125 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
+{% block js_extra %}
+{% endblock %}
+
 {% block main %}
+
     <div class="subheader">
         {% block primer_cuadro %}
             <div class="subheader_izq">
-                <div class="nombre_sitio"><a href="#" title="{{ sitio.nombre_sitio }}">{{ sitio.nombre_sitio }}</a></div>
+                <div class="nombre_sitio"><a href="#" title="sitio.nombre_sitio">sitio.nombre_sitio</a></div>
                 <div class="atributos_sitio">
                     <ul>
-                        <li>Numero de votos contabilizados:</li>
-                        <li>Numero de abstenciones:</li>
-                        <li>Numero de votos en blanco:  </li>
-                        <li>Numero de votos nulos: </li>
+                        <li>{% trans 'Numero de votos contabilizados:' %}</li>
+                        <li>{% trans 'Numero de abstenciones:' %}</li>
+                        <li>{% trans 'Numero de votos en blanco:' %}</li>
+                        <li>{% trans 'Numero de votos nulos:' %}</li>
+
                     </ul>
                 </div>
                 <div class="atributos_sitio_valores">
                     <ul>
-                        <li><span class="numero">{{ sitio.votos_contabilizados}}</span></li>
-                        <li><span class="numero">{{ sitio.votos_abstenciones }}</span></li>
-                        <li><span class="numero">{{ sitio.votos_blancos}}</span> </li>
-                        <li><span class="numero">{{ sitio.votos_nulos}}</span></li>
+                        <li><span class="numero">sitio.votos_contabilizados</span></li>
+                        <li><span class="numero">sitio.votos_abstenciones</span></li>
+                        <li><span class="numero">sitio.votos_blancos</span> </li>
+                        <li><span class="numero">sitio.votos_nulos</span></li>
+
                     </ul>
-                </div>
+                </div> 
             </div>
+
             <div class="subheader_der">
                 <div class="atributos_sitio">
-                    <ul>
+                    <ul>   
                         <li><h1>Demoleak</h1></li>
-                    </ul>
-                </div>
-                <div class="barra_nivel" style="display:inline">
+                    <ul>
+                </div> 
+                <div class="barra_nivel" style="display:inline"> 
                     <div id="progressbar-n"></div>
                 </div>
             </div>
         {% endblock %}
     </div>
 
+    <div class="contenedor_gcharts">
+        <div id="chart_votos" style="float: left;margin-right: 18px;"></div>
+        <div id="chart_electos"></div>
+    </div>
+
     <div class="left">
         {% block listado_inferior %}
             <div class="left_articles">
-                <h2><a href="#">Lista de partidos</a></h2>
-                <p>Aqui puedes ver uno a uno datos estadisticos sobre cada partido</p>
+                <h2><a href="#">{% trans 'Lista de partidos' %}</a></h2>
+                <p>{% trans 'Aqui puedes ver uno a uno datos estadisticos sobre cada partido' %}</p>
             </div>
 
-            {% for p in lista_partidos %}
+            {% comment %}{% for p in lista_partidos %}{% endcomment %}
                 <div class="lt"></div>
                 <div class="lbox">
                     <h2>{{ p.nombre }}</h2>
                     <div class="thumb">
                         <img src="/static/partidos/pp.png" alt="" />
-
                     </div>
                     <div class="barra_partido">
-                        <div id="progressbar-{{p.id}}"></div>
+                        <div id="progressbar-p.id"></div>
                     </div>
                 </div>
-            {% endfor %}
-
+            {% comment %}{% endfor %}{% endcomment %}
         {% endblock %}
     </div>
-
-    <div class="right">
+    
+    <div class="right"> 
         <div class="rt"></div>
         <div class="right_articles">
-            <p><img src="/static/images/image.gif" alt="Image" title="Image" class="image" /><b>Un sitio con anomalia</b><br />consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam <a href="#">erat volutpat</a>. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis <a href="#">nisl ut aliquip ex</a>.</p>
-        </div>                                                                                  
-        <div class="rt"></div>                                                                                  
+            <p><img src="/static/images/image.gif" alt="Image" title="Image" class="image" />{% blocktrans %}<b>Un sitio con anomalia</b><br />consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam <a href="#">erat volutpat</a>. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis <a href="#">nisl ut aliquip ex</a>.{% endblocktrans %}</p>
+        </div>
+        <div class="rt"></div>
         <div class="right_articles">
-            <p><img src="/static/images/image.gif" alt="Image" title="Image" class="image" /><b>Un partido con anomalia</b><br />consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam <a href="#">erat volutpat</a>. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis <a href="#">nisl ut aliquip ex</a>.</p>
+            <p><img src="/static/images/image.gif" alt="Image" title="Image" class="image" />{% blocktrans %}<b>Un partido con anomalia</b><br />consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam <a href="#">erat volutpat</a>. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis <a href="#">nisl ut aliquip ex</a>.{% endblocktrans %}</p>
         </div>
     </div>
 
     <div class="lista_sitios">
         <div class="wrapper">
             <ul>
-                {% for s in lista_sitios %}
-                    <li><a href="/{{comicio.id}}/{{s.id}}"> {{s.nombre_sitio}}</a></li>
-                {% endfor %}
+                {% comment %}{% for s in lista_sitios %}{% endcomment %}
+                    <li><a href="/comicio.id/s.id">s.nombre_sitio</a></li>
+                {% comment %}{% endfor %}{% endcomment %}
             </ul>
             <br />
         </div>
     </div>
 
 {% endblock %}
+
+
+
+
+
+{% comment %}
+{% block primer_cuadro %}
+<h2> Que es demoleaks?</h2>
+{% endblock %}
+
+{% block listado_inferior %}
+    <div class="left_articles">
+        <h2>Lista de comicios</h2>
+	    <p>Elige que comicio quieres estudiar</p>
+    </div>
+    {% for p in lista_comicios %}			
+        <div class="lt"></div>
+        <div class="lbox">
+        	<h2><a href="#">{{ p.nombre }}</a></h2>
+        	<div class="thumb">
+		        <img src="/static/partidos/pp.png" alt="" />
+		
+        	</div>
+        	<div class="barra_partido">
+		        <div id="progressbar-{{p.id}}"></div>
+        	</div>	
+        </div>
+    {% endfor %}
+{% endblock %}
+{% endcomment %}
