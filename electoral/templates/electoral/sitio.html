@@ -1,10 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'electoral/base_electoral.html' %}
 
-{% block title %}Informacion del sitio: {{ sitio.nombre_sitio }} {% endblock %}
+{% block title %}Informacion del sitio: {{ sitio.nombre }} {% endblock %}
 
 {% block menu %}
 <ul>	
-	<li><a href="/{{comicio.id}}">{{ comicio.nombre }}</a></li>
+	<li><a href="/{{comicio.id}}">{{ sitio.nombre }}</a></li>
 	<li class="selected"><a href="/{{comicio.id}}/{{sitio.id}}">{{ sitio.nombre_sitio }}</a></li>
 </ul>
 {% endblock %}
