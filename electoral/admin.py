@@ -23,6 +23,13 @@ class SitioAdmin(MPTTModelAdmin):
 admin.site.register(Sitio, SitioAdmin)
 
 
+class SistemaAdmin(admin.ModelAdmin):
+    search_fields = ['nombre',]
+    prepopulated_fields = {"slug": ("nombre",)}
+
+admin.site.register(Sistema, SistemaAdmin)
+
+
 class PartidoAdmin(admin.ModelAdmin):
     search_fields = ['nombre', 'sitio__nombre']
     list_filter = ['sitio__nombre']

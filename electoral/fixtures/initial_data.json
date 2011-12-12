@@ -243,6 +243,15 @@
         }
     },
     {
+        "pk": 49,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "add_comicio",
+            "name": "Can add Comicio",
+            "content_type": 13
+        }
+    },
+    {
         "pk": 37,
         "model": "auth.permission",
         "fields": {
@@ -252,11 +261,29 @@
         }
     },
     {
+        "pk": 50,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "change_comicio",
+            "name": "Can change Comicio",
+            "content_type": 13
+        }
+    },
+    {
         "pk": 38,
         "model": "auth.permission",
         "fields": {
             "codename": "change_sitio",
             "name": "Can change Sitio",
+            "content_type": 13
+        }
+    },
+    {
+        "pk": 51,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "delete_comicio",
+            "name": "Can delete Comicio",
             "content_type": 13
         }
     },
@@ -297,11 +324,47 @@
         }
     },
     {
+        "pk": 55,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "add_sistema",
+            "name": "Can add Sistema",
+            "content_type": 16
+        }
+    },
+    {
+        "pk": 56,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "change_sistema",
+            "name": "Can change Sistema",
+            "content_type": 16
+        }
+    },
+    {
+        "pk": 57,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "delete_sistema",
+            "name": "Can delete Sistema",
+            "content_type": 16
+        }
+    },
+    {
         "pk": 40,
         "model": "auth.permission",
         "fields": {
             "codename": "add_partido",
             "name": "Can add Partido",
+            "content_type": 14
+        }
+    },
+    {
+        "pk": 52,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "add_sitio",
+            "name": "Can add Sitio",
             "content_type": 14
         }
     },
@@ -315,11 +378,29 @@
         }
     },
     {
+        "pk": 53,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "change_sitio",
+            "name": "Can change Sitio",
+            "content_type": 14
+        }
+    },
+    {
         "pk": 42,
         "model": "auth.permission",
         "fields": {
             "codename": "delete_partido",
             "name": "Can delete Partido",
+            "content_type": 14
+        }
+    },
+    {
+        "pk": 54,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "delete_sitio",
+            "name": "Can delete Sitio",
             "content_type": 14
         }
     },
@@ -387,6 +468,15 @@
         }
     },
     {
+        "pk": 46,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "add_migrationhistory",
+            "name": "Can add migration history",
+            "content_type": 9
+        }
+    },
+    {
         "pk": 26,
         "model": "auth.permission",
         "fields": {
@@ -396,11 +486,29 @@
         }
     },
     {
+        "pk": 47,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "change_migrationhistory",
+            "name": "Can change migration history",
+            "content_type": 9
+        }
+    },
+    {
         "pk": 27,
         "model": "auth.permission",
         "fields": {
             "codename": "delete_country",
             "name": "Can delete Country",
+            "content_type": 9
+        }
+    },
+    {
+        "pk": 48,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "delete_migrationhistory",
+            "name": "Can delete migration history",
             "content_type": 9
         }
     },
