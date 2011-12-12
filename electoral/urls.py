@@ -8,5 +8,7 @@ from electoral.views.views import *
 urlpatterns = patterns('electoral.views',
     # Home
     url(r'^$', IndexView.as_view(), name='index'),
-    url(r'^(?P<sitio_id>\d+)/$', SitioView.as_view(), name='sitio'),
+    url(r'^(?P<comicio_id>\d+)/$', ComicioView.as_view(), name='comicio'),
+    url(r'^(?P<comicio_id>\d+)/(?P<sitio_id>\d+)/$', SitioView.as_view(), name='sitio'),
+    url(r'^(?P<comicio_id>\d+)/(?P<sitio_id>\d+)/(?P<partido_id>\d+)/$', PartidoView.as_view(), name='partido'),
 )
