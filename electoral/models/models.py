@@ -84,6 +84,10 @@ class Sitio(MPTTModel):
 
         super(Sitio, self).save(*args, **kwargs)
 
+    def comicio(self):
+        self.get_root().comicio
+
+
 class Sistema(models.Model):
     nombre = models.CharField(max_length = 200, null = False, blank = False,
                 verbose_name=_(u'Nombre'))
