@@ -22,6 +22,12 @@ class SitioTranslationOptions(TranslationOptions):
 translator.register(Sitio, SitioTranslationOptions)
 
 
+class SistemaTranslationOptions(TranslationOptions):
+    fields = ('nombre',)
+
+translator.register(Sistema, SistemaTranslationOptions)
+
+
 class PartidoTranslationOptions(TranslationOptions):
     fields = ('nombre',)
 
