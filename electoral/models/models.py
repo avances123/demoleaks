@@ -85,7 +85,7 @@ class Sitio(MPTTModel):
         super(Sitio, self).save(*args, **kwargs)
 
     def comicio(self):
-        return self.get_root().comicio
+        return self.get_root().comicios
 
 
 class Sistema(models.Model):
