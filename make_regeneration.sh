@@ -4,7 +4,7 @@
 echo  "drop database electorals_formulas; create database electorals_formulas;" | psql -U postgres
 
 # CREATE DATABASE
-echo no | python manage.py syncdb
+echo no | python manage.py syncdb --migrate
 
 # POPULATE DATABASE FROM ELPAIS XMLS
 if [ "$1" == "--populate" ]; then
@@ -14,4 +14,4 @@ else
 fi
 
 # REGENERATE ALL.POs
-django-admin.py makemessages -a
+#django-admin.py makemessages -a
