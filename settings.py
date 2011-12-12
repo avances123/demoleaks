@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Django settings for electorals_formulas project.
+# Django settings for demoleaks project.
 from django.utils.translation import ugettext_lazy as _
 
 import os
@@ -12,6 +12,7 @@ TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
      ('David Barragán Merino', 'bameda@gmail.com'),
+     ('Fabio Rueda', 'avances123@gmail.com'),
 )
 
 MANAGERS = ADMINS
@@ -48,7 +49,7 @@ LANGUAGES = (
     ('en', 'English'),
 )
 
-MODELTRANSLATION_TRANSLATION_REGISTRY = "electorals_formulas.translation"
+MODELTRANSLATION_TRANSLATION_REGISTRY = "demoleaks.translation"
 
 BASEDIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -140,7 +141,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.locale.LocaleMiddleware',
 )
 
-ROOT_URLCONF = 'electorals_formulas.urls'
+ROOT_URLCONF = 'demoleaks.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
