@@ -31,9 +31,6 @@ class SitioView(TemplateView):
         return super(IndexView, self).dispatch(request, *args, **kwargs)
 
 
-
-
-
 class IndexView(TemplateView):
     template_name = 'electoral/index.html'
 

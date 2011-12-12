@@ -8,4 +8,5 @@ from electoral.views.views import *
 urlpatterns = patterns('cuvitt.views',
     # Home
     url(r'^$', IndexView.as_view(), name='index'),
+    url(r'^(?P<sitio_id>\d+)/$', SitioView.as_view(), name='sitio'),
 )
