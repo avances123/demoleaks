@@ -2,20 +2,13 @@
 
 {% block title %}Informacion del sitio: {{ sitio.nombre }} {% endblock %}
 
-{% block menu %}
-<ul>	
-	<li><a href="/{{comicio.id}}">{{ sitio.nombre }}</a></li>
-	<li class="selected"><a href="/{{comicio.id}}/{{sitio.id}}">{{ sitio.nombre_sitio }}</a></li>
-</ul>
+{% block main %}
+
+Nombre comicio {{ sitio.comicio.nombre }} </br>
+Nombre sitio {{ sitio.nombre }}
+
+{% for partido in sitio.partidos.all %}
+Nombre partido {{ partido.nombre }}
+{% endfor %}
 {% endblock %}
-
-{% block sidebar %}
-<h4>Datos del sitio</h4>
-<li>Votos contabilizados: {{ sitio.votos_contabilizados }}</li>
-<li>Abstenciones: {{ sitio.votos_abstenciones }}</li>
-<li>En blanco: {{ sitio.votos_blancos }}</li>
-<li>Votos nulos: {{ sitio.votos_nulos }}</li>
-{% endblock %}
-
-
 
