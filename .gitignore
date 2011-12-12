@@ -1,5 +1,7 @@
 *.pyc
-ficheros
 *.sql
+<<<<<<< HEAD
 *~
 *.swp
+=======
+>>>>>>> fork
