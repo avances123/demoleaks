@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Informacion del sitio: {{ sitio.nombre_sitio }} {% endblock %}
+
+{% block menu %}
+<ul>	
+	<li><a href="/{{comicio.id}}">{{ comicio.nombre }}</a></li>
+	<li class="selected"><a href="/{{comicio.id}}/{{sitio.id}}">{{ sitio.nombre_sitio }}</a></li>
+</ul>
+{% endblock %}
+
+{% block sidebar %}
+<h4>Datos del sitio</h4>
+<li>Votos contabilizados: {{ sitio.votos_contabilizados }}</li>
+<li>Abstenciones: {{ sitio.votos_abstenciones }}</li>
+<li>En blanco: {{ sitio.votos_blancos }}</li>
+<li>Votos nulos: {{ sitio.votos_nulos }}</li>
+{% endblock %}
+
+
+
