@@ -28,8 +28,8 @@ COMUNIDADES = [
     (15, 'ES-MC'),
     (16, 'ES-RI'),
     (17, 'ES-VC'),
-    #(18, 'ES-CE'),
-    #(19, 'ES-ML'),
+    (18, 'ES-CE'),
+    (19, 'ES-ML'),
 ]
 
 PROVINCIAS = [
