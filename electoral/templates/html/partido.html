@@ -1,0 +1,10 @@
+{% if sistema %}
+    <H1> {{ stistema.nombre }}   </H1>
+    <ul>
+    {% for p in lista_sitios %}
+        <li><a href="/sitio/{{ p.id }}/">{{ p.nombre }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No existe el sistema</p>
+{% endif %}
