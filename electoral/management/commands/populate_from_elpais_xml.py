@@ -28,8 +28,8 @@ COMUNIDADES = [
     (15, 'ES-MC'),
     (16, 'ES-RI'),
     (17, 'ES-VC'),
-    #(18, 'ES-CE'),
-    #(19, 'ES-ML'),
+    (18, 'ES-CE'),
+    (19, 'ES-ML'),
 ]
 
 PROVINCIAS = [
@@ -90,14 +90,21 @@ class Command(BaseCommand):
     help = u'Populate database from ElPais.com XML file'
 
     def handle(self, *args, **options):
-        for year in args:    
+        if Sistema.objects.all().count() == 0:
+            sistema = Sistema('Sistema D\'Hont')
+            sistema.save()
+        else:
+            sistema = Sistema.objects.get(id=1)
+
+        for year in args:   
+            
             # Comicio
             pais = Country.objects.get(pk='ES') 
             comicio = Comicio(nombre=u'Elecciones Generales', pais=pais, tipo='G')
 
             # Pais
             url = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/index.xml2" % (int(year))
-            sitio_pais = self._get_Sitio(url, codigo_ISO_3166='ES_es', parent=None)
+            sitio_pais = self._get_Sitio(url, sistema, codigo_ISO_3166='ES_es', parent=None)
             comicio.sitio = sitio_pais
 
             self.stdout.write(u'! Created comicio:\t%s\n' % comicio)
@@ -106,14 +113,14 @@ class Command(BaseCommand):
             # Comunidades
             for com in COMUNIDADES:
                 urlc = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/index.xml2" % (int(year), com[0])
-                sitio_comunidad = self._get_Sitio(urlc, codigo_ISO_3166=com[1], parent=sitio_pais)
+                sitio_comunidad = self._get_Sitio(urlc, sistema, codigo_ISO_3166=com[1], parent=sitio_pais)
 
                 # Provincias
                 for prov in PROVINCIAS:
                     urlp = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/%02d.xml2" % (int(year), 
                                         com[0], prov[0])
                     try:
-                        sitio_provincia = self._get_Sitio(urlp, codigo_ISO_3166=prov[1], parent=sitio_comunidad)
+                        sitio_provincia = self._get_Sitio(urlp, sistema, codigo_ISO_3166=prov[1], parent=sitio_comunidad)
 
                         # Municipios
                         errors = 0
@@ -121,7 +128,7 @@ class Command(BaseCommand):
                             urlm = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/%02d/%02d.xml2" % (int(year),
                                             com[0], prov[0], mun)
                             try:
-                                sitio_municipio = self._get_Sitio(urlm, codigo_ISO_3166="", parent=sitio_provincia)
+                                sitio_municipio = self._get_Sitio(urlm, sistema, codigo_ISO_3166="", parent=sitio_provincia)
                                 errors = 0  # Set errors to default value
                             except ParseError:
                                 #self.stderr.write(u'E Parsing:\t%s\n' % urlm)
@@ -131,8 +138,9 @@ class Command(BaseCommand):
                     except ParseError:
                         #self.stderr.write(u'E Parsing:\t%s\n' % urlp)
                         pass
+            
                 
-    def _get_Sitio(self, url, codigo_ISO_3166='', parent=None):
+    def _get_Sitio(self, url, sistema, codigo_ISO_3166='', parent=None):
         tree = parse(urllib.urlopen(url)).getroot()
 
         # Sitio: Spain
@@ -165,7 +173,7 @@ class Command(BaseCommand):
             votos_porciento = tree_partido.find('votos_porciento').text
             
             partido = Partido(id_partido=int(id_partido), nombre=nombre, electos=int(electos), votos_numero=int(votos_numero), 
-                            votos_porciento=float(votos_porciento), sitio=sitio)
+                            votos_porciento=float(votos_porciento), sitio=sitio, sistema=sistema)
             partido.save()
             self.stdout.write(u'! Created partido:\t%s -> %s\n' % ((sitio if sitio else ''), partido))
 
