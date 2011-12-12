@@ -85,9 +85,39 @@ class Sitio(MPTTModel):
         super(Sitio, self).save(*args, **kwargs)
 
 
+
+class Sistema(models.Model):
+    nombre = models.CharField(max_length = 200, null = False, blank = False,
+                verbose_name=_(u'Nombre'))
+    slug = models.SlugField(max_length = 200, null = False, blank = False,
+                verbose_name=_(u'Slug'))
+
+    def __unicode__(self):
+        return u'%s' % (self.nombre)
+
+    class Meta:
+        app_label = 'electoral'
+        ordering = ['nombre','slug']
+        verbose_name = _(u'Sistema')
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            # Register a new user
+            self.slug = slugify(self.nombre)
+
+        super(Sistema, self).save(*args, **kwargs)
+
+
+
+
 class Partido(models.Model):
+    # El sitio donde particia este partido
     sitio = models.ForeignKey('Sitio', null = False, blank = False, related_name = 'partidos',
                 verbose_name=_(u'Sitio'))
+    # El sistema utilizado para los datos de este partido
+    sistema = models.ForeignKey('Sistema', null = False, blank = False, related_name = 'partidos',
+                            verbose_name=_(u'Sistema'))
+    # Id del partido segun elpais.com
     id_partido = models.IntegerField(null = False, blank = False,
                 verbose_name=_(u'ID Partido'))
     nombre = models.CharField(max_length = 200, null = False, blank = False,
@@ -115,6 +145,5 @@ class Partido(models.Model):
             self.slug = slugify(self.nombre)
 
         super(Partido, self).save(*args, **kwargs)
-
 
 
