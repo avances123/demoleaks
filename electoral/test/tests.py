@@ -1,25 +1,33 @@
-# -*- coding: utf-8 -*-
-
 """
-This file demonstrates two different styles of tests (one doctest and one
-unittest). These will both pass when you run "manage.py test".
+This file demonstrates writing tests using the unittest module. These will pass
+when you run "manage.py test".
 
-Replace these with more appropriate tests for your application.
+Replace this with more appropriate tests for your application.
 """
 
 from django.test import TestCase
+from formulas_electorales.models import Sitio,Sistema,Partido
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.failUnlessEqual(1 + 1, 2)
+class SitioTest(TestCase):
+    def comprueba_votos_totales(self):
+    """
+        Prueba que la suma de validos, blancos y nulos salgan todos.
+	"""
+	for s in Sitio.objects.all():
+		suma_votos = 0
+		for p in Partido.objects.filter(sitio = s):
+			suma_votos += p.votos_numero
 
-__test__ = {"doctest": """
-Another way to test that 1 + 1 is equal to 2.
+        	self.assertEqual(suma_votos, s.votos_contabilizados)
 
->>> 1 + 1 == 2
-True
-"""}
+    def comprueba_suma_electos(self):
+    """
+        Prueba que la suma de diputados de cada partido es la misma que 
+	la disponible para la circunscripcion
+	"""
+	for s in Sitio.objects.filter(tipo_sitio__lte = 4):
+		suma_electos = 0
+		for p in Partido.objects.filter(sitio = s):
+			suma_electos += p.electos
 
+        	self.assertEqual(suma_electos, s.num_a_elegir)
