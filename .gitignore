@@ -1,7 +1,5 @@
 *.pyc
 *.sql
-<<<<<<< HEAD
+settings.py.prod
 *~
 *.swp
-=======
->>>>>>> fork
