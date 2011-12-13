@@ -44,6 +44,29 @@ class Comicio(models.Model):
         super(Comicio, self).save(*args, **kwargs)
 
 
+class Sistema(models.Model):
+    nombre = models.CharField(max_length = 200, null = False, blank = False,
+                verbose_name=_(u'Nombre'))
+    slug = models.SlugField(max_length = 200, null = False, blank = False,
+                verbose_name=_(u'Slug'))
+
+    def __unicode__(self):
+        return u'%s' % (self.nombre)
+
+    class Meta:
+        app_label = 'electoral'
+        ordering = ['nombre','slug']
+        verbose_name = _(u'Sistema')
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            # Register a new user
+            self.slug = slugify(self.nombre)
+
+        super(Sistema, self).save(*args, **kwargs)
+
+
+
 class Sitio(MPTTModel):
     codigo_ISO_3166 = models.CharField(max_length = 8, null=True, blank = False,
                 verbose_name=_(u'Código ISO 3166'))
@@ -67,6 +90,8 @@ class Sitio(MPTTModel):
                 verbose_name=_(u'Demoleak'))
     parent = TreeForeignKey('self', null = True, blank = True, related_name = 'sitios',
                 verbose_name=_(u'Contenido en'))
+    sistema = models.ForeignKey('Sistema', null = False, blank = False, related_name = 'sitios',
+                            verbose_name=_(u'Sistema'))
 
     def __unicode__(self):
         return u'%s' % self.nombre
@@ -89,27 +114,6 @@ class Sitio(MPTTModel):
     def comicio(self):
         return self.get_root().comicios.all()[0]
 
-
-class Sistema(models.Model):
-    nombre = models.CharField(max_length = 200, null = False, blank = False,
-                verbose_name=_(u'Nombre'))
-    slug = models.SlugField(max_length = 200, null = False, blank = False,
-                verbose_name=_(u'Slug'))
-
-    def __unicode__(self):
-        return u'%s' % (self.nombre)
-
-    class Meta:
-        app_label = 'electoral'
-        ordering = ['nombre','slug']
-        verbose_name = _(u'Sistema')
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            # Register a new user
-            self.slug = slugify(self.nombre)
-
-        super(Sistema, self).save(*args, **kwargs)
 
 
 class Partido(models.Model):
