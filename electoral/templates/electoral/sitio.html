@@ -1,3 +1,4 @@
+{% load l10n %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
@@ -34,22 +35,22 @@
 		{% endblock %}
 		
 		
-		{% for p in lista_partidos %}
+		{% for partido in sitio.partidos.all %}
 		<script type="text/javascript">
 			$(function(){
 				// Progressbar
 				$("#progressbar-{{p.id}}").progressbar({
-					"value": {{ p.demoleak }}
+					"value": {{ partido.demoleak }}
 				});
 				// http://jqueryui.com/demos/progressbar/#animated
 				$("#progressbar-{{p.id}}").css({ 'background': 'white' });
-				{% if p.demoleak > 70 %}
+				{% if partido.demoleak > 10 %}
 				$("#progressbar-{{p.id}} > div").css({  'background': 'red'   });
 				{% endif %}
-				{% if  p.demoleak > 40 and p.demoleak < 70 %}
+				{% if  partido.demoleak > 5 and partido.demoleak < 10 %}
 				$("#progressbar-{{p.id}} > div").css({  'background': 'yellow'   });
 				{% endif %}
-				{% if p.demoleak < 40 %}
+				{% if partido.demoleak < 5 %}
 					$("#progressbar-{{p.id}} > div").css({  'background': 'green'   });
 				{% endif %}
 
@@ -80,7 +81,7 @@
 			
 			data.addRows([
 					{% for partido in sitio.partidos.all %}
-					['{{partido.nombre}}',{{ partido.votos_numero }}],
+					['{{partido.nombre}}',{{ partido.votos_numero|unlocalize }}],
 					{% endfor %}
 					]);
 
@@ -115,16 +116,17 @@
 			// Create the data table.
 			var data = new google.visualization.DataTable();
 			data.addColumn('string', 'Partido');
-			data.addColumn('number', 'Electos');
+            data.addColumn('number', 'Electos');
+
 
 			data.addRows([
-					{% for p in lista_partidos %}
-					['{{p.nombre}}',{{ p.electos }}],
+					{% for partido in sitio.partidos.all %}
+					['{{partido.nombre}}',{{ partido.electos|unlocalize }}],
 					{% endfor %}
 					]);
 
 			// Set chart options
-			var options = {'title':'Porcentaje de Escaños en {{ sitio.nombre_sitio }}',
+			var options = {'title':'Porcentaje de Escaños en {{ sitio.nombre }}',
 				'width':365,
 				'height':200,
 			    'backgroundColor':'#f4f4f4'
@@ -201,13 +203,11 @@
             		</ul>
             	</div>
             	<div class="atributos_sitio_valores">
-			<ul> 
-				{% load humanize %}
-            			<li><span class="numero">{{ sitio.votos_contabilizados|intcomma}}</span></li>
-            			<li><span class="numero">{{ sitio.votos_abstenciones|intcomma }}</span></li>
-           				<li><span class="numero">{{ sitio.votos_blancos|intcomma}}</span> </li>
-            			<li><span class="numero">{{ sitio.votos_nulos|intcomma}}</span></li>
-            			
+                    <ul> 
+            			<li><span class="numero">{{ sitio.votos_contabilizados}}</span></li>
+            			<li><span class="numero">{{ sitio.votos_abstenciones }}</span></li>
+           				<li><span class="numero">{{ sitio.votos_blancos}}</span> </li>
+            			<li><span class="numero">{{ sitio.votos_nulos}}</span></li>
             		</ul>
             	</div>
             	
@@ -297,8 +297,8 @@
           		
           		<div class="wrapper">
         			<ul> 
-        				{% for s in lista_sitios %}
-            			<li><a href="/{{comicio.id}}/{{s.id}}"> {{s.nombre_sitio}}</a></li>
+        				{% for hijo in sitio.childs %}
+            			<li><a href="/{{sitio.comicio.id}}/{{hijo.id}}"> {{hijo.nombre}}</a></li>
             			{% endfor %}
             		</ul>
             		<br />
