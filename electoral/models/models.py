@@ -63,6 +63,8 @@ class Sitio(MPTTModel):
                 verbose_name=_(u'Votos Nulos'))
     votos_blancos = models.IntegerField(null = False, blank = False,
                 verbose_name=_(u'Votos Blancos'))
+    demoleak = models.DecimalField(max_digits = 5, decimal_places = 2, null = True, blank = True,
+                verbose_name=_(u'Demoleak'))
     parent = TreeForeignKey('self', null = True, blank = True, related_name = 'sitios',
                 verbose_name=_(u'Contenido en'))
 
@@ -130,6 +132,9 @@ class Partido(models.Model):
                 verbose_name=_(u'Número de votos'))
     votos_porciento = models.DecimalField(max_digits = 5, decimal_places = 2, null = False, blank = False,
                 verbose_name=_(u'Porcentaje de votos'))
+    demoleak = models.DecimalField(max_digits = 5, decimal_places = 2, null = True, blank = True,
+                verbose_name=_(u'Demoleak'))
+
 
     def __unicode__(self):
         return u'%s (%s)' % (self.nombre, self.sitio)
