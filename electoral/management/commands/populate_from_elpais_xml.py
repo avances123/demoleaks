@@ -6,9 +6,9 @@ from  countries.models import Country
 from electoral.models.models import *
 
 import urllib
-from xml.etree.ElementTree import parse, ParseError
+from xml.etree.ElementTree import parse
 import datetime
-
+from decimal import *
 
 COMUNIDADES = [
     (1, 'ES-AN'),
@@ -157,9 +157,9 @@ class Command(BaseCommand):
         
         sitio = Sitio(nombre=nombre, num_a_elegir=num_a_elegir, tipo=tipo, votos_contabilizados=votos_contabilizados, 
                     votos_abstenciones=votos_abstenciones, votos_nulos=votos_nulos ,votos_blancos=votos_blancos, 
-                    codigo_ISO_3166=codigo_ISO_3166, parent=parent)        
+                    codigo_ISO_3166=codigo_ISO_3166, parent=parent,sistema=sistema)        
         sitio.save()
-        self.stdout.write(u'! Created sitio:\t%s -> %s\n' % ((parent if parent else ""), sitio))
+        self.stdout.write('! Created sitio:\t%s -> %s\n' % ((parent if parent else ""), sitio))
 
         tree_partidos = tree.findall('resultados/partido')
         for tree_partido in tree_partidos:
@@ -173,8 +173,8 @@ class Command(BaseCommand):
             votos_porciento = tree_partido.find('votos_porciento').text
             
             partido = Partido(id_partido=int(id_partido), nombre=nombre, electos=int(electos), votos_numero=int(votos_numero), 
-                            votos_porciento=float(votos_porciento), sitio=sitio, sistema=sistema)
+                            votos_porciento=Decimal(votos_porciento), sitio=sitio, sistema=sistema)
             partido.save()
-            self.stdout.write(u'! Created partido:\t%s -> %s\n' % ((sitio if sitio else ''), partido))
+            self.stdout.write('! Created partido:\t%s -> %s\n' % ((sitio if sitio else ''), partido))
 
         return sitio
