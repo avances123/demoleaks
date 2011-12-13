@@ -1,0 +1,4 @@
+delete from electorals_formulas_sitio;
+delete from electorals_formulas_sistema;
+delete from electorals_formulas_partido;
+delete from electorals_formulas_comicio;
