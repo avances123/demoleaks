@@ -91,7 +91,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if Sistema.objects.all().count() == 0:
-            sistema = Sistema('Sistema D\'Hont')
+            sistema = Sistema(nombre='Sistema D\'Hont')
             sistema.save()
         else:
             sistema = Sistema.objects.get(id=1)
@@ -130,15 +130,13 @@ class Command(BaseCommand):
                             try:
                                 sitio_municipio = self._get_Sitio(urlm, sistema, codigo_ISO_3166="", parent=sitio_provincia)
                                 errors = 0  # Set errors to default value
-                            except ParseError:
+                            except :
                                 #self.stderr.write(u'E Parsing:\t%s\n' % urlm)
                                 errors += 1
                                 if errors > 9: break # if I found more than 10 consecutive error 
 
-                    except ParseError:
-                        #self.stderr.write(u'E Parsing:\t%s\n' % urlp)
+                    except:
                         pass
-            
                 
     def _get_Sitio(self, url, sistema, codigo_ISO_3166='', parent=None):
         tree = parse(urllib.urlopen(url)).getroot()

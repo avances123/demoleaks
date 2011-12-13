@@ -5,7 +5,7 @@ echo  "drop database electorals_formulas; create database electorals_formulas;" 
 
 # CREATE DATABASE
 echo no | python manage.py syncdb --migrate
-
+exit
 # POPULATE DATABASE FROM ELPAIS XMLS
 if [ "$1" == "--populate" ]; then
     python manage.py populate_from_elpais_xml 2008 2011
