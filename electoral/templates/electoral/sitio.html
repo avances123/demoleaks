@@ -19,7 +19,7 @@
 			$(function(){
 				// Progressbar
 				$("#progressbar-n").progressbar({
-					"value": {{ sitio.demoleak }}
+					"value": {{ sitio.demoleak|unlocalize }}
 				});
 				// http://jqueryui.com/demos/progressbar/#animated
 				$("#progressbar-n").css({ 'background': 'white' });
@@ -39,19 +39,19 @@
 		<script type="text/javascript">
 			$(function(){
 				// Progressbar
-				$("#progressbar-{{p.id}}").progressbar({
-					"value": {{ partido.demoleak }}
+				$("#progressbar-{{partido.id}}").progressbar({
+					"value": {{ partido.demoleak|unlocalize }}
 				});
 				// http://jqueryui.com/demos/progressbar/#animated
-				$("#progressbar-{{p.id}}").css({ 'background': 'white' });
+				$("#progressbar-{{partido.id}}").css({ 'background': 'white' });
 				{% if partido.demoleak > 10 %}
-				$("#progressbar-{{p.id}} > div").css({  'background': 'red'   });
+				$("#progressbar-{{partido.id}} > div").css({  'background': 'red'   });
 				{% endif %}
 				{% if  partido.demoleak > 5 and partido.demoleak < 10 %}
-				$("#progressbar-{{p.id}} > div").css({  'background': 'yellow'   });
+				$("#progressbar-{{partido.id}} > div").css({  'background': 'yellow'   });
 				{% endif %}
 				{% if partido.demoleak < 5 %}
-					$("#progressbar-{{p.id}} > div").css({  'background': 'green'   });
+					$("#progressbar-{{partido.id}} > div").css({  'background': 'green'   });
 				{% endif %}
 
 			});

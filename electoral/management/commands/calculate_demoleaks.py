@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
 from django.core.management.base import BaseCommand, CommandError
+from decimal import *
 
 from  countries.models import Country
 from electoral.models.models import *
@@ -18,16 +19,16 @@ class Command(BaseCommand):
         else:
             sistema = Sistema.objects.get(id=1)
 
-        for partido in Partido.objects.filter(sistema=sistema):
-            sitio = partido.sitio
+        for sitio in Sitio.objects.filter(sistema=sistema):
+            demoleak_sitio = 0
             if sitio.num_a_elegir > 0:
-                #if partido.demoleak == None: partido.demoleak = 0
-                porcentaje_electos = ( partido.electos / sitio.num_a_elegir ) * 100
-                partido.demoleak =  porcentaje_electos - partido.votos_porciento
-                if partido.demoleak > 0:
-                    sitio.demoleak = sitio.demoleak + partido.demoleak
-                sitio.save()
-                #print "%s %s, tiene un demoleak de %s %s" % (sitio.nombre,partido, str(sitio.demoleak),str(partido.demoleak))
-                print "%s %s %s %s" % (sitio.nombre,sitio.id,partido.nombre,partido.id)
-                partido.save()
-
+                for partido in sitio.partidos.all():
+                    porcentaje_electos = ( Decimal(partido.electos) / Decimal(sitio.num_a_elegir)) * 100
+                    print "porcentaje_electos %s = %s %s / %s %s * 100" % (porcentaje_electos,partido.nombre,partido.electos,sitio.nombre,sitio.num_a_elegir) 
+                    partido.demoleak =  porcentaje_electos - partido.votos_porciento
+                    partido.save()
+                    if partido.demoleak > 0:
+                        demoleak_sitio = demoleak_sitio + partido.demoleak
+                print "%s %s" % (sitio,sitio.demoleak)
+            sitio.demoleak = demoleak_sitio
+            sitio.save()
