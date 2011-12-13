@@ -136,7 +136,7 @@ class Partido(models.Model):
 
     class Meta:
         app_label = 'electoral'
-        ordering = ['nombre','sitio']
+        ordering = ['-votos_numero','sitio']
         verbose_name = _(u'Partido')
 
     def save(self, *args, **kwargs):
