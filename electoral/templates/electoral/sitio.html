@@ -39,19 +39,19 @@
 		<script type="text/javascript">
 			$(function(){
 				// Progressbar
-				$("#progressbar-{{partido.id}}").progressbar({
+				$("#progressbar-{{partido.id|unlocalize}}").progressbar({
 					"value": {{ partido.demoleak|unlocalize }}
 				});
 				// http://jqueryui.com/demos/progressbar/#animated
-				$("#progressbar-{{partido.id}}").css({ 'background': 'white' });
+				$("#progressbar-{{partido.id|unlocalize}}").css({ 'background': 'white' });
 				{% if partido.demoleak > 10 %}
-				$("#progressbar-{{partido.id}} > div").css({  'background': 'red'   });
+				$("#progressbar-{{partido.id|unlocalize}} > div").css({  'background': 'red'   });
 				{% endif %}
 				{% if  partido.demoleak > 5 and partido.demoleak < 10 %}
-				$("#progressbar-{{partido.id}} > div").css({  'background': 'yellow'   });
+				$("#progressbar-{{partido.id|unlocalize}} > div").css({  'background': 'yellow'   });
 				{% endif %}
 				{% if partido.demoleak < 5 %}
-					$("#progressbar-{{partido.id}} > div").css({  'background': 'green'   });
+					$("#progressbar-{{partido.id|unlocalize}} > div").css({  'background': 'green'   });
 				{% endif %}
 
 			});
@@ -153,8 +153,8 @@
 				<ul>
 					<li class="slogan"></li>
 					
-					<li><a href="/{{ sitio.comicio.id}}" >{{ sitio.comicio.nombre }}</a></li>
-					<li><a href="/{{ sitio.comicio.id}}/{{ sitio.id }}" >{{sitio.nombre}}</a></li>
+					<li><a href="/{{ sitio.comicio.id|unlocalize}}" >{{ sitio.comicio.nombre }}</a></li>
+					<li><a href="/{{ sitio.comicio.id|unlocalize}}/{{ sitio.id|unlocalize }}" >{{sitio.nombre}}</a></li>
 					
 				</ul>
 			</div>
@@ -192,7 +192,7 @@
 		<div class="subheader">
 			{% block primer_cuadro %}
         	<div class="subheader_izq">
-		  		<div class="nombre_sitio"><a href="#" title="{{ sitio.nombre }}">{{ sitio.nombre }}</a></div>
+		  		<div class="nombre_sitio"><a href="" title="{{ sitio.nombre }}">{{ sitio.nombre }}</a></div>
           		<div class="atributos_sitio">
         			<ul> 
             			<li>Numero de votos contabilizados:  </li>
@@ -244,7 +244,7 @@
 			</div>
 			
 			
-			{% for partido in sitio.partidos.all %}			
+			{% for partido in top_partidos %}			
 			<div class="lt"></div>
 			<div class="lbox">
 				<div style="float:left">
@@ -252,7 +252,7 @@
 				</div>
 				<div class="barra_partido">
 					{{ partido.demoleak }}
-					<div id="progressbar-{{partido.id}}"></div>
+					<div id="progressbar-{{partido.id|unlocalize}}"></div>
 				</div>	
 			</div>
 			{% endfor %}
@@ -262,20 +262,17 @@
 			
 			
 		</div>	
-		<div class="right">
-			{% for i in lista_anomalias %}
-			{% if i.sitio.tipo_sitio == 3 %}
+        <div class="right">
+            <h1>Lista de Anomalias</h1>
+            {% for partido in lista_anomalias %}
+            {% if partido.sitio.tipo == 3 %}
 			<div class="rt"></div>
 			<div class="right_articles">
-				<p><b>{{ i.nombre }}</b> Ha obtenido demasiados escaños en {{ i.sitio }}.</p>
+                <p><a href="/{{partido.sitio.comicio.id|unlocalize}}/{{partido.sitio.id|unlocalize}}"> {{partido.nombre}}</a> ha obtenido demasiados escaños en <a href="/{{partido.sitio.comicio.id|unlocalize}}/{{partido.sitio.id|unlocalize}}"> {{partido.sitio}}</a></p>
 				
-			</div>
-			{% endif 	%}
+            </div>
+            {% endif %}
 			{% endfor %}
-			<div class="rt"></div>
-			<div class="right_articles">
-				<p><img src="/static/images/image.gif" alt="Image" title="Image" class="image" /><b>Un partido con anomalia</b><br />consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam <a href="#">erat volutpat</a>. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis <a href="#">nisl ut aliquip ex</a>.</p>
-			</div>
 		</div>	
 		
 		<div class="lista_sitios">
@@ -297,8 +294,8 @@
           		
           		<div class="wrapper">
         			<ul> 
-        				{% for hijo in sitio.childs %}
-            			<li><a href="/{{sitio.comicio.id}}/{{hijo.id}}"> {{hijo.nombre}}</a></li>
+        				{% for hijo in hijos %}
+            			<li><a href="/{{sitio.comicio.id|unlocalize}}/{{hijo.id|unlocalize}}"> {{hijo.nombre}}</a></li>
             			{% endfor %}
             		</ul>
             		<br />
