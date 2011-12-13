@@ -79,6 +79,9 @@ class IndexView(TemplateView):
         return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):
+        lista_comicios = Comicio.objects.all()
         context = super(IndexView, self).get_context_data(**kwargs)
+        context.update({'lista_comicios':lista_comicios})
+        return context
 
 
