@@ -1,4 +1,4 @@
-delete from electorals_formulas_sitio;
-delete from electorals_formulas_sistema;
-delete from electorals_formulas_partido;
-delete from electorals_formulas_comicio;
+delete from electoral_sitio;
+delete from electoral_sistema;
+delete from electoral_partido;
+delete from electoral_comicio;

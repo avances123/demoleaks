@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # DROP DATABASE
-echo  "drop database electorals_formulas; create database electorals_formulas;" | psql -U postgres
+#echo  "drop database electorals_formulas; create database electorals_formulas;" | psql -U postgres
 
 # CREATE DATABASE
 echo no | python manage.py syncdb --migrate

@@ -9,6 +9,7 @@ import urllib
 from xml.etree.ElementTree import parse
 import datetime
 from decimal import *
+import time
 
 COMUNIDADES = [
     (1, 'ES-AN'),
@@ -109,7 +110,6 @@ class Command(BaseCommand):
 
             self.stdout.write(u'! Created comicio:\t%s\n' % comicio)
             comicio.save()
-
             # Comunidades
             for com in COMUNIDADES:
                 urlc = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/%02d/index.xml2" % (int(year), com[0])
@@ -137,6 +137,7 @@ class Command(BaseCommand):
 
                     except:
                         pass
+	    	    time.sleep(3)
                 
     def _get_Sitio(self, url, sistema, codigo_ISO_3166='', parent=None):
         tree = parse(urllib.urlopen(url)).getroot()
