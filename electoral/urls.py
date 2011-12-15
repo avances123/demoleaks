@@ -11,4 +11,6 @@ urlpatterns = patterns('electoral.views',
     url(r'^(?P<comicio_id>\d+)/$', ComicioView.as_view(), name='comicio'),
     url(r'^(?P<comicio_id>\d+)/(?P<sitio_id>\d+)/$', SitioView.as_view(), name='sitio'),
     url(r'^(?P<comicio_id>\d+)/(?P<sitio_id>\d+)/(?P<partido_id>\d+)/$', PartidoView.as_view(), name='partido'),
+    (r'^search/', include('haystack.urls')),
+
 )

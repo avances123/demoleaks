@@ -101,7 +101,7 @@ class Command(BaseCommand):
             
             # Comicio
             pais = Country.objects.get(pk='ES') 
-            comicio = Comicio(nombre=u'Elecciones Generales', pais=pais, tipo='G')
+            comicio = Comicio(nombre="Elecciones Generales %s" % year, pais=pais, tipo='G')
 
             # Pais
             url = "http://rsl00.epimg.net/elecciones/%d/generales/congreso/index.xml2" % (int(year))

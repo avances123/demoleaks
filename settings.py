@@ -150,6 +150,12 @@ TEMPLATE_DIRS = (
     os.path.join(PROJECT_ROOT, 'templates'),
 )
 
+
+HAYSTACK_SITECONF = 'search_sites'
+HAYSTACK_SEARCH_ENGINE = 'xapian'
+HAYSTACK_XAPIAN_PATH = '/home/fa/src/demoleaks/site_index'
+
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -165,6 +171,7 @@ INSTALLED_APPS = (
     'transhette',
     'modeltranslation',
     'mptt',
+    'haystack',
 
     'countries',
     'electoral',
