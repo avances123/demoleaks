@@ -17,3 +17,5 @@ south>=0.7.3
 # I18n and L10n libs
 transhette>=0.5.10
 django-modeltranslation==0.3.2
+
+haystack>=0.13

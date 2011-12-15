@@ -5,7 +5,7 @@ from electoral.models import Sitio
 
 
 class SitioIndex(SearchIndex):
-        nombre = CharField(document=True, use_template=True)
+        text = CharField(document=True, use_template=True)
         def index_queryset(self):
             return Sitio.objects.all()
 
