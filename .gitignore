@@ -1,6 +1,1 @@
 *.pyc
-*.sql
-settings.py.prod
-settings.py
-*~
-*.swp
