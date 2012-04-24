@@ -1,0 +1,9 @@
+Django==1.4
+argparse==1.2.1
+distribute==0.6.24
+django-mptt==0.5.2
+ipython==0.12
+openpyxl==1.5.8
+psycopg2==2.4.5
+wsgiref==0.1.2
+yolk==0.4.3
