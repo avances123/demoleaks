@@ -18,11 +18,12 @@ class Place(MPTTModel):
 
 class Election(models.Model):
 	ELECTION_TYPES = (
+        ('SUPRANATIONAL', 'More than one country election'),
 		('NATIONAL', 'Whole country election'),
     	('REGIONAL', 'Regional election'),
     	('LOCAL', 'City level election'),
    	)
-   	name = models.CharField(max_length=50)
+   	name = models.CharField(max_length=150)
 	date = models.DateTimeField('Date of the election')
 	type = models.CharField(max_length=20, choices=ELECTION_TYPES)
 	places = models.ManyToManyField(Place, through='Result')
