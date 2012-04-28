@@ -29,7 +29,13 @@ class Election(models.Model):
 
 
 
-# Many2Many intermediate class
+class Party(models.Model):
+    name = models.CharField(max_length=80)
+    acronym = models.CharField(max_length=20)
+
+
+
+# Many2Many intermediate classes
 class Result(models.Model):
     population = models.IntegerField()
     num_tables = models.IntegerField()
@@ -39,8 +45,15 @@ class Result(models.Model):
     votes_parties = models.IntegerField()
     blank_votes = models.IntegerField()
     null_votes = models.IntegerField()
+
     place = models.ForeignKey(Place)
     election = models.ForeignKey(Election)
+    parties = models.ManyToManyField(Party, through='ResultParties')
+	
 
-class Party(models.Model):
-	pass
+class ResultParties(models.Model):
+    num_votes = models.IntegerField()
+
+    result = models.ForeignKey(Result)
+    party = models.ForeignKey(Party)
+    
