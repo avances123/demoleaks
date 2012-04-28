@@ -10,6 +10,7 @@ import time
 class Command(BaseCommand):
     args = u'<populate_from_elpais year ...>'
     help = u'Populate database from www.elpais.com XML file'
+    espaces = re.compile(r"^\s+")
 
     def get_type_of_election(self,filename):
         election_type = {
@@ -24,6 +25,12 @@ class Command(BaseCommand):
         month = int(filename[8:9])
         return datetime.datetime(year=year,month=month,day=22)
 
+    def read_int_cell(self,cell):
+        if not self.espaces.match(str(cell.value)):                    
+            return cell.value
+        else:
+            return 0
+
     def handle(self, *args, **options):
         filename = args[0]
         type = self.get_type_of_election(os.path.basename(filename))
@@ -34,6 +41,8 @@ class Command(BaseCommand):
         ws = wb.get_active_sheet()
         election.name = ws.cell(coordinate='A3').value.strip()
         election.save()
+        print "Populating data from " + election.name
+        
 
         # Save the party names into a dict
         parties_list = []
@@ -45,8 +54,8 @@ class Command(BaseCommand):
                 try:
                     par = Party.objects.get(acronym__exact=acro)
                 except Party.DoesNotExist:
-                    print "Saving " + name
                     par.save()
+                    print "Saved " + name
                 parties_list.append(par)
 
         for row in ws.rows[6:]:
@@ -55,66 +64,44 @@ class Command(BaseCommand):
             try:
                 com = Place.objects.get(name__exact=com.name)
             except Place.DoesNotExist:
-                print "Saving " + com.name
                 com.save()
+                print "Saved " + com.name
+
 
             # Provincia
             pro = Place(name=row[2].value.rstrip(), parent=com)
             try:
                 pro = Place.objects.get(name__exact=pro.name)
             except Place.DoesNotExist:
-                print "Saving " + pro.name + " in " + com.name
                 pro.save()
+                print "Saved " + pro.name + " in " + com.name
+
 
             # Municipio
-            mun = Place(name=row[4].value.rstrip(), parent=pro)
+            name = row[4].value.rstrip()
+            prefixre = re.compile(r"^(.+)\((.+)\).*$")
+            m = prefixre.match(name)
+            if m is not None:
+                main_name = m.group(1)
+                prefix = m.group(2)
+                name = prefix + ' ' + main_name
+                print "main name: " + main_name + "prefix: " + prefix
+            mun = Place(name=name, parent=pro)
             try:
                 mun = Place.objects.get(name__exact=mun.name)
             except Place.DoesNotExist:
                 mun.save()
-                print "Saving " + mun.name + " in " + pro.name 
+                print "New saved place: " + com.name + " >> " + pro.name + " >> " + mun.name
 
-            # Resultado
-            # population=row[5].value
-            # num_tables = row[6].value
-            # total_census = row[7].value
-            # total_voters = row[8].value
-            # valid_votes = row[9].value
-            # votes_parties = row[10].value
-            # blank_votes = row[11].value
-            # null_votes = row[12].value
-            if isinstance( row[5].value, int ):
-                population = row[5].value
-            else:
-                population = 0
-            if isinstance( row[6].value, int ):
-                num_tables = row[6].value
-            else:
-                num_tables = 0
-            if isinstance( row[7].value, int ):
-                total_census = row[7].value
-            else:
-                total_census = 0
-            if isinstance( row[8].value, int ):
-                total_voters = row[8].value
-            else:
-                total_voters = 0
-            if isinstance( row[9].value, int ):
-                valid_votes = row[9].value
-            else:
-                valid_votes = 0
-            if isinstance( row[10].value, int ):
-                votes_parties = row[10].value
-            else:
-                votes_parties = 0
-            if isinstance( row[11].value, int ):
-                blank_votes = row[11].value
-            else:
-                blank_votes = 0
-            if isinstance( row[12].value, int ):
-                null_votes = row[12].value
-            else:
-                null_votes = 0
+            population = self.read_int_cell(row[5])
+            num_tables = self.read_int_cell(row[6])
+            total_census = self.read_int_cell(row[7])
+            total_voters = self.read_int_cell(row[8])
+            valid_votes = self.read_int_cell(row[9])
+            votes_parties = self.read_int_cell(row[10])
+            blank_votes = self.read_int_cell(row[11])
+            null_votes = self.read_int_cell(row[12])
+
             
             res = Result(place=mun,election=election,population=population,num_tables=num_tables,
                             total_census=total_census,total_voters=total_voters,
@@ -124,21 +111,18 @@ class Command(BaseCommand):
                 res = Result.objects.get(place__exact=mun,election__exact=election)
             except Result.DoesNotExist:
                 res.save()
-                print "Saving " + res.place.name + " num votes " + str(res.valid_votes)
+                #print "\tSaved " + res.place.name + " num votes " + str(res.valid_votes)
 
             # Resultado de los partidos
             num_col = 13 # En esta columna empiezan los partidos, espero
             for party in parties_list:
-                try:
-                    num_votes = row[num_col].value
-                    respar = ResultParties(num_votes=row[num_col].value,result=res,party=party)
+                num_votes = self.read_int_cell(row[num_col])
+                if num_votes >= 0:                    
+                    respar = ResultParties(num_votes=num_votes,result=res,party=party)
                     try:
                         respar = ResultParties.objects.get(result__exact=res,party__exact=party)
                     except ResultParties.DoesNotExist:
                         respar.save()
-                        print "\tSaving " + party.name + " votes:" + str(num_votes)
-                except:
-                    pass
                 num_col = num_col + 1
 
 
