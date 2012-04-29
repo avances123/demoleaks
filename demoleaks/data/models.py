@@ -33,7 +33,7 @@ class Election(models.Model):
 class Party(models.Model):
     name = models.CharField(max_length=80)
     acronym = models.CharField(max_length=20)
-
+    country = models.ForeignKey(Place) # Comprobar que es de level = 0
 
 
 # Many2Many intermediate classes
@@ -54,7 +54,7 @@ class Result(models.Model):
 
 class ResultParties(models.Model):
     num_votes = models.IntegerField()
-
+    
     result = models.ForeignKey(Result)
     party = models.ForeignKey(Party)
     

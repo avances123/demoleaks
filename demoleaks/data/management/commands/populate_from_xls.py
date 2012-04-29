@@ -57,7 +57,6 @@ class Command(BaseCommand):
             else:
                 print "Error: you must choose 'y' or 'n'."
 
-
     # MAIN PROGRAM
     def handle(self, *args, **options):
         filename = args[0]
@@ -73,6 +72,9 @@ class Command(BaseCommand):
         election.save()
         print "Populating data of " + election.name
   
+        # Create the "Spain" Place  TODO get_or_create
+        spain = Place(name="España")
+        spain.save()
 
         # Save the party names into a dict
         parties_list = []
@@ -84,20 +86,21 @@ class Command(BaseCommand):
             else:
                 continue
             if acro != '':
-                par = Party(acronym=acro,name=name)
+                par = Party(acronym=acro,name=name,country=spain)
                 try:
-                    par = Party.objects.get(acronym__exact=acro)
+                    par = Party.objects.get(acronym__exact=acro,country=spain)
                 except Party.DoesNotExist:
                     par.save()
                     print "Saved " + name
                 parties_list.append(par)
 
+        # BUCLE general (para cada fila...)
         for row in ws.rows[6:]:
             rowcount = rowcount + 1
             # Comunidad
-            com = Place(name=row[0].value.rstrip())
+            com = Place(name=row[0].value.rstrip(),parent=spain)
             try:
-                com = Place.objects.get(name__exact=com.name)
+                com = Place.objects.get(name__exact=com.name,parent=spain)
             except Place.DoesNotExist:
                 com.save()
                 print "Saved " + com.name
@@ -106,7 +109,7 @@ class Command(BaseCommand):
             # Provincia
             pro = Place(name=row[2].value.rstrip(), parent=com)
             try:
-                pro = Place.objects.get(name__exact=pro.name)
+                pro = Place.objects.get(name__exact=pro.name, parent=com)
             except Place.DoesNotExist:
                 pro.save()
                 print "Saved " + pro.name + " in " + com.name
@@ -122,7 +125,7 @@ class Command(BaseCommand):
             mun = Place(name=name, parent=pro)
             print "[%d/%d] %s >> %s >> %s" % (rowcount,numrows,com.name,pro.name,mun.name)
             try:
-                mun = Place.objects.get(name__exact=mun.name)
+                mun = Place.objects.get(name__exact=mun.name,parent=pro)
             except Place.DoesNotExist:
                 if options['solve-dups']:
                     raw_id = self.wait_user_input()
