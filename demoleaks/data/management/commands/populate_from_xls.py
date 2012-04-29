@@ -5,12 +5,14 @@ from openpyxl.reader.excel import load_workbook
 
 import datetime,re,os
 from decimal import *
-import time
+    
+
 
 class Command(BaseCommand):
     args = u'<populate_from_elpais year ...>'
     help = u'Populate database from www.elpais.com XML file'
-    espaces = re.compile(r"^\s+")
+    digits = re.compile(r"^\d+")
+    prefixre = re.compile(r"^(.+)\s+\((.+)\).*$")
 
     def get_type_of_election(self,filename):
         election_type = {
@@ -25,12 +27,14 @@ class Command(BaseCommand):
         month = int(filename[8:9])
         return datetime.datetime(year=year,month=month,day=22)
 
+    # Used for reading a cell suposed to be an integer
     def read_int_cell(self,cell):
-        if not self.espaces.match(str(cell.value)):                    
+        if self.digits.match(str(cell.value)):                    
             return cell.value
         else:
             return 0
 
+    # MAIN PROGRAM
     def handle(self, *args, **options):
         filename = args[0]
         type = self.get_type_of_election(os.path.basename(filename))
@@ -39,9 +43,11 @@ class Command(BaseCommand):
         print "Parsing " + filename
         wb = load_workbook(filename)
         ws = wb.get_active_sheet()
+        numrows = ws.get_highest_row() - 6
+        rowcount = 0
         election.name = ws.cell(coordinate='A3').value.strip()
         election.save()
-        print "Populating data from " + election.name
+        print "Populating data of " + election.name
         
 
         # Save the party names into a dict
@@ -59,6 +65,7 @@ class Command(BaseCommand):
                 parties_list.append(par)
 
         for row in ws.rows[6:]:
+            rowcount = rowcount + 1
             # Comunidad
             com = Place(name=row[0].value.rstrip())
             try:
@@ -79,19 +86,18 @@ class Command(BaseCommand):
 
             # Municipio
             name = row[4].value.rstrip()
-            prefixre = re.compile(r"^(.+)\((.+)\).*$")
-            m = prefixre.match(name)
+            m = self.prefixre.match(name)
             if m is not None:
                 main_name = m.group(1)
                 prefix = m.group(2)
                 name = prefix + ' ' + main_name
-                print "main name: " + main_name + "prefix: " + prefix
             mun = Place(name=name, parent=pro)
+            print "[%d/%d]" % (rowcount,numrows)
             try:
                 mun = Place.objects.get(name__exact=mun.name)
             except Place.DoesNotExist:
                 mun.save()
-                print "New saved place: " + com.name + " >> " + pro.name + " >> " + mun.name
+                print "[%d/%d] New saved place: %s >> %s >> %s" % (rowcount,numrows,com.name,pro.name,mun.name)
 
             population = self.read_int_cell(row[5])
             num_tables = self.read_int_cell(row[6])
@@ -117,7 +123,7 @@ class Command(BaseCommand):
             num_col = 13 # En esta columna empiezan los partidos, espero
             for party in parties_list:
                 num_votes = self.read_int_cell(row[num_col])
-                if num_votes >= 0:                    
+                if num_votes > 0:                    
                     respar = ResultParties(num_votes=num_votes,result=res,party=party)
                     try:
                         respar = ResultParties.objects.get(result__exact=res,party__exact=party)
