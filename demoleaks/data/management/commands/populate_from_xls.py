@@ -2,17 +2,26 @@
 from django.core.management.base import BaseCommand, CommandError
 from demoleaks.data.models import Place,Election,Result,Party,ResultParties
 from openpyxl.reader.excel import load_workbook
-
 import datetime,re,os
-from decimal import *
-    
+from optparse import make_option
+
+#from demoleaks.data.duplicates import merge_model_objects
 
 
 class Command(BaseCommand):
-    args = u'<populate_from_elpais year ...>'
-    help = u'Populate database from www.elpais.com XML file'
+    args = u'filename'
+    help = u'This command parses the xlsx files from Spanish Goverment, you can download them at http://bit.ly/IJol5A '
     digits = re.compile(r"^\d+")
     prefixre = re.compile(r"^(.+)\s+\((.+)\).*$")
+    
+
+    option_list = BaseCommand.option_list + (
+        make_option('--solve-dups',
+            action='store_true',
+            dest='solve-dups',
+            default=False,
+            help='Solve duplicate object with different name'),
+        )
 
     def get_type_of_election(self,filename):
         election_type = {
@@ -34,6 +43,21 @@ class Command(BaseCommand):
         else:
             return 0
 
+    def wait_user_input(self):
+        while True:
+            user_response = raw_input("Do you wish to continue the migration of this object (y/[n])? ")
+            if user_response == '' or user_response == 'n':
+                return None
+            elif user_response == 'y':
+                place_id = raw_input("Insert the id (pk) of the Place you think it is duplicated \n")
+                if self.digits.match(place_id):                    
+                    return place_id
+                else:
+                    print "Error: you must write integers here"
+            else:
+                print "Error: you must choose 'y' or 'n'."
+
+
     # MAIN PROGRAM
     def handle(self, *args, **options):
         filename = args[0]
@@ -48,13 +72,17 @@ class Command(BaseCommand):
         election.name = ws.cell(coordinate='A3').value.strip()
         election.save()
         print "Populating data of " + election.name
-        
+  
 
         # Save the party names into a dict
         parties_list = []
         for col in ws.columns[13:]:
-            acro = col[5].value
-            name = col[4].value
+            if col[4].value is not None:            
+                name = col[4].value.rstrip()
+            if col[5].value is not None:
+                acro = col[5].value.rstrip()
+            else:
+                continue
             if acro != '':
                 par = Party(acronym=acro,name=name)
                 try:
@@ -92,12 +120,20 @@ class Command(BaseCommand):
                 prefix = m.group(2)
                 name = prefix + ' ' + main_name
             mun = Place(name=name, parent=pro)
-            print "[%d/%d]" % (rowcount,numrows)
+            print "[%d/%d] %s >> %s >> %s" % (rowcount,numrows,com.name,pro.name,mun.name)
             try:
                 mun = Place.objects.get(name__exact=mun.name)
             except Place.DoesNotExist:
-                mun.save()
-                print "[%d/%d] New saved place: %s >> %s >> %s" % (rowcount,numrows,com.name,pro.name,mun.name)
+                if options['solve-dups']:
+                    raw_id = self.wait_user_input()
+                    if raw_id is None:
+                        mun.save()
+                        print "[%d/%d] New saved place: %s >> %s >> %s" % (rowcount,numrows,com.name,pro.name,mun.name)
+                    else:
+                        mun = Place.objects.get(id=raw_id)
+                else:
+                    mun.save()
+                
 
             population = self.read_int_cell(row[5])
             num_tables = self.read_int_cell(row[6])
