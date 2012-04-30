@@ -11,7 +11,8 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        #'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.contrib.gis.db.backends.postgis', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'demoleaks',                      # Or path to database file if using sqlite3.
         'USER': 'fabio',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
@@ -120,6 +121,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
+    'django.contrib.gis',
     'mptt', # http://django-mptt.github.com/django-mptt/tutorial.html
     'demoleaks.data',
 

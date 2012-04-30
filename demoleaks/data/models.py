@@ -1,19 +1,19 @@
-from django.db import models
+#from django.db import models
+from django.contrib.gis.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 
-
+# Para municipios es admin_level = 8
 class Place(MPTTModel):
     name = models.CharField(max_length=80, unique=False)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
-    #population
-    #polygon
+    polygon = models.MultiPolygonField(null=True, blank=True)
+    objects = models.GeoManager()
+
+    def __unicode__(self):
+        return self.name
 
     class MPTTMeta:
         order_insertion_by = ['name']
-
-	def __unicode__(self):
-		return self.name
-
 
 
 class Election(models.Model):
