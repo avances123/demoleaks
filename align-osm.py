@@ -16,11 +16,24 @@ except:
 cur1 = conn1.cursor()
 cur2 = conn2.cursor()
 
+good = 0
+bad = 0
+x = 0
+
+
 cur1.execute("""SELECT name from data_place where level=3 order by name""")
 muns1 = cur1.fetchall()
+total = len(muns1)
 for mun in muns1:
-	print "Municipio: " + mun[0]
 	cur2.execute("""SELECT distinct(name) from planet_osm_polygon where name = %s and admin_level = '8';""",(mun[0],))
-	res = cur2.fetchall()
-	print res
+	res = cur2.fetchone()
+	x = x + 1
+	print "%d/%d" % (x,total)
+	if res is None:
+		bad = bad + 1
+		print "Municipio: " + mun[0]
+	else:
+		good = good + 1 
 
+print "Malos: %d / %d" % (bad,total)
+print "Buenos: %d / %d" % (good,total)
