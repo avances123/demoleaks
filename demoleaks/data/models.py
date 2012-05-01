@@ -17,16 +17,19 @@ class Place(MPTTModel):
 
 
 class Election(models.Model):
-	ELECTION_TYPES = (
+    ELECTION_TYPES = (
         ('SUPRANATIONAL', 'More than one country election'),
-		('NATIONAL', 'Whole country election'),
-    	('REGIONAL', 'Regional election'),
-    	('LOCAL', 'City level election'),
-   	)
-   	name = models.CharField(max_length=150)
-	date = models.DateTimeField('Date of the election')
-	type = models.CharField(max_length=20, choices=ELECTION_TYPES)
-	places = models.ManyToManyField(Place, through='Result')
+        ('NATIONAL', 'Whole country election'),
+        ('REGIONAL', 'Regional election'),
+        ('LOCAL', 'City level election'),
+    )
+    name = models.CharField(max_length=150)
+    date = models.DateTimeField('Date of the election')
+    type = models.CharField(max_length=20, choices=ELECTION_TYPES)
+    places = models.ManyToManyField(Place, through='Result')
+
+    def __unicode__(self):
+        return self.name
 
 
 
@@ -34,6 +37,9 @@ class Party(models.Model):
     name = models.CharField(max_length=80)
     acronym = models.CharField(max_length=20)
     country = models.ForeignKey(Place) # Comprobar que es de level = 0
+
+    def __unicode__(self):
+        return self.name
 
 
 # Many2Many intermediate classes
@@ -50,7 +56,10 @@ class Result(models.Model):
     place = models.ForeignKey(Place)
     election = models.ForeignKey(Election)
     parties = models.ManyToManyField(Party, through='ResultParties')
-	
+
+    def __unicode__(self):
+        return "Resultado de %s en %s" % (self.place,self.election)
+    
 
 class ResultParties(models.Model):
     num_votes = models.IntegerField()
@@ -58,3 +67,7 @@ class ResultParties(models.Model):
     result = models.ForeignKey(Result)
     party = models.ForeignKey(Party)
     
+    def __unicode__(self):
+        return "Resultado de %s en %s" % (self.party,self.result.place)
+    
+
