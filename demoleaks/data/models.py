@@ -6,7 +6,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 class Place(MPTTModel):
     name = models.CharField(max_length=80, unique=False)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
-    polygon = models.MultiPolygonField(null=True, blank=True)
+    polygon = models.MultiPolygonField(srid=900913,null=True, blank=True)
     objects = models.GeoManager()
 
     def __unicode__(self):
