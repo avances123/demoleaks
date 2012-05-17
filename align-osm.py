@@ -1,6 +1,6 @@
-#!/usr/bin/python2.4
+#!/usr/bin/python
 #
-# Small script to show PostgreSQL and Pyscopg together
+# 
 #
 
 import psycopg2
@@ -15,6 +15,7 @@ except:
 f = open('osm-errors.txt', 'w')
 cur1 = conn1.cursor()
 cur2 = conn2.cursor()
+cur3 = conn1.cursor()
 
 good = 0
 bad = 0
@@ -24,7 +25,7 @@ cur1.execute("""SELECT name from data_place where level=3 order by name""")
 muns1 = cur1.fetchall()
 total = len(muns1)
 for mun in muns1:
-	cur2.execute("""SELECT distinct(name) from planet_osm_polygon where name = %s and admin_level = '8';""",(mun[0],))
+	cur2.execute("""SELECT distinct(name),AsText(way) from planet_osm_polygon where name = %s and admin_level = '8';""",(mun[0],))
 	res = cur2.fetchone()
 	x = x + 1
 	#print "%d/%d" % (x,total)
@@ -33,8 +34,11 @@ for mun in muns1:
 		print mun[0]
 		f.write(mun[0])
 	else:
-		good = good + 1 
+		good = good + 1
+		cur3.execute("""UPDATE data_place set polygon=)
+
 
 print "Malos: %d / %d" % (bad,total)
 print "Buenos: %d / %d" % (good,total)
 f.close()
+

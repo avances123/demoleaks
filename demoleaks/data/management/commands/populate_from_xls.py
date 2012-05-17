@@ -170,11 +170,8 @@ class Command(BaseCommand):
                         respar.save()
                 num_col = num_col + 1
 
-        for pais in Place.objects.filter(level=0):
-            # Comunidades
-            for comu in Place.objects.filter(parent=pais):
-                # Provincias
-                for prov in Place.objects.filter(parent=prov):
+
+                        
 
             
 
