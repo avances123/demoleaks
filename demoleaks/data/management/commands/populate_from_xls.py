@@ -57,7 +57,7 @@ class Command(BaseCommand):
             else:
                 print "Error: you must choose 'y' or 'n'."
 
-    # MAIN PROGRAM
+    # MAIN PROGRA M
     def handle(self, *args, **options):
         filename = args[0]
         type = self.get_type_of_election(os.path.basename(filename))
@@ -121,7 +121,7 @@ class Command(BaseCommand):
             if m is not None:
                 main_name = m.group(1)
                 prefix = m.group(2)
-                name = prefix + ' ' + main_name
+                name = main_name + ', ' + prefix
             mun = Place(name=name, parent=pro)
             print "[%d/%d] %s >> %s >> %s" % (rowcount,numrows,com.name,pro.name,mun.name)
             try:
