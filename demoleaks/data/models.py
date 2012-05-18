@@ -1,6 +1,7 @@
 #from django.db import models
 from django.contrib.gis.db import models
 from mptt.models import MPTTModel, TreeForeignKey
+from django.utils.encoding import force_unicode
 
 # Para municipios es admin_level = 8
 class Place(MPTTModel):
@@ -10,7 +11,7 @@ class Place(MPTTModel):
     objects = models.GeoManager()
 
     def __unicode__(self):
-        return self.name
+        return force_unicode(self.name)
 
     class MPTTMeta:
         order_insertion_by = ['name']
@@ -29,7 +30,7 @@ class Election(models.Model):
     places = models.ManyToManyField(Place, through='Result')
 
     def __unicode__(self):
-        return self.name
+        return force_unicode(self.name)
 
 
 
@@ -39,7 +40,7 @@ class Party(models.Model):
     country = models.ForeignKey(Place) # Comprobar que es de level = 0
 
     def __unicode__(self):
-        return self.name
+        return force_unicode(self.name)
 
 
 # Many2Many intermediate classes
@@ -58,7 +59,7 @@ class Result(models.Model):
     parties = models.ManyToManyField(Party, through='ResultParties')
 
     def __unicode__(self):
-        return "Resultado de %s en %s" % (self.place,self.election)
+        return force_unicode("Resultado de %s en %s" % (self.place,self.election))
     
 
 class ResultParties(models.Model):
@@ -68,6 +69,6 @@ class ResultParties(models.Model):
     party = models.ForeignKey(Party)
     
     def __unicode__(self):
-        return "Resultado de %s en %s" % (self.party,self.result.place)
+        return force_unicode("Resultado de %s en %s" % (self.party,self.result.place))
     
 
