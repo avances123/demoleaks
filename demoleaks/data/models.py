@@ -3,6 +3,7 @@ from django.contrib.gis.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 from django.utils.encoding import force_unicode
 
+
 # Para municipios es admin_level = 8
 class Place(MPTTModel):
     name = models.CharField(max_length=80, unique=False)

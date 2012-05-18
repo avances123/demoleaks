@@ -121,7 +121,8 @@ class Command(BaseCommand):
             if m is not None:
                 main_name = m.group(1)
                 prefix = m.group(2)
-                name = main_name + ', ' + prefix
+                #name = main_name + ', ' + prefix
+                name = prefix + ' ' + main_name 
             mun = Place(name=name, parent=pro)
             print "[%d/%d] %s >> %s >> %s" % (rowcount,numrows,com.name,pro.name,mun.name)
             try:
