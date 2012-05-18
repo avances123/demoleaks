@@ -43,8 +43,7 @@ for level in xrange(1,4):
 		if res is None:
 			bad = bad + 1
 			f.write(place[0]+"\n")
-			print "BAD: %s" % place[0]
-			print "%d/%d \n\n" % (x,total)
+			print "[%d/%d] BAD: %s" % (x,total,place[0])
 		else:
 			good = good + 1
 			cur3.execute("""UPDATE data_place set polygon=GeomFromText(%s,4326) where name=%s;""",(res[1],res[0]))
