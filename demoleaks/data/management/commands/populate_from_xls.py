@@ -20,6 +20,7 @@ class Command(BaseCommand):
         print place.name
         data={
             'name':place.name.encode('utf-8'),
+            #'name':place.name,
             'username':'avances123',
             'lang':'es',
             'type':'json',
@@ -29,8 +30,8 @@ class Command(BaseCommand):
             }
         f = urllib2.urlopen("http://api.geonames.org/searchJSON?" + urllib.urlencode(data))
         j = json.load(f)
-        logging.info("CHANGE:  %s  ==>  %s",place.name,j['geonames'][0]['name'])
-        return j['geonames'][0]['name']
+        logging.info("CHANGE:  %s  ==>  %s",place.name.encode('utf-8'),j['geonames'][0]['name'].encode('utf-8'))
+        return j['geonames'][0]['name'].encode('utf-8')
 
     def get_type_of_election(self,filename):
         election_type = {
@@ -86,7 +87,7 @@ class Command(BaseCommand):
         election.save()
   
         # Create the "Spain" Place  TODO get_or_create
-        spain = Place(name="España")
+        spain = Place(name=u'España')
         try:
             spain = Place.objects.get(name__exact=spain.name)
         except Place.DoesNotExist:
