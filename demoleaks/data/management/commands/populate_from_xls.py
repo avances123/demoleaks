@@ -4,16 +4,15 @@ from demoleaks.data.models import Place,Election,Result,Party,ResultParties
 from openpyxl.reader.excel import load_workbook
 import datetime,re,os
 from optparse import make_option
-
-#from demoleaks.data.duplicates import merge_model_objects
+import logging
 
 
 class Command(BaseCommand):
     args = u'filename'
     help = u'This command parses the xlsx files from Spanish Goverment, you can download them at http://bit.ly/IJol5A '
     digits = re.compile(r"^\d+")
-    prefixre = re.compile(r"^(.+)\s+\((.+)\).*$")
-    
+    prefixre = re.compile(r"^(.+)\s+\((.+)\).*$") # Provencio (El)
+    logging.basicConfig(level=logging.INFO)
 
     option_list = BaseCommand.option_list + (
         make_option('--solve-dups',
@@ -27,7 +26,9 @@ class Command(BaseCommand):
         election_type = {
             '02': 'NATIONAL', 
             '07': 'SUPRANATIONAL', 
-            'jack': 'LOCAL'
+            'number_to_find': 'LOCAL',
+            'number_to_find': 'REGIONAL'
+
         }
         return election_type[filename.split('_')[0]]
 
@@ -57,26 +58,31 @@ class Command(BaseCommand):
             else:
                 print "Error: you must choose 'y' or 'n'."
 
-    # MAIN PROGRA M
+    # MAIN PROGRAM
     def handle(self, *args, **options):
         filename = args[0]
         type = self.get_type_of_election(os.path.basename(filename))
         date = self.get_date_of_election(os.path.basename(filename))
         election = Election(date=date,type=type)
-        print "Parsing " + filename
+        logging.info("Loading: %s ...",filename)
         wb = load_workbook(filename)
         ws = wb.get_active_sheet()
         numrows = ws.get_highest_row() - 6
         rowcount = 0
+        logging.info(" %d Rows to be parsed",numrows)
         election.name = ws.cell(coordinate='A3').value.strip()
         election.save()
-        print "Populating data of " + election.name
   
         # Create the "Spain" Place  TODO get_or_create
         spain = Place(name="España")
-        spain.save()
+        try:
+            spain = Place.objects.get(name__exact=spain.name)
+        except Place.DoesNotExist:
+            spain.save()
+            logging.info("NEW PLACE: %s",spain.name)
 
         # Save the party names into a dict
+        logging.info("Saving Parties ...")
         parties_list = []
         for col in ws.columns[13:]:
             if col[4].value is not None:            
@@ -91,9 +97,10 @@ class Command(BaseCommand):
                     par = Party.objects.get(acronym__exact=acro,country=spain)
                 except Party.DoesNotExist:
                     par.save()
-                    print "Saved " + name
+                    logging.info("NEW PARTY: %s",name)
                 parties_list.append(par)
 
+        logging.info("Saving Places ...")
         # BUCLE general (para cada fila...)
         for row in ws.rows[6:]:
             rowcount = rowcount + 1
@@ -103,7 +110,8 @@ class Command(BaseCommand):
                 com = Place.objects.get(name__exact=com.name,parent=spain)
             except Place.DoesNotExist:
                 com.save()
-                print "Saved " + com.name
+                logging.info("NEW PLACE: %s",com.name)
+
 
 
             # Provincia
@@ -112,7 +120,8 @@ class Command(BaseCommand):
                 pro = Place.objects.get(name__exact=pro.name, parent=com)
             except Place.DoesNotExist:
                 pro.save()
-                print "Saved " + pro.name + " in " + com.name
+                logging.info("NEW PLACE: %s",pro.name)
+
 
 
             # Municipio
@@ -124,7 +133,7 @@ class Command(BaseCommand):
                 #name = main_name + ', ' + prefix
                 name = prefix + ' ' + main_name 
             mun = Place(name=name, parent=pro)
-            print "[%d/%d] %s >> %s >> %s" % (rowcount,numrows,com.name,pro.name,mun.name)
+            logging.info("[%d/%d] %s >> %s >> %s",rowcount,numrows,com.name,pro.name,mun.name)
             try:
                 mun = Place.objects.get(name__exact=mun.name,parent=pro)
             except Place.DoesNotExist:
@@ -132,7 +141,7 @@ class Command(BaseCommand):
                     raw_id = self.wait_user_input()
                     if raw_id is None:
                         mun.save()
-                        print "[%d/%d] New saved place: %s >> %s >> %s" % (rowcount,numrows,com.name,pro.name,mun.name)
+                        logging.info("[%d/%d] NEW PLACE: %s >> %s >> %s",rowcount,numrows,com.name,pro.name,mun.name)
                     else:
                         mun = Place.objects.get(id=raw_id)
                 else:
