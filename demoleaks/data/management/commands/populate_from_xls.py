@@ -15,11 +15,17 @@ class Command(BaseCommand):
     digits = re.compile(r"^\d+")
     prefixre = re.compile(r"^(.+)\s+\((.+)\).*$") # Provencio (El)
     logging.basicConfig(level=logging.INFO)
+    mapping_places={}
 
-    def get_geoname(self,place):
-        print place.name
+    def get_geoname(self,placename):
+
+        try:
+            return self.mapping_places[placename]
+        except:
+            pass
+
         data={
-            'name':place.name.encode('utf-8'),
+            'name':placename.encode('utf-8'),
             #'name':place.name,
             'username':'avances123',
             'lang':'es',
@@ -30,8 +36,14 @@ class Command(BaseCommand):
             }
         f = urllib2.urlopen("http://api.geonames.org/searchJSON?" + urllib.urlencode(data))
         j = json.load(f)
-        logging.info("CHANGE:  %s  ==>  %s",place.name.encode('utf-8'),j['geonames'][0]['name'].encode('utf-8'))
-        return j['geonames'][0]['name'].encode('utf-8')
+        try:
+            logging.info("CHANGE:  %s  ==>  %s",placename.encode('utf-8'),j['geonames'][0]['name'].encode('utf-8'))
+            self.mapping_places[placename] = j['geonames'][0]['name']
+            return j['geonames'][0]['name'].encode('utf-8')
+        except:
+            logging.error("Geonames problem: ",j)
+            self.mapping_places[placename] = "ERROR"
+            return placename
 
     def get_type_of_election(self,filename):
         election_type = {
@@ -69,6 +81,10 @@ class Command(BaseCommand):
             else:
                 print "Error: you must choose 'y' or 'n'."
 
+
+
+
+
     # MAIN PROGRAM
     def handle(self, *args, **options):
         
@@ -85,17 +101,23 @@ class Command(BaseCommand):
         logging.info(" %d Rows to be parsed",numrows)
         election.name = ws.cell(coordinate='A3').value.strip()
         election.save()
+
+        try:
+            with open('geonames_map.json', 'rb') as fp:
+                self.mapping_places = json.load(fp)
+        except:
+            pass
+
   
-        # Create the "Spain" Place  TODO get_or_create
-        spain = Place(name=u'España')
+        raw_name = u'España'
+        spain = Place(name=self.get_geoname(raw_name))
         try:
             spain = Place.objects.get(name__exact=spain.name)
         except Place.DoesNotExist:
-            spain.name = self.get_geoname(spain)
             spain.save()
-            logging.info("NEW PLACE: %s",spain.name)
         
 
+        # PARTIES
         # Save the party names into a dict
         logging.info("Saving Parties ...")
         parties_list = []
@@ -115,47 +137,40 @@ class Command(BaseCommand):
                     logging.info("NEW PARTY: %s",name)
                 parties_list.append(par)
 
+
+
+        
+
         logging.info("Saving Places ...")
         # BUCLE general (para cada fila...)
         for row in ws.rows[6:]:
             rowcount = rowcount + 1
+            logging.info("[%d/%d]",rowcount,numrows)
+
             # Comunidad
-            com = Place(name=row[0].value.rstrip(),parent=spain)
+            raw_name = row[0].value.rstrip()
+            com = Place(name=self.get_geoname(raw_name),parent=spain)
             try:
                 com = Place.objects.get(name__exact=com.name,parent=spain)
             except Place.DoesNotExist:
-                com.name = self.get_geoname(com)
                 com.save()
-                logging.info("NEW PLACE: %s",com.name)
-
-
 
             # Provincia
-            pro = Place(name=row[2].value.rstrip(), parent=com)
+            raw_name = row[2].value.rstrip()
+            pro = Place(name=self.get_geoname(raw_name),parent=com)         
             try:
                 pro = Place.objects.get(name__exact=pro.name, parent=com)
             except Place.DoesNotExist:
-                pro.name = self.get_geoname(pro)
                 pro.save()
-                logging.info("NEW PLACE: %s",pro.name)
-
 
 
             # Municipio
-            name = row[4].value.rstrip()
-            m = self.prefixre.match(name)
-            if m is not None:
-                main_name = m.group(1)
-                prefix = m.group(2)
-                #name = main_name + ', ' + prefix
-                name = prefix + ' ' + main_name 
-            mun = Place(name=name, parent=pro)
+            raw_name = row[4].value.rstrip()
+            mun = Place(name=self.get_geoname(raw_name), parent=pro)
             try:
                 mun = Place.objects.get(name__exact=mun.name,parent=pro)
             except Place.DoesNotExist:                    
-                mun.name = self.get_geoname(mun)
                 mun.save()
-                logging.info("[%d/%d] NEW PLACE: %s >> %s >> %s",rowcount,numrows,com.name,pro.name,mun.name)
                 
 
             population = self.read_int_cell(row[5])
@@ -189,6 +204,9 @@ class Command(BaseCommand):
                     except ResultParties.DoesNotExist:
                         respar.save()
                 num_col = num_col + 1
+
+        with open('geonames_map.json', 'wb') as fp:
+            json.dump(self.mapping_places, fp)
 
 
                         
