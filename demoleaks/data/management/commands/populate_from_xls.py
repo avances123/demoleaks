@@ -5,6 +5,8 @@ from openpyxl.reader.excel import load_workbook
 import datetime,re,os
 from optparse import make_option
 import logging
+import urllib2,urllib,json
+
 
 
 class Command(BaseCommand):
@@ -14,13 +16,21 @@ class Command(BaseCommand):
     prefixre = re.compile(r"^(.+)\s+\((.+)\).*$") # Provencio (El)
     logging.basicConfig(level=logging.INFO)
 
-    option_list = BaseCommand.option_list + (
-        make_option('--solve-dups',
-            action='store_true',
-            dest='solve-dups',
-            default=False,
-            help='Solve duplicate object with different name'),
-        )
+    def get_geoname(self,place):
+        print place.name
+        data={
+            'name':place.name.encode('utf-8'),
+            'username':'avances123',
+            'lang':'es',
+            'type':'json',
+            'country':'ES',
+            'maxRows':1,
+            'featureClass':'A',
+            }
+        f = urllib2.urlopen("http://api.geonames.org/searchJSON?" + urllib.urlencode(data))
+        j = json.load(f)
+        logging.info("CHANGE:  %s  ==>  %s",place.name,j['geonames'][0]['name'])
+        return j['geonames'][0]['name']
 
     def get_type_of_election(self,filename):
         election_type = {
@@ -60,6 +70,8 @@ class Command(BaseCommand):
 
     # MAIN PROGRAM
     def handle(self, *args, **options):
+        
+
         filename = args[0]
         type = self.get_type_of_election(os.path.basename(filename))
         date = self.get_date_of_election(os.path.basename(filename))
@@ -78,8 +90,10 @@ class Command(BaseCommand):
         try:
             spain = Place.objects.get(name__exact=spain.name)
         except Place.DoesNotExist:
+            spain.name = self.get_geoname(spain)
             spain.save()
             logging.info("NEW PLACE: %s",spain.name)
+        
 
         # Save the party names into a dict
         logging.info("Saving Parties ...")
@@ -109,6 +123,7 @@ class Command(BaseCommand):
             try:
                 com = Place.objects.get(name__exact=com.name,parent=spain)
             except Place.DoesNotExist:
+                com.name = self.get_geoname(com)
                 com.save()
                 logging.info("NEW PLACE: %s",com.name)
 
@@ -119,6 +134,7 @@ class Command(BaseCommand):
             try:
                 pro = Place.objects.get(name__exact=pro.name, parent=com)
             except Place.DoesNotExist:
+                pro.name = self.get_geoname(pro)
                 pro.save()
                 logging.info("NEW PLACE: %s",pro.name)
 
@@ -133,19 +149,12 @@ class Command(BaseCommand):
                 #name = main_name + ', ' + prefix
                 name = prefix + ' ' + main_name 
             mun = Place(name=name, parent=pro)
-            logging.info("[%d/%d] %s >> %s >> %s",rowcount,numrows,com.name,pro.name,mun.name)
             try:
                 mun = Place.objects.get(name__exact=mun.name,parent=pro)
-            except Place.DoesNotExist:
-                if options['solve-dups']:
-                    raw_id = self.wait_user_input()
-                    if raw_id is None:
-                        mun.save()
-                        logging.info("[%d/%d] NEW PLACE: %s >> %s >> %s",rowcount,numrows,com.name,pro.name,mun.name)
-                    else:
-                        mun = Place.objects.get(id=raw_id)
-                else:
-                    mun.save()
+            except Place.DoesNotExist:                    
+                mun.name = self.get_geoname(mun)
+                mun.save()
+                logging.info("[%d/%d] NEW PLACE: %s >> %s >> %s",rowcount,numrows,com.name,pro.name,mun.name)
                 
 
             population = self.read_int_cell(row[5])
