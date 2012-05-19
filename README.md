@@ -12,4 +12,4 @@ If you think you have some electoral data to be shared with the population pleas
 5. **ResultParties** Electoral data related of one Party in one Result
 
 ### The Documentation
-See Wiki
+See [https://github.com/avances123/demoleaks/wiki/_pages](wiki)
