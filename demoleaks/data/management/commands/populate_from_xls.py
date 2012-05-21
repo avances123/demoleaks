@@ -2,48 +2,70 @@
 from django.core.management.base import BaseCommand, CommandError
 from demoleaks.data.models import Place,Election,Result,Party,ResultParties
 from openpyxl.reader.excel import load_workbook
-import datetime,re,os
+import datetime,re,os,time,signal,sys
 from optparse import make_option
 import logging
 import urllib2,urllib,json
 
+
+MAPFILE='geonames_map.json'
 
 
 class Command(BaseCommand):
     args = u'filename'
     help = u'This command parses the xlsx files from Spanish Goverment, you can download them at http://bit.ly/IJol5A '
     digits = re.compile(r"^\d+")
-    prefixre = re.compile(r"^(.+)\s+\((.+)\).*$") # Provencio (El)
     logging.basicConfig(level=logging.INFO)
     mapping_places={}
+    MAPFILE='geonames_map.json'
 
-    def get_geoname(self,placename):
 
+    # Save dict if i press ctrl+c
+    def signal_handler(self,signal, frame):
+        print 'You pressed Ctrl+C, Saving mapping file...'
+        last_data = None
         try:
-            return self.mapping_places[placename]
-        except:
+            fp = open(MAPFILE, 'w+')
+            json.dump(self.mapping_places, fp)
+            fp.close()
+        except Exception as error:
+            print error 
+        sys.exit(0)
+
+    def get_geoname(self,placename,level):
+        localname = placename
+              
+        # RETURN HIT ON MAPPING
+        try:
+            return self.mapping_places[localname]
+        except: #KeyError
             pass
 
-        data={
-            'name':placename.encode('utf-8'),
-            #'name':place.name,
+        # GEONAMES REQUEST
+        data_request={
+            'name':localname.encode('utf-8'),
             'username':'avances123',
             'lang':'es',
             'type':'json',
             'country':'ES',
             'maxRows':1,
-            'featureClass':'A',
+            'featureCode': "ADM%d" % level 
             }
-        f = urllib2.urlopen("http://api.geonames.org/searchJSON?" + urllib.urlencode(data))
-        j = json.load(f)
+        geonames_response = urllib2.urlopen("http://api.geonames.org/searchJSON?" + urllib.urlencode(data_request))
+        geonames_object = json.load(geonames_response)
+        time.sleep(2)
+
+        # IF GEONAMES RETURN A RESULT
         try:
-            logging.info("CHANGE:  %s  ==>  %s",placename.encode('utf-8'),j['geonames'][0]['name'].encode('utf-8'))
-            self.mapping_places[placename] = j['geonames'][0]['name']
-            return j['geonames'][0]['name'].encode('utf-8')
-        except:
-            logging.error("Geonames problem: ",j)
-            self.mapping_places[placename] = "ERROR"
-            return placename
+            #geoname = geonames_object['geonames'][0]['name'].encode('utf-8')
+            geoname = geonames_object['geonames'][0]['name']
+            print "Added to mapping dict:  %s  ==>  %s" % (localname,geoname)
+            self.mapping_places[localname] = geoname
+            signal.signal(signal.SIGINT, self.signal_handler)
+            return geoname
+        except Exception as error:
+            print "GEONAMES ERROR: %s had no results" % localname
+            return localname
 
     def get_type_of_election(self,filename):
         election_type = {
@@ -87,7 +109,17 @@ class Command(BaseCommand):
 
     # MAIN PROGRAM
     def handle(self, *args, **options):
-        
+       
+        try:
+            if not os.path.exists(MAPFILE):
+                self.fp = open(MAPFILE, 'w+')
+            else:
+                self.fp = open(MAPFILE, 'r+')
+            self.mapping_places = json.load(self.fp)
+        except Exception as error:
+            # Extra data: line 1 column 114 - line 1 column 406 (char 114 - 406)
+            print error
+            pass
 
         filename = args[0]
         type = self.get_type_of_election(os.path.basename(filename))
@@ -102,15 +134,12 @@ class Command(BaseCommand):
         election.name = ws.cell(coordinate='A3').value.strip()
         election.save()
 
-        try:
-            with open('geonames_map.json', 'rb') as fp:
-                self.mapping_places = json.load(fp)
-        except:
-            pass
+        
 
   
         raw_name = u'España'
-        spain = Place(name=self.get_geoname(raw_name))
+        #spain = Place(name=self.get_geoname(raw_name,None))
+        spain = Place(name=raw_name)
         try:
             spain = Place.objects.get(name__exact=spain.name)
         except Place.DoesNotExist:
@@ -149,7 +178,7 @@ class Command(BaseCommand):
 
             # Comunidad
             raw_name = row[0].value.rstrip()
-            com = Place(name=self.get_geoname(raw_name),parent=spain)
+            com = Place(name=self.get_geoname(raw_name,1),parent=spain)
             try:
                 com = Place.objects.get(name__exact=com.name,parent=spain)
             except Place.DoesNotExist:
@@ -157,7 +186,7 @@ class Command(BaseCommand):
 
             # Provincia
             raw_name = row[2].value.rstrip()
-            pro = Place(name=self.get_geoname(raw_name),parent=com)         
+            pro = Place(name=self.get_geoname(raw_name,2),parent=com)         
             try:
                 pro = Place.objects.get(name__exact=pro.name, parent=com)
             except Place.DoesNotExist:
@@ -166,7 +195,7 @@ class Command(BaseCommand):
 
             # Municipio
             raw_name = row[4].value.rstrip()
-            mun = Place(name=self.get_geoname(raw_name), parent=pro)
+            mun = Place(name=self.get_geoname(raw_name,3), parent=pro)
             try:
                 mun = Place.objects.get(name__exact=mun.name,parent=pro)
             except Place.DoesNotExist:                    
@@ -205,9 +234,8 @@ class Command(BaseCommand):
                         respar.save()
                 num_col = num_col + 1
 
-        with open('geonames_map.json', 'wb') as fp:
-            json.dump(self.mapping_places, fp)
-
+        json.dump(self.mapping_places, fp)
+        fp.close()
 
                         
 
