@@ -17,8 +17,8 @@ class Command(BaseCommand):
     help = u'This command parses the xlsx files from Spanish Goverment, you can download them at http://bit.ly/IJol5A '
     digits = re.compile(r"^\d+")
     logging.basicConfig(level=logging.INFO)
-    mapping_places={}
-    MAPFILE='geonames_map.json'
+    mapping_places={1: {},2: {},3: {}}
+    
 
 
     # Save dict if i press ctrl+c
@@ -36,10 +36,9 @@ class Command(BaseCommand):
     def get_geoname(self,localname,level):
         signal.signal(signal.SIGINT, self.signal_handler)
         geoname = reconcile(localname,level,self.mapping_places)  
-        self.mapping_places[localname] = geoname
+        self.mapping_places[str(level)][localname] = geoname
         #signal.signal(signal.SIGINT, self.signal_handler)
-        return geoname
-            
+        return geoname            
 
     def get_type_of_election(self,filename):
         election_type = {
@@ -62,22 +61,6 @@ class Command(BaseCommand):
             return cell.value
         else:
             return 0
-
-    def wait_user_input(self):
-        while True:
-            user_response = raw_input("Do you wish to continue the migration of this object (y/[n])? ")
-            if user_response == '' or user_response == 'n':
-                return None
-            elif user_response == 'y':
-                place_id = raw_input("Insert the id (pk) of the Place you think it is duplicated \n")
-                if self.digits.match(place_id):                    
-                    return place_id
-                else:
-                    print "Error: you must write integers here"
-            else:
-                print "Error: you must choose 'y' or 'n'."
-
-
 
     # MAIN PROGRAM
     def handle(self, *args, **options):

@@ -6,11 +6,10 @@ import urllib2,urllib,json
 
 def reconcile(name,level,mapping_places):
     try:
-        return mapping_places[name]
+        return mapping_places[str(level)][name]
     except:
         pass
         
-
     data_request={'name':name.encode('utf-8'),'username':'avances123','lang':'es','type':'json','country':'ES','maxRows':1,'featureCode': "ADM%d" % level}
     print "http://api.geonames.org/searchJSON?" + urllib.urlencode(data_request)
     geonames_response = urllib2.urlopen("http://api.geonames.org/searchJSON?" + urllib.urlencode(data_request))
@@ -30,7 +29,7 @@ def reconcile(name,level,mapping_places):
             print "Added to mapping dict (A):  %s  ==>  %s" % (name,geoname)
             return geoname
         except:
-            mapping_places[name] = name
+            mapping_places[level][name] = name
             print "GEONAMES ERROR: %s had no results" % name
             ferr = open('geonames_errors.log','ab')
             ferr.write(name + '\n')
