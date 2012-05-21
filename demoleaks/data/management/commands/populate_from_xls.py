@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.core.management.base import BaseCommand, CommandError
 from demoleaks.data.models import Place,Election,Result,Party,ResultParties
+from demoleaks.data.utils import *
 from openpyxl.reader.excel import load_workbook
 import datetime,re,os,time,signal,sys
 from optparse import make_option
@@ -32,40 +33,13 @@ class Command(BaseCommand):
             print error 
         sys.exit(0)
 
-    def get_geoname(self,placename,level):
-        localname = placename
-              
-        # RETURN HIT ON MAPPING
-        try:
-            return self.mapping_places[localname]
-        except: #KeyError
-            pass
-
-        # GEONAMES REQUEST
-        data_request={
-            'name':localname.encode('utf-8'),
-            'username':'avances123',
-            'lang':'es',
-            'type':'json',
-            'country':'ES',
-            'maxRows':1,
-            'featureCode': "ADM%d" % level 
-            }
-        geonames_response = urllib2.urlopen("http://api.geonames.org/searchJSON?" + urllib.urlencode(data_request))
-        geonames_object = json.load(geonames_response)
-        time.sleep(2)
-
-        # IF GEONAMES RETURN A RESULT
-        try:
-            #geoname = geonames_object['geonames'][0]['name'].encode('utf-8')
-            geoname = geonames_object['geonames'][0]['name']
-            print "Added to mapping dict:  %s  ==>  %s" % (localname,geoname)
-            self.mapping_places[localname] = geoname
-            signal.signal(signal.SIGINT, self.signal_handler)
-            return geoname
-        except Exception as error:
-            print "GEONAMES ERROR: %s had no results" % localname
-            return localname
+    def get_geoname(self,localname,level):
+        signal.signal(signal.SIGINT, self.signal_handler)
+        geoname = reconcile(localname,level,self.mapping_places)  
+        self.mapping_places[localname] = geoname
+        #signal.signal(signal.SIGINT, self.signal_handler)
+        return geoname
+            
 
     def get_type_of_election(self,filename):
         election_type = {
@@ -105,8 +79,6 @@ class Command(BaseCommand):
 
 
 
-
-
     # MAIN PROGRAM
     def handle(self, *args, **options):
        
@@ -133,8 +105,6 @@ class Command(BaseCommand):
         logging.info(" %d Rows to be parsed",numrows)
         election.name = ws.cell(coordinate='A3').value.strip()
         election.save()
-
-        
 
   
         raw_name = u'España'
