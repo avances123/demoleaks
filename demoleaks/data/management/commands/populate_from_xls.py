@@ -16,7 +16,6 @@ class Command(BaseCommand):
     help = u'This command parses the xlsx files from Spanish Goverment, you can download them at http://bit.ly/IJol5A '
     digits = re.compile(r"^\d+")
     logging.basicConfig(level=logging.INFO)
-    mapping_places={'1': {},'2': {},'3': {}}
     
     # Save dict if i press ctrl+c
     def signal_handler(self,signal, frame):
@@ -54,13 +53,13 @@ class Command(BaseCommand):
 
     # MAIN PROGRAM
     def handle(self, *args, **options):
-               
         try:
             if not os.path.exists(MAPFILE):
                 self.fp = open(MAPFILE, 'w+')
+                self.mapping_places={'1': {},'2': {},'3': {}}
             else:
                 self.fp = open(MAPFILE, 'r+')
-            self.mapping_places = json.load(self.fp)
+                self.mapping_places = json.load(self.fp)
         except Exception as error:
             # Extra data: line 1 column 114 - line 1 column 406 (char 114 - 406)
             print "JSON ERROR: %s" % error
