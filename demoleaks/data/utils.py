@@ -36,8 +36,15 @@ def reconcile(name,level,mapping_places):
     except:
         pass
         
-    data_request={'name':name.encode('utf-8'),'username':'avances123','lang':'es','type':'json','country':'ES','maxRows':1,'featureCode': "ADM%d" % level}
-    print "http://api.geonames.org/searchJSON?" + urllib.urlencode(data_request)
+    data_request={
+    'name':name.encode('utf-8'),
+    'username':'avances123',
+    'lang':'es','type':'json',
+    'country':'ES',
+    'maxRows':1,
+    'featureCode': "ADM%d" % level
+    }
+    #print "http://api.geonames.org/searchJSON?" + urllib.urlencode(data_request)
     geonames_response = urllib2.urlopen("http://api.geonames.org/searchJSON?" + urllib.urlencode(data_request))
     geonames_object = json.load(geonames_response)
     time.sleep(2)
@@ -56,7 +63,8 @@ def reconcile(name,level,mapping_places):
             return geoname
         except:
             print "GEONAMES ERROR: %s had no results" % name
-            ferr = open('geonames_errors.csv','ab')
-            ferr.write(name.encode('utf-8') + ',' + str(level) + '\n')
-            ferr.close()
-            return name  
+            print json.dumps(geonames_object)
+            #ferr = open('geonames_errors.csv','ab')
+            #ferr.write(name.encode('utf-8') + ',' + str(level) + '\n')
+            #ferr.close()
+            sys.exit(1) 

@@ -28,9 +28,12 @@ class Command(BaseCommand):
 
     def get_type_of_election(self,filename):
         election_type = {
+            '01': 'REFERENDUM',
             '02': 'NATIONAL', 
+            '03': 'SENATE',
+            
             '07': 'SUPRANATIONAL', 
-            'number_to_find': 'LOCAL',
+            
             'number_to_find': 'REGIONAL'
 
         }
@@ -38,7 +41,7 @@ class Command(BaseCommand):
 
     def get_date_of_election(self,filename):
         year = int(filename[3:7])
-        month = int(filename[8:9])
+        month = int(filename[7:9])
         return datetime.datetime(year=year,month=month,day=22)
 
     # Used for reading a cell suposed to be an integer
