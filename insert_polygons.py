@@ -1,7 +1,5 @@
 #!/usr/bin/python
-#
-# 
-#
+# -*- coding: utf-8 -*-
 from demoleaks.data.utils import *
 import json,sys
 import psycopg2
@@ -41,7 +39,12 @@ for level in sqls.keys():
         name = reconcile(rawname,level,mapping_places)
         mapping_places[str(level)][rawname] = name
         cur1.execute("""UPDATE data_place set polygon=GeomFromText(%s,4326) where name=%s and level=%s;""",(geom,name,level))
-    conn1.commit()
+        if cur1.rowcount == 0:
+            print "Place not found: %s skiping update" % name
+            continue
+        else:
+            print "Place found: %s, updating polygon" % name
+        conn1.commit()
 
 cur1.close()
 conn1.close()

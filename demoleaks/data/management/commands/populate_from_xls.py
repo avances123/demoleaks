@@ -5,10 +5,9 @@ from demoleaks.data.utils import *
 from openpyxl.reader.excel import load_workbook
 import datetime,re,os,time,signal,sys
 from optparse import make_option
-import logging
-import urllib2,urllib,json
+import logging,urllib2,urllib,json
 
-
+# File to save random names agains geonames
 MAPFILE='geonames_map.json'
 
 
@@ -19,29 +18,16 @@ class Command(BaseCommand):
     logging.basicConfig(level=logging.INFO)
     mapping_places={'1': {},'2': {},'3': {}}
     
-
-    def mapping_checkpoint(self):
-        try:
-            fp = open(MAPFILE, 'w+')
-            json.dump(self.mapping_places, fp)
-            fp.close()
-            print "Checkpoint writed"
-        except Exception as error:
-            print error 
-        
-
-
     # Save dict if i press ctrl+c
     def signal_handler(self,signal, frame):
         print 'You pressed Ctrl+C, Saving mapping file...'
-        self.mapping_checkpoint()
+        mapping_checkpoint(MAPFILE,self.mapping_places)
         sys.exit(0)
 
     def get_geoname(self,localname,level):
         signal.signal(signal.SIGINT, self.signal_handler)
         geoname = reconcile(localname,level,self.mapping_places)  
         self.mapping_places[str(level)][localname] = geoname
-        #signal.signal(signal.SIGINT, self.signal_handler)
         return geoname            
 
     def get_type_of_election(self,filename):
@@ -77,8 +63,8 @@ class Command(BaseCommand):
             self.mapping_places = json.load(self.fp)
         except Exception as error:
             # Extra data: line 1 column 114 - line 1 column 406 (char 114 - 406)
-            print error
-            pass
+            print "JSON ERROR: %s" % error
+            sys.exit(1)
 
         filename = args[0]
         type = self.get_type_of_election(os.path.basename(filename))
@@ -89,13 +75,12 @@ class Command(BaseCommand):
         ws = wb.get_active_sheet()
         numrows = ws.get_highest_row() - 6
         rowcount = 0
-        logging.info(" %d Rows to be parsed",numrows)
+        logging.info("%d Rows to be parsed",numrows)
         election.name = ws.cell(coordinate='A3').value.strip()
         election.save()
 
   
         raw_name = u'España'
-        #spain = Place(name=self.get_geoname(raw_name,None))
         spain = Place(name=raw_name)
         try:
             spain = Place.objects.get(name__exact=spain.name)

@@ -4,6 +4,16 @@ import datetime,re,os,time,signal,sys
 import urllib2,urllib,json
 
 
+
+def mapping_checkpoint(mapfile,mapping_places):
+    try:
+        fp = open(mapfile, 'w+')
+        json.dump(mapping_places, fp)
+        fp.close()
+        print "Checkpoint writed"
+    except Exception as error:
+        print error
+
 def reconcile(name,level,mapping_places):
     try:
         return mapping_places[str(level)][name]
@@ -31,6 +41,6 @@ def reconcile(name,level,mapping_places):
         except:
             print "GEONAMES ERROR: %s had no results" % name
             ferr = open('geonames_errors.log','ab')
-            ferr.write(name.encode('utf-8') + '\n')
+            ferr.write(name + '\n')
             ferr.close()
             return name  
