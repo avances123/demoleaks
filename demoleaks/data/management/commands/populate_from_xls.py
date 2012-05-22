@@ -17,20 +17,24 @@ class Command(BaseCommand):
     help = u'This command parses the xlsx files from Spanish Goverment, you can download them at http://bit.ly/IJol5A '
     digits = re.compile(r"^\d+")
     logging.basicConfig(level=logging.INFO)
-    mapping_places={1: {},2: {},3: {}}
+    mapping_places={'1': {},'2': {},'3': {}}
     
+
+    def mapping_checkpoint(self):
+        try:
+            fp = open(MAPFILE, 'w+')
+            json.dump(self.mapping_places, fp)
+            fp.close()
+            print "Checkpoint writed"
+        except Exception as error:
+            print error 
+        
 
 
     # Save dict if i press ctrl+c
     def signal_handler(self,signal, frame):
         print 'You pressed Ctrl+C, Saving mapping file...'
-        last_data = None
-        try:
-            fp = open(MAPFILE, 'w+')
-            json.dump(self.mapping_places, fp)
-            fp.close()
-        except Exception as error:
-            print error 
+        self.mapping_checkpoint()
         sys.exit(0)
 
     def get_geoname(self,localname,level):
@@ -64,7 +68,7 @@ class Command(BaseCommand):
 
     # MAIN PROGRAM
     def handle(self, *args, **options):
-       
+               
         try:
             if not os.path.exists(MAPFILE):
                 self.fp = open(MAPFILE, 'w+')
@@ -118,14 +122,15 @@ class Command(BaseCommand):
                     par.save()
                     logging.info("NEW PARTY: %s",name)
                 parties_list.append(par)
-
-
-
         
 
         logging.info("Saving Places ...")
+        x = 0
         # BUCLE general (para cada fila...)
         for row in ws.rows[6:]:
+            x = x + 1
+            if (x % 25 == 0):
+                self.mapping_checkpoint()
             rowcount = rowcount + 1
             logging.info("[%d/%d]",rowcount,numrows)
 
@@ -144,6 +149,7 @@ class Command(BaseCommand):
                 pro = Place.objects.get(name__exact=pro.name, parent=com)
             except Place.DoesNotExist:
                 pro.save()
+            
 
 
             # Municipio
