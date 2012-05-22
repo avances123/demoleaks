@@ -193,8 +193,8 @@ class Command(BaseCommand):
                         respar.save()
                 num_col = num_col + 1
 
-        json.dump(self.mapping_places, fp)
-        fp.close()
+        json.dump(self.mapping_places, self.fp)
+        self.fp.close()
 
                         
 

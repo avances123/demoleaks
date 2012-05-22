@@ -29,9 +29,8 @@ def reconcile(name,level,mapping_places):
             print "Added to mapping dict (A):  %s  ==>  %s" % (name,geoname)
             return geoname
         except:
-            mapping_places[level][name] = name
             print "GEONAMES ERROR: %s had no results" % name
             ferr = open('geonames_errors.log','ab')
-            ferr.write(name + '\n')
+            ferr.write(name.encode('utf-8') + '\n')
             ferr.close()
             return name  
