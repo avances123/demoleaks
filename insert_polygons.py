@@ -15,9 +15,10 @@ try:
     MAPFILE = 'geonames_map.json'
     if not os.path.exists(MAPFILE):
         fp = open(MAPFILE, 'w+')
+        mapping_places={'1': {},'2': {},'3': {}}
     else:
         fp = open(MAPFILE, 'r+')
-    mapping_places = json.load(fp)
+        mapping_places = json.load(fp)
 except Exception as error:
     print "ERROR: %s" % error
     sys.exit(0)

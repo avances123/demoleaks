@@ -7,9 +7,6 @@ import datetime,re,os,time,signal,sys
 from optparse import make_option
 import logging,urllib2,urllib,json
 
-# File to save random names agains geonames
-MAPFILE='geonames_map.json'
-
 
 class Command(BaseCommand):
     args = u'filename'
@@ -20,7 +17,7 @@ class Command(BaseCommand):
     # Save dict if i press ctrl+c
     def signal_handler(self,signal, frame):
         print 'You pressed Ctrl+C, Saving mapping file...'
-        mapping_checkpoint(MAPFILE,self.mapping_places)
+        write_cache(self.mapping_places)
         sys.exit(0)
 
     def get_geoname(self,localname,level):
@@ -53,18 +50,7 @@ class Command(BaseCommand):
 
     # MAIN PROGRAM
     def handle(self, *args, **options):
-        try:
-            if not os.path.exists(MAPFILE):
-                self.fp = open(MAPFILE, 'w+')
-                self.mapping_places={'1': {},'2': {},'3': {}}
-            else:
-                self.fp = open(MAPFILE, 'r+')
-                self.mapping_places = json.load(self.fp)
-        except Exception as error:
-            # Extra data: line 1 column 114 - line 1 column 406 (char 114 - 406)
-            print "JSON ERROR: %s" % error
-            sys.exit(1)
-
+        self.mapping_places = read_cache()
         filename = args[0]
         type = self.get_type_of_election(os.path.basename(filename))
         date = self.get_date_of_election(os.path.basename(filename))
@@ -114,7 +100,7 @@ class Command(BaseCommand):
         for row in ws.rows[6:]:
             x = x + 1
             if (x % 25 == 0):
-                self.mapping_checkpoint()
+                write_cache(self.mapping_places)
             rowcount = rowcount + 1
             logging.info("[%d/%d]",rowcount,numrows)
 
@@ -177,8 +163,7 @@ class Command(BaseCommand):
                         respar.save()
                 num_col = num_col + 1
 
-        json.dump(self.mapping_places, self.fp)
-        self.fp.close()
+        write_cache(self.mapping_places)
 
                         
 

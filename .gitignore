@@ -1,6 +1,7 @@
 *.pyc
 *.xlsx*
 *.zip
+geonames_map.json
 demoleaks/data/xls-data/zips/
 demoleaks/data/fixtures/
 demoleaks/data/shp/

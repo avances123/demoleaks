@@ -4,6 +4,32 @@ import datetime,re,os,time,signal,sys
 import urllib2,urllib,json
 
 
+def read_cache(mapfile='geonames_map.json'):
+    try:
+        if not os.path.exists(mapfile):
+            fp = open(mapfile, 'w+')
+            mapping_places={'1': {},'2': {},'3': {}}
+        else:   
+            fp = open(mapfile, 'r+')
+            mapping_places = json.load(fp)
+    except Exception as error:
+        # Extra data: line 1 column 114 - line 1 column 406 (char 114 - 406)
+        print "JSON ERROR: %s" % error
+        sys.exit(1)
+    return mapping_places
+
+def write_cache(mapping_places,mapfile='geonames_map.json'):
+    try:
+        fp = open(mapfile, 'w+')
+        json.dump(mapping_places, fp)
+        fp.close()
+        print "Checkpoint writed"
+    except Exception as error:
+        # Extra data: line 1 column 114 - line 1 column 406 (char 114 - 406)
+        print "JSON ERROR: %s" % error
+        sys.exit(1)
+
+
 
 def mapping_checkpoint(mapfile,mapping_places):
     try:
@@ -16,7 +42,7 @@ def mapping_checkpoint(mapfile,mapping_places):
 
 def reconcile(name,level,mapping_places):
     try:
-        return mapping_places[str(level)][name]
+        return mapping_places[unicode(level)][name]
     except:
         pass
         
@@ -40,7 +66,7 @@ def reconcile(name,level,mapping_places):
             return geoname
         except:
             print "GEONAMES ERROR: %s had no results" % name
-            ferr = open('geonames_errors.log','ab')
-            ferr.write(name + '\n')
+            ferr = open('geonames_errors.csv','ab')
+            ferr.write(name.encode('utf-8') + ',' + str(level) + '\n')
             ferr.close()
             return name  
