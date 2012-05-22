@@ -3,7 +3,7 @@
 # 
 #
 from demoleaks.data.utils import *
-import json
+import json,sys
 import psycopg2
 
 try:
@@ -21,7 +21,8 @@ try:
         fp = open(MAPFILE, 'r+')
     mapping_places = json.load(fp)
 except Exception as error:
-    pass
+    print "ERROR: %s" % error
+    sys.exit(0)
 
 
 sqls={
@@ -38,8 +39,8 @@ for level in sqls.keys():
         rawname = place[0].decode('utf-8')
         geom = place[1]
         name = reconcile(rawname,level,mapping_places)
-        mapping_places[level][rawname] = name
-        cur1.execute("""UPDATE data_place set polygon=GeomFromText(%s,4326) where name=%s and level=%d;""",(geom,name,level))
+        mapping_places[str(level)][rawname] = name
+        cur1.execute("""UPDATE data_place set polygon=GeomFromText(%s,4326) where name=%s and level=%s;""",(geom,name,level))
     conn1.commit()
 
 cur1.close()
