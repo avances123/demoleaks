@@ -54,17 +54,24 @@ class Command(BaseCommand):
         filename = args[0]
         type = self.get_type_of_election(os.path.basename(filename))
         date = self.get_date_of_election(os.path.basename(filename))
-        election = Election(date=date,type=type)
+        
         logging.info("Loading: %s ...",filename)
         wb = load_workbook(filename)
         ws = wb.get_active_sheet()
         numrows = ws.get_highest_row() - 6
         rowcount = 0
         logging.info("%d Rows to be parsed",numrows)
-        election.name = ws.cell(coordinate='A3').value.strip()
-        election.save()
+        
 
-  
+        election = Election(date=date,type=type)
+        election.name = ws.cell(coordinate='A3').value.strip()
+        try:
+            election = Election.objects.get(name__exact=election.name)
+        except Election.DoesNotExist:
+            election.save()
+
+
+
         raw_name = u'España'
         spain = Place(name=raw_name)
         try:

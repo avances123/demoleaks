@@ -30,16 +30,6 @@ def write_cache(mapping_places,mapfile='geonames_map.json'):
         sys.exit(1)
 
 
-
-def mapping_checkpoint(mapfile,mapping_places):
-    try:
-        fp = open(mapfile, 'w+')
-        json.dump(mapping_places, fp)
-        fp.close()
-        print "Checkpoint writed"
-    except Exception as error:
-        print error
-
 def reconcile(name,level,mapping_places):
     try:
         return mapping_places[unicode(level)][name]
