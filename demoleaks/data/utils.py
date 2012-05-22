@@ -51,7 +51,7 @@ def ask_user(name):
     print "http://api.geonames.org/get?geonameId=%s&lang=es&username=avances123" % rawid
     geonames_response = urllib2.urlopen("http://api.geonames.org/get?geonameId=%s&lang=es&username=avances123" % rawid)
     xmldoc = minidom.parse(geonames_response)
-    element = xmldoc.getElementsByTagName('toponymName')[0]
+    element = xmldoc.getElementsByTagName('name')[0]
     print "Usando [%s] en lugar de [%s]" % (element.firstChild.nodeValue,name)
     return element.firstChild.nodeValue
 
@@ -78,7 +78,7 @@ def reconcile(name,level,mapping_places):
     geonames_object = json.load(geonames_response)
     time.sleep(2)
     try:
-        geoname = geonames_object['geonames'][0]['toponymName']
+        geoname = geonames_object['geonames'][0]['name']
         print "Added to mapping dict (ADM%d):  %s  ==>  %s" % (level,name,geoname)
         return geoname
     except:
