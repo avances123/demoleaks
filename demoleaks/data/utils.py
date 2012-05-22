@@ -2,6 +2,7 @@
 from demoleaks.data.utils import *
 import datetime,re,os,time,signal,sys
 import urllib2,urllib,json
+from xml.dom import minidom
 
 
 def read_cache(mapfile='geonames_map.json'):
@@ -29,6 +30,33 @@ def write_cache(mapping_places,mapfile='geonames_map.json'):
         print "JSON ERROR: %s" % error
         sys.exit(1)
 
+def ask_user(name):
+    data_request={
+    'country':'ES',
+    'name':name.encode('utf-8'),
+    'username':'avances123',
+    'lang':'es',
+    'type':'json',
+    'maxRows':10,
+    'featureCode': "A",
+    #'fuzzy':'0.9',
+    }
+    print
+    print "CHOOSE A NAME TO REPLACE [%s] " % name
+    geonames_response = urllib2.urlopen("http://api.geonames.org/searchJSON?" + urllib.urlencode(data_request))
+    geonames_object = json.load(geonames_response)
+    for x in geonames_object['geonames']:
+        print "[%s] (%s) [ %s ] " % (x['geonameId'],x['fcode'],x['name'])
+    rawid = raw_input("Which geonames id do you prefer to reconcile?: ")
+    print "http://api.geonames.org/get?geonameId=%s&lang=es&username=avances123" % rawid
+    geonames_response = urllib2.urlopen("http://api.geonames.org/get?geonameId=%s&lang=es&username=avances123" % rawid)
+    xmldoc = minidom.parse(geonames_response)
+    element = xmldoc.getElementsByTagName('toponymName')[0]
+    print "Usando [%s] en lugar de [%s]" % (element.firstChild.nodeValue,name)
+    return element.firstChild.nodeValue
+
+    
+
 
 def reconcile(name,level,mapping_places):
     try:
@@ -39,7 +67,8 @@ def reconcile(name,level,mapping_places):
     data_request={
     'name':name.encode('utf-8'),
     'username':'avances123',
-    'lang':'es','type':'json',
+    'lang':'es',
+    'type':'json',
     'country':'ES',
     'maxRows':1,
     'featureCode': "ADM%d" % level
@@ -53,18 +82,5 @@ def reconcile(name,level,mapping_places):
         print "Added to mapping dict (ADM%d):  %s  ==>  %s" % (level,name,geoname)
         return geoname
     except:
-        data_request['featureCode'] = 'A'
-        geonames_response = urllib2.urlopen("http://api.geonames.org/searchJSON?" + urllib.urlencode(data_request))
-        geonames_object = json.load(geonames_response)
-        time.sleep(2)
-        try:
-            geoname = geonames_object['geonames'][0]['toponymName']
-            print "Added to mapping dict (A):  %s  ==>  %s" % (name,geoname)
-            return geoname
-        except:
-            print "GEONAMES ERROR: %s had no results" % name
-            print json.dumps(geonames_object)
-            #ferr = open('geonames_errors.csv','ab')
-            #ferr.write(name.encode('utf-8') + ',' + str(level) + '\n')
-            #ferr.close()
-            sys.exit(1) 
+        return ask_user(name)
+
