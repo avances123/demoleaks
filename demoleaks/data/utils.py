@@ -42,18 +42,32 @@ def ask_user(name):
     #'fuzzy':'0.9',
     }
     print
-    print "CHOOSE A NAME TO REPLACE [%s] " % name
+    print "CHOOSE A NAME TO REPLACE [ %s ] " % name
     geonames_response = urllib2.urlopen("http://api.geonames.org/searchJSON?" + urllib.urlencode(data_request))
     geonames_object = json.load(geonames_response)
-    for x in geonames_object['geonames']:
-        print "[%s] (%s) [ %s ] " % (x['geonameId'],x['fcode'],x['name'])
-    rawid = raw_input("Which geonames id do you prefer to reconcile?: ")
-    print "http://api.geonames.org/get?geonameId=%s&lang=es&username=avances123" % rawid
-    geonames_response = urllib2.urlopen("http://api.geonames.org/get?geonameId=%s&lang=es&username=avances123" % rawid)
-    xmldoc = minidom.parse(geonames_response)
-    element = xmldoc.getElementsByTagName('name')[0]
-    print "Usando [%s] en lugar de [%s]" % (element.firstChild.nodeValue,name)
-    return element.firstChild.nodeValue
+    if len(geonames_object['geonames']) > 0:
+        for x in geonames_object['geonames']:
+            print "[%s] (%s) [ %s ] " % (x['geonameId'],x['fcode'],x['name'])
+        rawid = raw_input("Insert geonameId or your own name record: ")
+        digits = re.compile(r"^\d+")
+        if digits.match(rawid):
+            print "http://api.geonames.org/get?geonameId=%s&lang=es&username=avances123" % rawid
+            geonames_response = urllib2.urlopen("http://api.geonames.org/get?geonameId=%s&lang=es&username=avances123" % rawid)
+            xmldoc = minidom.parse(geonames_response)
+            element = xmldoc.getElementsByTagName('name')[0]
+            print "Using [%s] instead of [%s]" % (element.firstChild.nodeValue,name)
+            print
+            return element.firstChild.nodeValue
+        else:
+            print "Using [%s] instead of [%s]" % (rawid.decode('utf-8'),name)
+            print
+            return rawid.decode('utf-8')
+    else:
+        rawinput = raw_input("Enter the name manually: ")
+        # TODO check input
+        print "Using [%s] instead of [%s]" % (rawinput.decode('utf-8'),name)
+        print
+        return rawinput.decode('utf-8')
 
     
 
