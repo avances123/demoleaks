@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from demoleaks.data.utils import *
+    from demoleaks.data.utils import *
 import json,sys
 import psycopg2
 
@@ -30,18 +30,23 @@ sqls={
 3:"""SELECT municipio,AsText(geom) from poligonos_municipios""",
 }
 
+
+
+
+
 for level in sqls.keys():
     cur1.execute(sqls[level])
     places = cur1.fetchall()
     total = len(places)
     for place in places:
-        rawname = place[0].decode('utf-8')
+        #rawname = place[0].decode('utf-8')
+        rawname = place[0]
         geom = place[1]
         name = reconcile(rawname,level,mapping_places)
         mapping_places[str(level)][rawname] = name
         cur1.execute("""UPDATE data_place set polygon=GeomFromText(%s,4326) where name=%s and level=%s;""",(geom,name,level))
         if cur1.rowcount == 0:
-            print "Place not found: %s skiping update" % name
+            #print "Place not found: %s skiping update" % name
             continue
         else:
             print "Place found: %s, updating polygon" % name
