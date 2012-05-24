@@ -22,7 +22,8 @@ class Command(BaseCommand):
 
     def get_geoname(self,localname,level):
         signal.signal(signal.SIGINT, self.signal_handler)
-        geoname = reconcile(localname,level,self.mapping_places)  
+        geoname = reconcile(localname,level,self.mapping_places) 
+        time.sleep(2) 
         self.mapping_places[str(level)][localname] = geoname
         return geoname            
 

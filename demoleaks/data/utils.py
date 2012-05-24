@@ -43,6 +43,9 @@ def ask_user(name):
     }
     print
     print "CHOOSE A NAME TO REPLACE [ %s ] " % name
+    moredigits = re.compile(r".*\d{5};.*")
+    if moredigits.match(name):
+        return "ERROR"
     geonames_response = urllib2.urlopen("http://api.geonames.org/searchJSON?" + urllib.urlencode(data_request))
     geonames_object = json.load(geonames_response)
     if len(geonames_object['geonames']) > 0:
@@ -90,7 +93,7 @@ def reconcile(name,level,mapping_places):
     #print "http://api.geonames.org/searchJSON?" + urllib.urlencode(data_request)
     geonames_response = urllib2.urlopen("http://api.geonames.org/searchJSON?" + urllib.urlencode(data_request))
     geonames_object = json.load(geonames_response)
-    time.sleep(2)
+    
     try:
         geoname = geonames_object['geonames'][0]['name']
         print "Added to mapping dict (ADM%d):  %s  ==>  %s" % (level,name,geoname)
