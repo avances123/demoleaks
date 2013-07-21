@@ -6,8 +6,9 @@ from django.utils.encoding import force_unicode
 
 # Para municipios es admin_level = 8
 class Place(MPTTModel):
-    name = models.CharField(max_length=80, unique=False)
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+    name    = models.CharField(max_length=80, unique=False)
+    cod_ine = models.CharField(max_length=15)
+    parent  = TreeForeignKey('self', null=True, blank=True, related_name='children')
     polygon = models.MultiPolygonField(srid=4326,null=True, blank=True)
     objects = models.GeoManager()
 
