@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.core.management.base import BaseCommand, CommandError
 from demoleaks.data.models import Place,Election,Result,Party,ResultParties
-from demoleaks.data.utils import *
 from openpyxl.reader.excel import load_workbook
 import datetime,re,os,time,signal,sys
 from optparse import make_option
@@ -51,7 +50,6 @@ class Command(BaseCommand):
 
     # MAIN PROGRAM
     def handle(self, *args, **options):
-        self.mapping_places = read_cache() # Leo mi dict que tengo ya
         filename = args[0]
         type = self.get_type_of_election(os.path.basename(filename))
         date = self.get_date_of_election(os.path.basename(filename))
@@ -73,12 +71,8 @@ class Command(BaseCommand):
 
 
 
-        raw_name = u'España'
-        spain = Place(name=raw_name)
-        try:
-            spain = Place.objects.get(name__exact=spain.name)
-        except Place.DoesNotExist:
-            spain.save()
+        
+        spain = Place.objects.get(id=1)
         
 
         # PARTIES
@@ -102,41 +96,15 @@ class Command(BaseCommand):
                 parties_list.append(par)
         
 
-        logging.info("Saving Places ...")
-        x = 0
+        logging.info("Saving Data ...")
         # BUCLE general (para cada fila...)
         for row in ws.rows[6:]:
-            x = x + 1
-            if (x % 25 == 0):
-                write_cache(self.mapping_places)
             rowcount = rowcount + 1
             logging.info("[%d/%d]",rowcount,numrows)
 
-            # Comunidad
-            raw_name = row[0].value.rstrip()
-            com = Place(name=self.get_geoname(raw_name,1),parent=spain)
-            try:
-                com = Place.objects.get(name__exact=com.name,parent=spain)
-            except Place.DoesNotExist:
-                com.save()
-
-            # Provincia
-            raw_name = row[2].value.rstrip()
-            pro = Place(name=self.get_geoname(raw_name,2),parent=com)         
-            try:
-                pro = Place.objects.get(name__exact=pro.name, parent=com)
-            except Place.DoesNotExist:
-                pro.save()
-            
-
-
             # Municipio
-            raw_name = row[4].value.rstrip()
-            mun = Place(name=self.get_geoname(raw_name,3), parent=pro)
-            try:
-                mun = Place.objects.get(name__exact=mun.name,parent=pro)
-            except Place.DoesNotExist:                    
-                mun.save()
+            raw_cod = row[1].value.rstrip().zfill(2) + row[3].value.rstrip().zfill(3)
+            mun = Place.objects.get(cod_ine__exact=raw_cod)
                 
 
             population = self.read_int_cell(row[5])
@@ -157,7 +125,7 @@ class Command(BaseCommand):
                 res = Result.objects.get(place__exact=mun,election__exact=election)
             except Result.DoesNotExist:
                 res.save()
-                #print "\tSaved " + res.place.name + " num votes " + str(res.valid_votes)
+                print "\tSaved " + res.place.name + " num votes " + str(res.valid_votes)
 
             # Resultado de los partidos
             num_col = 13 # En esta columna empiezan los partidos, espero
@@ -171,7 +139,6 @@ class Command(BaseCommand):
                         respar.save()
                 num_col = num_col + 1
 
-        write_cache(self.mapping_places)
 
                         
 
