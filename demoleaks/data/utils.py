@@ -76,11 +76,17 @@ def ask_user(name):
 
 
 def reconcile(name,level,mapping_places):
+	"""
+	Intenta dar un geoname para nuestro string,
+	si tiene varias opciones le pregunta al usuario
+	"""
     try:
         return mapping_places[unicode(level)][name]
     except:
+		# Es un string nuevo que no tenemos en el diccionario
         pass
-        
+     
+	# Formamos un request para pedirselo a geonames
     data_request={
     'name':name.encode('utf-8'),
     'username':'avances123',

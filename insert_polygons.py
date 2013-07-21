@@ -15,7 +15,7 @@ cur2 = conn2.cursor()
 
 mapping_places = read_cache()
 
-
+mapp
 sqls={
     1:"""SELECT nombra,AsText(the_geom) from ccaa""",
     2:"""SELECT nombre,AsText(the_geom) from provincias""",

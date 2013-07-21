@@ -14,17 +14,17 @@ class Command(BaseCommand):
     digits = re.compile(r"^\d+")
     logging.basicConfig(level=logging.INFO)
     
-    # Save dict if i press ctrl+c
-    def signal_handler(self,signal, frame):
+    # Save dict if ctrl+c is pressed 
+    def signal_handler(self,signal, frame): # El frame es necesario?
         print 'You pressed Ctrl+C, Saving mapping file...'
-        write_cache(self.mapping_places)
+        write_cache(self.mapping_places) # Esto esta en demoleaks.data.utils
         sys.exit(0)
 
     def get_geoname(self,localname,level):
-        signal.signal(signal.SIGINT, self.signal_handler)
-        geoname = reconcile(localname,level,self.mapping_places) 
+        signal.signal(signal.SIGINT, self.signal_handler) # A lo mejor esto solo hay que hacerlo una vez
+        geoname = reconcile(localname,level,self.mapping_places) # O esta en el diccionario o lo pido a geonames
         time.sleep(2) 
-        self.mapping_places[str(level)][localname] = geoname
+        self.mapping_places[str(level)][localname] = geoname  # Meto clave valor en el dict
         return geoname            
 
     def get_type_of_election(self,filename):
@@ -32,29 +32,26 @@ class Command(BaseCommand):
             '01': 'REFERENDUM',
             '02': 'NATIONAL', 
             '03': 'SENATE',
-            
             '07': 'SUPRANATIONAL', 
-            
             'number_to_find': 'REGIONAL'
-
         }
         return election_type[filename.split('_')[0]]
 
     def get_date_of_election(self,filename):
         year = int(filename[3:7])
         month = int(filename[7:9])
-        return datetime.datetime(year=year,month=month,day=22)
+        return datetime.datetime(year=year,month=month,day=22) # TODO falta el dia
 
     # Used for reading a cell suposed to be an integer
     def read_int_cell(self,cell):
         if self.digits.match(str(cell.value)):                    
             return cell.value
         else:
-            return 0
+            return 0 # Y si hay letras?
 
     # MAIN PROGRAM
     def handle(self, *args, **options):
-        self.mapping_places = read_cache()
+        self.mapping_places = read_cache() # Leo mi dict que tengo ya
         filename = args[0]
         type = self.get_type_of_election(os.path.basename(filename))
         date = self.get_date_of_election(os.path.basename(filename))
@@ -62,7 +59,7 @@ class Command(BaseCommand):
         logging.info("Loading: %s ...",filename)
         wb = load_workbook(filename)
         ws = wb.get_active_sheet()
-        numrows = ws.get_highest_row() - 6
+        numrows = ws.get_highest_row() - 6 # por que un 6?
         rowcount = 0
         logging.info("%d Rows to be parsed",numrows)
         

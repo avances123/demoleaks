@@ -57,7 +57,7 @@ class Result(models.Model):
 
     place = models.ForeignKey(Place)
     election = models.ForeignKey(Election)
-    parties = models.ManyToManyField(Party, through='ResultParties')
+    parties = models.ManyToManyField(Party, through='ResultParties',related_name='results')
 
     def __unicode__(self):
         return force_unicode("Resultado de %s en %s" % (self.place,self.election))
@@ -66,8 +66,8 @@ class Result(models.Model):
 class ResultParties(models.Model):
     num_votes = models.IntegerField()
     
-    result = models.ForeignKey(Result)
-    party = models.ForeignKey(Party)
+    result = models.ForeignKey(Result,related_name='resultsparties')
+    party = models.ForeignKey(Party,related_name='resultparties')
     
     def __unicode__(self):
         return force_unicode("Resultado de %s en %s" % (self.party,self.result.place))
