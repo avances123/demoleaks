@@ -5,7 +5,9 @@ from demoleaks.data.models import Place
 import psycopg2
 
 SQL = {
-	#0:"""SELECT 'España','0',st_AsText(st_union(geom)) from poligonos_ccaa_etrs89""",
+	# This st_union takes more than 10 minutes
+	#0:"""SELECT 'España','0',st_AsText(st_union(st_simplifyPreserveTopology(geom,0.01))) from poligonos_ccaa_etrs89""",
+	0:"""SELECT 'España','0',NULL from poligonos_ccaa_etrs89""",
 	1:"""SELECT nombra,cod_ccaa,st_AsText(geom) from poligonos_ccaa_etrs89 where cod_ccaa = '%s'""",
 	2:"""SELECT nombre,cod_provin,st_AsText(geom) from poligonos_provincias_etrs89 where cod_provin = '%s'""",
 	3:"""SELECT municipio,cod_ine,st_AsText(geom) from poligonos_municipios_etrs89  where cod_ine ~ '^%s'""",
@@ -39,22 +41,26 @@ class Command(BaseCommand):
 	conn = psycopg2.connect("dbname='ign' user='fabio'")
 
 	def handle(self, *args, **options):
+
 		cur = self.conn.cursor()
-
 		with Place.tree_objects.delay_mptt_updates():
-			root = Place(name='España',cod_ine='0')
+			cur.execute(SQL[0])
+			row = cur.fetchone()
+			root = Place(name=row[0],polygon=row[2],cod_ine=row[1],parent=None)
 			root.save()
-
+			
 			for x in IGN_MAPPING.keys():
 				cur.execute(SQL[1] % x)
 				row = cur.fetchone()
 				com = Place(name=row[0],polygon=row[2],cod_ine=row[1],parent=root)
 				com.save()
+
 				for y in IGN_MAPPING[x]:
 					cur.execute(SQL[2] % y)
-					row = cur.fetchone()
-					prov = Place(name=row[0],polygon=row[2],cod_ine=row[1],parent=com) 
+					row  = cur.fetchone()
+					prov = Place(name=row[0],polygon=row[2],cod_ine=row[1],parent=com)
 					prov.save()
+
 					cur.execute(SQL[3] % y)
 					rows = cur.fetchall()
 					print "Guardando municipios de %s" % row[0]
