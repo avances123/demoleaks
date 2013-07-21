@@ -124,8 +124,15 @@ INSTALLED_APPS = (
     'django.contrib.gis',
     'mptt', # http://django-mptt.github.com/django-mptt/tutorial.html
     'demoleaks.data',
-
+    'rest_framework',
 )
+
+
+REST_FRAMEWORK = {
+    'PAGINATE_BY': 10,
+    'PAGINATE_BY_PARAM': 'page_size'
+}
+
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
