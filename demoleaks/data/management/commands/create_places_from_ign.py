@@ -41,25 +41,26 @@ class Command(BaseCommand):
 	def handle(self, *args, **options):
 		cur = self.conn.cursor()
 
-		root = Place(name='España',cod_ine='0')
-		root.save()
+		with Place.tree_objects.delay_mptt_updates():
+			root = Place(name='España',cod_ine='0')
+			root.save()
 
-		for x in IGN_MAPPING.keys():
-			cur.execute(SQL[1] % x)
-			row = cur.fetchone()
-			com = Place(name=row[0],polygon=row[2],cod_ine=row[1],parent=root)
-			com.save()
-			for y in IGN_MAPPING[x]:
-				cur.execute(SQL[2] % y)
+			for x in IGN_MAPPING.keys():
+				cur.execute(SQL[1] % x)
 				row = cur.fetchone()
-				prov = Place(name=row[0],polygon=row[2],cod_ine=row[1],parent=com) 
-				prov.save()
-				cur.execute(SQL[3] % y)
-				rows = cur.fetchall()
-				print "Guardando municipios de %s" % row[0]
-				for row in rows:
-					muni = Place(name=row[0],polygon=row[2],cod_ine=row[1],parent=prov) 
-					muni.save()
+				com = Place(name=row[0],polygon=row[2],cod_ine=row[1],parent=root)
+				com.save()
+				for y in IGN_MAPPING[x]:
+					cur.execute(SQL[2] % y)
+					row = cur.fetchone()
+					prov = Place(name=row[0],polygon=row[2],cod_ine=row[1],parent=com) 
+					prov.save()
+					cur.execute(SQL[3] % y)
+					rows = cur.fetchall()
+					print "Guardando municipios de %s" % row[0]
+					for row in rows:
+						muni = Place(name=row[0],polygon=row[2],cod_ine=row[1],parent=prov) 
+						muni.save()
 
 
 

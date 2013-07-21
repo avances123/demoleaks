@@ -1,6 +1,7 @@
 #from django.db import models
 from django.contrib.gis.db import models
 from mptt.models import MPTTModel, TreeForeignKey
+from mptt.managers import TreeManager
 from django.utils.encoding import force_unicode
 
 
@@ -11,6 +12,8 @@ class Place(MPTTModel):
     parent  = TreeForeignKey('self', null=True, blank=True, related_name='children')
     polygon = models.MultiPolygonField(srid=4326,null=True, blank=True)
     objects = models.GeoManager()
+    tree_objects = TreeManager()
+
 
     def __unicode__(self):
         return force_unicode(self.name)
