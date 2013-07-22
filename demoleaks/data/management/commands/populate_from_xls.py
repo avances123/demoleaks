@@ -44,9 +44,11 @@ class Command(BaseCommand):
         logging.info("Loading: %s ...",filename)
         wb = load_workbook(filename)
         ws = wb.get_active_sheet()
+        ws.garbage_collect()
         numrows = ws.get_highest_row() - 6 # por que un 6?
+        numcols = ws.get_highest_column()
         rowcount = 0
-        logging.info("%d Rows to be parsed",numrows)
+        logging.info("%d/%d Rows/Cols to be parsed",numrows,numcols)
         
 
         election = Election(date=date,type=type)
@@ -66,7 +68,7 @@ class Command(BaseCommand):
         # Save the party names into a dict
         logging.info("Saving Parties ...")
         parties_list = []
-        for col in ws.columns[13:]:
+        for col in ws.columns[13:250]:
             if col[4].value is not None:            
                 name = col[4].value.rstrip()
             if col[5].value is not None:
