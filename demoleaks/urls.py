@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib.gis import admin
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, routers
-from data.models import Place
+from data.models import Place,Election,Result
 
 # ViewSets define the view behavior.
 class UserViewSet(viewsets.ModelViewSet):
@@ -14,13 +14,20 @@ class GroupViewSet(viewsets.ModelViewSet):
 class PlaceViewSet(viewsets.ModelViewSet):
     model = Place
 
+class ElectionViewSet(viewsets.ModelViewSet):
+    model = Election
+
+
+class ResultViewSet(viewsets.ModelViewSet):
+    model = Result
 
 # Routers provide an easy way of automatically determining the URL conf
 router = routers.DefaultRouter()
 router.register(r'users'  , UserViewSet)
 router.register(r'groups' , GroupViewSet)
 router.register(r'places' , PlaceViewSet)
-
+router.register(r'elections' , ElectionViewSet)
+router.register(r'results' , ResultViewSet)
 
 admin.autodiscover()
 
