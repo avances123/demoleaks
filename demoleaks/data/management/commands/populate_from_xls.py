@@ -27,7 +27,8 @@ class Command(BaseCommand):
     logger = logging.getLogger('demoleaks')
     logging.getLogger('demoleaks').addHandler(console)
 
-    fh = logging.FileHandler('/tmp/demoleaks.errors.log')
+    fh = logging.FileHandler('/tmp/demoleaks.errors.log',mode='a')
+
     fh.setLevel(logging.ERROR)
     fh.setFormatter(formatter)
     logger_errors = logging.getLogger('demoleaks.errors')
