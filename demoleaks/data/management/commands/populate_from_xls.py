@@ -11,7 +11,28 @@ class Command(BaseCommand):
     args = u'filename'
     help = u'This command parses the xlsx files from Spanish Goverment, you can download them at http://bit.ly/IJol5A '
     digits = re.compile(r"^\d+")
-    logging.basicConfig(level=logging.INFO)
+
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S',
+        filename='/tmp/demoleaks.log',
+        filemode='w'
+    )
+    # define a Handler which writes INFO messages or higher to the sys.stderr
+    console = logging.StreamHandler()
+    console.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+    console.setFormatter(formatter)
+    logger = logging.getLogger('demoleaks')
+    logging.getLogger('demoleaks').addHandler(console)
+
+    fh = logging.FileHandler('/tmp/demoleaks.errors.log')
+    fh.setLevel(logging.ERROR)
+    fh.setFormatter(formatter)
+    logger_errors = logging.getLogger('demoleaks.errors')
+    logging.getLogger('demoleaks').addHandler(fh)
+
 
     def get_type_of_election(self,filename):
         election_type = {
@@ -41,18 +62,15 @@ class Command(BaseCommand):
         type = self.get_type_of_election(os.path.basename(filename))
         date = self.get_date_of_election(os.path.basename(filename))
         
-        logging.info("Loading: %s ...",filename)
+        self.logger.info("Loading: %s ...",filename)
         wb = load_workbook(filename, use_iterators = True)
         ws = wb.get_active_sheet()
         ws.garbage_collect()
         numrows = ws.get_highest_row() - 6 # por que un 6?
         numcols = ws.get_highest_column()
         rowcount = 0
-        logging.info("%d/%d Rows/Cols to be parsed",numrows,numcols)
-        
+        self.logger.debug("%d/%d Rows/Cols to be parsed",numrows,numcols)
 
-        #kk = ws.cell('ZH10000').value.strip()
-        #print "Value: ---%s---" % kk
 
         election = Election(date=date,type=type)
         spain = Place.objects.get(id=1)
@@ -60,7 +78,7 @@ class Command(BaseCommand):
 
         # PARTIES
         # Save the party names into a dict
-        logging.info("Saving Parties ...")
+        self.logger.info("Saving Parties ...")
         parties_list = []
         names = []
         acros = []
@@ -94,21 +112,21 @@ class Command(BaseCommand):
                 par = Party.objects.get(name__exact=names[i],country=spain)
             except Party.DoesNotExist:
                 par.save()
-                logging.info("NEW PARTY: %s",names[i])
+                self.logger.debug("NEW PARTY: %s",names[i])
             parties_list.append(par)
 
 
-        logging.info("Saving Data ...")
+        self.logger.info("Saving Data ...")
         for row in ws.iter_rows():
             rowcount = rowcount + 1
             if rowcount < 7:
                 continue
-            logging.info("[%d/%d]",rowcount,numrows)
+            self.logger.info("[%d/%d]",rowcount,numrows)
             raw_cod = str(int(row[1].internal_value)).zfill(2) + str(int(row[3].internal_value)).zfill(3)
             try:
                 mun = Place.objects.get(cod_ine__exact=raw_cod)
             except Place.DoesNotExist:
-                logging.error("No existe el codigo %s, con nombre %s",raw_cod,row[4].internal_value)
+                self.logger.error("No existe el codigo %s, con nombre %s",raw_cod,row[4].internal_value)
 
             population = self.read_int_cell(row[5])
             num_tables = self.read_int_cell(row[6])
@@ -128,7 +146,7 @@ class Command(BaseCommand):
                 res = Result.objects.get(place__exact=mun,election__exact=election)
             except Result.DoesNotExist:
                 res.save()
-                logging.info("Saved %s, num votes %s",res.place.name,str(res.valid_votes))
+                self.logger.debug("Saved %s, num votes %s",res.place.name,str(res.valid_votes))
 
 
             

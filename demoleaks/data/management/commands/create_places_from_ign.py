@@ -65,6 +65,11 @@ class Command(BaseCommand):
 					rows = cur.fetchall()
 					print "Guardando municipios de %s" % row[0]
 					for row in rows:
+						if row[1] == '22028-22106':
+							anso = Place(name='Ansó',polygon=row[2],cod_ine='22028',parent=prov)
+							fago = Place(name='Fago',polygon=row[2],cod_ine='22106',parent=prov)
+							anso.save()
+							fago.save()
 						muni = Place(name=row[0],polygon=row[2],cod_ine=row[1],parent=prov) 
 						muni.save()
 
