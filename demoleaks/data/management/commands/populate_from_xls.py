@@ -11,20 +11,7 @@ class Command(BaseCommand):
     args = u'filename'
     help = u'This command parses the xlsx files from Spanish Goverment, you can download them at http://bit.ly/IJol5A '
     digits = re.compile(r"^\d+")
-    logging.basicConfig(level=logging.INFO)
-    
-    # Save dict if ctrl+c is pressed 
-    def signal_handler(self,signal, frame): # El frame es necesario?
-        print 'You pressed Ctrl+C, Saving mapping file...'
-        write_cache(self.mapping_places) # Esto esta en demoleaks.data.utils
-        sys.exit(0)
-
-    def get_geoname(self,localname,level):
-        signal.signal(signal.SIGINT, self.signal_handler) # A lo mejor esto solo hay que hacerlo una vez
-        geoname = reconcile(localname,level,self.mapping_places) # O esta en el diccionario o lo pido a geonames
-        time.sleep(2) 
-        self.mapping_places[str(level)][localname] = geoname  # Meto clave valor en el dict
-        return geoname            
+    logging.basicConfig(level=logging.ERROR)
 
     def get_type_of_election(self,filename):
         election_type = {
@@ -103,8 +90,11 @@ class Command(BaseCommand):
             logging.info("[%d/%d]",rowcount,numrows)
 
             # Municipio
-            raw_cod = row[1].value.rstrip().zfill(2) + row[3].value.rstrip().zfill(3)
-            mun = Place.objects.get(cod_ine__exact=raw_cod)
+            raw_cod = str(row[1].value).zfill(2) + str(row[3].value).zfill(3)
+            try:
+                mun = Place.objects.get(cod_ine__exact=raw_cod)
+            except Place.DoesNotExist:
+                logging.error("No existe el codigo %s, con nombre %s",raw_cod,row[4].value)                
                 
 
             population = self.read_int_cell(row[5])
@@ -125,7 +115,7 @@ class Command(BaseCommand):
                 res = Result.objects.get(place__exact=mun,election__exact=election)
             except Result.DoesNotExist:
                 res.save()
-                print "\tSaved " + res.place.name + " num votes " + str(res.valid_votes)
+                logging.debug("Saved %s, num votes %s",res.place.name,str(res.valid_votes))
 
             # Resultado de los partidos
             num_col = 13 # En esta columna empiezan los partidos, espero
