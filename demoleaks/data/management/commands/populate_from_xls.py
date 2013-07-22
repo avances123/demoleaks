@@ -30,8 +30,8 @@ class Command(BaseCommand):
 
     # Used for reading a cell suposed to be an integer
     def read_int_cell(self,cell):
-        if self.digits.match(str(cell.value)):                    
-            return cell.value
+        if self.digits.match(str(cell.internal_value)):                    
+            return cell.internal_value
         else:
             return 0 # Y si hay letras?
 
@@ -42,7 +42,7 @@ class Command(BaseCommand):
         date = self.get_date_of_election(os.path.basename(filename))
         
         logging.info("Loading: %s ...",filename)
-        wb = load_workbook(filename)
+        wb = load_workbook(filename, use_iterators = True)
         ws = wb.get_active_sheet()
         ws.garbage_collect()
         numrows = ws.get_highest_row() - 6 # por que un 6?
@@ -51,16 +51,10 @@ class Command(BaseCommand):
         logging.info("%d/%d Rows/Cols to be parsed",numrows,numcols)
         
 
+        #kk = ws.cell('ZH10000').value.strip()
+        #print "Value: ---%s---" % kk
+
         election = Election(date=date,type=type)
-        election.name = ws.cell(coordinate='A3').value.strip()
-        try:
-            election = Election.objects.get(name__exact=election.name)
-        except Election.DoesNotExist:
-            election.save()
-
-
-
-        
         spain = Place.objects.get(id=1)
         
 
@@ -68,36 +62,53 @@ class Command(BaseCommand):
         # Save the party names into a dict
         logging.info("Saving Parties ...")
         parties_list = []
-        for col in ws.columns[13:250]:
-            if col[4].value is not None:            
-                name = col[4].value.rstrip()
-            if col[5].value is not None:
-                acro = col[5].value.rstrip()
-            else:
-                continue
-            if acro != '':
-                par = Party(acronym=acro,name=name,country=spain)
+        names = []
+        acros = []
+        x = -1
+        for row in ws.iter_rows():
+            x = x + 1
+            if x == 2:
+                election.name = row[0].internal_value.strip()
                 try:
-                    par = Party.objects.get(acronym__exact=acro,country=spain)
-                except Party.DoesNotExist:
-                    par.save()
-                    logging.info("NEW PARTY: %s",name)
-                parties_list.append(par)
-        
+                    election = Election.objects.get(name__exact=election.name)
+                except Election.DoesNotExist:
+                    election.save()
+
+            if x < 4:
+                continue
+            if x > 5:
+                break
+            for cell in row[13:]:
+                if cell.internal_value is not None:
+                    if x == 4:
+                        names.append(cell.internal_value.rstrip())
+                    if x == 5:
+                        acros.append(cell.internal_value.rstrip())
+
+        for i in xrange(0,len(names)):
+            #print names[i],'---',acros[i]
+            if names[i] == '':
+                continue
+            par = Party(acronym=acros[i],name=names[i],country=spain)
+            try:
+                par = Party.objects.get(name__exact=names[i],country=spain)
+            except Party.DoesNotExist:
+                par.save()
+                logging.info("NEW PARTY: %s",names[i])
+            parties_list.append(par)
+
 
         logging.info("Saving Data ...")
-        # BUCLE general (para cada fila...)
-        for row in ws.rows[6:]:
+        for row in ws.iter_rows():
             rowcount = rowcount + 1
+            if rowcount < 7:
+                continue
             logging.info("[%d/%d]",rowcount,numrows)
-
-            # Municipio
-            raw_cod = str(row[1].value).zfill(2) + str(row[3].value).zfill(3)
+            raw_cod = str(int(row[1].internal_value)).zfill(2) + str(int(row[3].internal_value)).zfill(3)
             try:
                 mun = Place.objects.get(cod_ine__exact=raw_cod)
             except Place.DoesNotExist:
-                logging.error("No existe el codigo %s, con nombre %s",raw_cod,row[4].value)                
-                
+                logging.error("No existe el codigo %s, con nombre %s",raw_cod,row[4].internal_value)
 
             population = self.read_int_cell(row[5])
             num_tables = self.read_int_cell(row[6])
@@ -108,7 +119,7 @@ class Command(BaseCommand):
             blank_votes = self.read_int_cell(row[11])
             null_votes = self.read_int_cell(row[12])
 
-            
+
             res = Result(place=mun,election=election,population=population,num_tables=num_tables,
                             total_census=total_census,total_voters=total_voters,
                             valid_votes=valid_votes,votes_parties=votes_parties,
@@ -117,13 +128,15 @@ class Command(BaseCommand):
                 res = Result.objects.get(place__exact=mun,election__exact=election)
             except Result.DoesNotExist:
                 res.save()
-                logging.debug("Saved %s, num votes %s",res.place.name,str(res.valid_votes))
+                logging.info("Saved %s, num votes %s",res.place.name,str(res.valid_votes))
 
-            # Resultado de los partidos
+
+            
+            # Votos a cada partido
             num_col = 13 # En esta columna empiezan los partidos, espero
             for party in parties_list:
                 num_votes = self.read_int_cell(row[num_col])
-                if num_votes > 0:                    
+                if num_votes > 0:
                     respar = ResultParties(num_votes=num_votes,result=res,party=party)
                     try:
                         respar = ResultParties.objects.get(result__exact=res,party__exact=party)
@@ -131,13 +144,3 @@ class Command(BaseCommand):
                         respar.save()
                 num_col = num_col + 1
 
-
-                        
-
-            
-
-
-
-
-
-            
