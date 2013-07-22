@@ -11,7 +11,7 @@ class Command(BaseCommand):
     args = u'filename'
     help = u'This command parses the xlsx files from Spanish Goverment, you can download them at http://bit.ly/IJol5A '
     digits = re.compile(r"^\d+")
-    logging.basicConfig(level=logging.ERROR)
+    logging.basicConfig(level=logging.INFO)
 
     def get_type_of_election(self,filename):
         election_type = {
