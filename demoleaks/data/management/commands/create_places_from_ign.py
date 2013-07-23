@@ -70,6 +70,7 @@ class Command(BaseCommand):
 							fago = Place(name='Fago',polygon=row[2],cod_ine='22106',parent=prov)
 							anso.save()
 							fago.save()
+							continue
 						muni = Place(name=row[0],polygon=row[2],cod_ine=row[1],parent=prov) 
 						muni.save()
 
