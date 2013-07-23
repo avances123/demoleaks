@@ -76,7 +76,11 @@ class Command(BaseCommand):
                 for pro in com.children.all():
                     res_pro = Result(place=pro,election=election)
                     for mun in pro.children.all():
-                        res_mun = mun.result_set.get(election=election)                           
+                        try:
+                            res_mun = mun.result_set.get(election=election)
+                        except Result.DoesNotExist:
+                            self.logger.error("El municipio %s no tiene resultado en la eleccion %s",mun,election)
+                            continue                            
                         res_pro = add_results(res_mun,res_pro)
                     res_pro.save()
                     res_com = add_results(res_pro,res_com)
