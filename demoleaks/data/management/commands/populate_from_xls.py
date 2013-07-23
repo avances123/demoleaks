@@ -57,6 +57,35 @@ class Command(BaseCommand):
         else:
             return 0 # Y si hay letras?
 
+    def populate_parents(self,election):
+        def add_results(orig,dest):
+            dest.blank_votes    = int(dest.blank_votes   or 0) + orig.blank_votes
+            dest.population     = int(dest.population    or 0) + orig.population
+            dest.num_tables     = int(dest.num_tables    or 0) + orig.num_tables
+            dest.total_census   = int(dest.total_census  or 0) + orig.total_census
+            dest.total_voters   = int(dest.total_voters  or 0) + orig.total_voters
+            dest.valid_votes    = int(dest.valid_votes   or 0) + orig.valid_votes
+            dest.votes_parties  = int(dest.votes_parties or 0) + orig.votes_parties
+            dest.null_votes     = int(dest.null_votes    or 0) + orig.null_votes
+            return dest
+
+        for country in Place.objects.filter(level=0):
+            res_country = Result(place=country,election=election)
+            for com in country.children.all():
+                res_com = Result(place=com,election=election)
+                for pro in com.children.all():
+                    res_pro = Result(place=pro,election=election)
+                    for mun in pro.children.all():
+                        res_mun = mun.result_set.get(election=election)                           
+                        res_pro = add_results(res_mun,res_pro)
+                    res_pro.save()
+                    res_com = add_results(res_pro,res_com)
+                res_com.save()
+                res_country = add_results(res_com,res_country)
+            res_country.save()
+
+
+
     # MAIN PROGRAM
     def handle(self, *args, **options):
         filename = args[0]
@@ -162,4 +191,5 @@ class Command(BaseCommand):
                     except ResultParties.DoesNotExist:
                         respar.save()
                 num_col = num_col + 1
-
+        self.logger.info("Populating parents")
+        self.populate_parents(election)
