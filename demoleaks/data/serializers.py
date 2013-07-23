@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from data.models import Place
+from demoleaks.data.models import Place
 
 
 class PlaceSerializer(serializers.ModelSerializer):
