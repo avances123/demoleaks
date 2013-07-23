@@ -152,7 +152,10 @@ class Command(BaseCommand):
             if rowcount < 7:
                 continue
             self.logger.info("[%d/%d]",rowcount,numrows)
-            raw_cod = str(int(row[1].internal_value)).zfill(2) + str(int(row[3].internal_value)).zfill(3)
+            try:
+                raw_cod = str(int(row[1].internal_value)).zfill(2) + str(int(row[3].internal_value)).zfill(3)
+            except:
+                continue
             try:
                 mun = Place.objects.get(cod_ine__exact=raw_cod)
             except Place.DoesNotExist:
