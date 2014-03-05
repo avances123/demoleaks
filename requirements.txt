@@ -1,16 +1,16 @@
-Django==1.5.1
-Markdown==2.3.1
+Django==1.6.2
+Markdown==2.4
 PyYAML==3.10
-South==0.8.1
+South==0.8.4
 argparse==1.2.1
 defusedxml==0.4.1
-distribute==0.6.34
-django-filter==0.6
--e git+https://github.com/django-mptt/django-mptt.git@d2e515fb3598a845d565101036b9101a04b362f1#egg=django_mptt-dev
-django-oauth-plus==2.1.2
-djangorestframework==2.3.6
+distribute==0.6.24
+django-filter==0.7
+django-mptt==0.6.0
+django-oauth-plus==2.2.4
+djangorestframework==2.3.12
 httplib2==0.8
 oauth2==1.5.211
-openpyxl==1.6.2
-psycopg2==2.5.1
+openpyxl==1.8.4
+psycopg2==2.5.2
 wsgiref==0.1.2
