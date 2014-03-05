@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from demoleaks.data.models import Place
-import psycopg2
+import osgeo.ogr
 
 SQL = {
 	# This st_union takes more than 10 minutes
@@ -38,41 +38,46 @@ IGN_MAPPING = {
 
 class Command(BaseCommand):
 
-	conn = psycopg2.connect("dbname='ign' user='fabio'")
 
 	def handle(self, *args, **options):
-
-		cur = self.conn.cursor()
+		filename = args[0]
+		shapeData = osgeo.ogr.Open(filename)
+		layer = shapeData.GetLayer()
+		
 		with Place.tree_objects.delay_mptt_updates():
-			cur.execute(SQL[0])
-			row = cur.fetchone()
-			root = Place(name=row[0],polygon=row[2],cod_ine=row[1],parent=None)
+			root = Place(name='España',polygon=None,cod_ine=0,parent=None)
 			root.save()
 			
-			for x in IGN_MAPPING.keys():
-				cur.execute(SQL[1] % x)
-				row = cur.fetchone()
-				com = Place(name=row[0],polygon=row[2],cod_ine=row[1],parent=root)
+			for x in xrange(layer.GetFeatureCount()):
+				feature = layer.GetFeature(x)
+				geom = osgeo.ogr.ForceToMultiPolygon(feature.geometry())
+				print feature.geometry().GetGeometryType()
+				com = Place(
+					name    = feature.GetFieldAsString('nombre'),
+					cod_ine = feature.GetFieldAsString('cod_ccaa'),
+					polygon = geom.ExportToWkt(),
+					parent  = root
+				)
 				com.save()
 
-				for y in IGN_MAPPING[x]:
-					cur.execute(SQL[2] % y)
-					row  = cur.fetchone()
-					prov = Place(name=row[0],polygon=row[2],cod_ine=row[1],parent=com)
-					prov.save()
+				# for y in IGN_MAPPING[x]:
+				# 	cur.execute(SQL[2] % y)
+				# 	row  = cur.fetchone()
+				# 	prov = Place(name=row[0],polygon=row[2],cod_ine=row[1],parent=com)
+				# 	prov.save()
 
-					cur.execute(SQL[3] % y)
-					rows = cur.fetchall()
-					print "Guardando municipios de %s" % row[0]
-					for row in rows:
-						if row[1] == '22028-22106':
-							anso = Place(name='Ansó',polygon=row[2],cod_ine='22028',parent=prov)
-							fago = Place(name='Fago',polygon=row[2],cod_ine='22106',parent=prov)
-							anso.save()
-							fago.save()
-							continue
-						muni = Place(name=row[0],polygon=row[2],cod_ine=row[1],parent=prov) 
-						muni.save()
+				# 	cur.execute(SQL[3] % y)
+				# 	rows = cur.fetchall()
+				# 	print "Guardando municipios de %s" % row[0]
+				# 	for row in rows:
+				# 		if row[1] == '22028-22106':
+				# 			anso = Place(name='Ansó',polygon=row[2],cod_ine='22028',parent=prov)
+				# 			fago = Place(name='Fago',polygon=row[2],cod_ine='22106',parent=prov)
+				# 			anso.save()
+				# 			fago.save()
+				# 			continue
+				# 		muni = Place(name=row[0],polygon=row[2],cod_ine=row[1],parent=prov) 
+				# 		muni.save()
 
 
 
