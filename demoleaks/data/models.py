@@ -8,7 +8,7 @@ from django.utils.encoding import force_unicode
 # Para municipios es admin_level = 8
 class Place(MPTTModel):
     name    = models.CharField(max_length=80, unique=False)
-    cod_ine = models.CharField(max_length=15)
+    cod_ine = models.CharField(max_length=15,unique=True)
     parent  = TreeForeignKey('self', null=True, blank=True, related_name='children')
     polygon = models.MultiPolygonField(srid=4326,null=True, blank=True)
     objects = models.GeoManager()
@@ -40,8 +40,8 @@ class Election(models.Model):
 
 
 class Party(models.Model):
-    name = models.CharField(max_length=80)
-    acronym = models.CharField(max_length=20)
+    name = models.CharField(max_length=180)
+    acronym = models.CharField(max_length=50)
     country = models.ForeignKey(Place) # Comprobar que es de level = 0
 
     def __unicode__(self):

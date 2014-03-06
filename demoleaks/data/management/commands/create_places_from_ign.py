@@ -4,6 +4,7 @@ from django.core.management.base import BaseCommand
 from demoleaks.data.models import Place
 import osgeo.ogr
 import os
+from django.contrib.gis.geos import GEOSGeometry
 
 
 IGN_MAPPING_CCAA = {
@@ -137,16 +138,24 @@ class Command(BaseCommand):
 			for x in xrange(layer.GetFeatureCount()):
 				feature = layer.GetFeature(x)
 				geom = osgeo.ogr.ForceToMultiPolygon(feature.geometry())
-				print "Creando %s" % feature.GetFieldAsString('nombre')
+				print "Creando %s,(%s)" % (feature.GetFieldAsString('nombre'),feature.GetFieldAsString('codigoine'))
 				id_provincia = "%02d" % int(feature.GetFieldAsString('provincia'))
 				parent = Place.objects.get(cod_ine=id_provincia)
-				com = Place(
-					name    = feature.GetFieldAsString('nombre'),
-					cod_ine = feature.GetFieldAsString('codigoine'),
-					polygon = geom.ExportToWkt(),
-					parent  = parent
-				)
-				com.save()
+				try:
+					place = Place.objects.get(cod_ine=feature.GetFieldAsString('codigoine'))
+					print "Ojo muni duplicado"
+					geom = GEOSGeometry(geom.ExportToWkt()) 
+					print type(geom),type(place.polygon)
+					place.polygon = place.polygon.union(geom)
+					place.save()
+				except Place.DoesNotExist:
+					com = Place(
+						name    = feature.GetFieldAsString('nombre'),
+						cod_ine = feature.GetFieldAsString('codigoine'),
+						polygon = geom.ExportToWkt(),
+						parent  = parent
+					)
+					com.save()
 
 				# 	cur.execute(SQL[3] % y)
 				# 	rows = cur.fetchall()

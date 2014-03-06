@@ -28,7 +28,6 @@ class Command(BaseCommand):
     logging.getLogger('demoleaks').addHandler(console)
 
     fh = logging.FileHandler('/tmp/demoleaks.errors.log',mode='a')
-
     fh.setLevel(logging.ERROR)
     fh.setFormatter(formatter)
     logger_errors = logging.getLogger('demoleaks.errors')
@@ -107,7 +106,7 @@ class Command(BaseCommand):
 
 
         election = Election(date=date,type=type)
-        spain = Place.objects.get(id=1)
+        spain = Place.objects.get(cod_ine=0)
         
 
         # PARTIES
@@ -165,14 +164,14 @@ class Command(BaseCommand):
             except Place.DoesNotExist:
                 self.logger.error("No existe el codigo %s, con nombre %s",raw_cod,row[4].internal_value)
 
-            population = self.read_int_cell(row[5])
-            num_tables = self.read_int_cell(row[6])
-            total_census = self.read_int_cell(row[7])
-            total_voters = self.read_int_cell(row[8])
-            valid_votes = self.read_int_cell(row[9])
+            population    = self.read_int_cell(row[5])
+            num_tables    = self.read_int_cell(row[6])
+            total_census  = self.read_int_cell(row[7])
+            total_voters  = self.read_int_cell(row[8])
+            valid_votes   = self.read_int_cell(row[9])
             votes_parties = self.read_int_cell(row[10])
-            blank_votes = self.read_int_cell(row[11])
-            null_votes = self.read_int_cell(row[12])
+            blank_votes   = self.read_int_cell(row[11])
+            null_votes    = self.read_int_cell(row[12])
 
 
             res = Result(place=mun,election=election,population=population,num_tables=num_tables,

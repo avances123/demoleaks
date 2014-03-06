@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es" ng-app="demoleaksApp">
+<head>
+  <meta charset="utf-8">
+  <title>DEMOLEAKS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Demoleaks site">
+  <meta name="author" content="Fabio Rueda">
+
+  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="/static/js/third-party/leaflet/leaflet.css" />
+  <!-- <link rel="stylesheet" href="/static/css/page.css"> -->
+</head>
+
+
+<body>
+  <div class="container">
+    <!-- Static navbar -->
+    <div class="navbar navbar-inverse" role="navigation">
+        <div class="navbar-header">
+          <a class="navbar-brand" href='{% url "home" %}'>DEMOLEAKS</a>
+        </div>
+        <div>
+          <!-- Parte izquierda de la navbar -->
+          <ul class="nav navbar-nav">
+            <li><a ui-sref="users.list">Usuarios</a></li>
+          </ul>
+        </div>  
+    </div>
+  </div>
+
+
+
+
+
+    <div class="container" ui-view="principal">
+    </div>
+
+
+  
+  <script src="/static/js/angular.js"></script>
+  <script src="/static/js/third-party/angularjs-plugins/ui-bootstrap-tpls-0.10.0.js"></script>
+  <script src="/static/js/third-party/angularjs-plugins/angular-cookies.js"></script>
+  <script src="/static/js/third-party/angularjs-plugins/angular-resource.js"></script>
+  <script src="/static/js/third-party/angularjs-plugins/angular-ui-router.js"></script>
+  <script src="/static/js/third-party/angularjs-plugins/angularjs-geolocation.min.js"></script>
+  <script src="/static/js/third-party/angularjs-plugins/angular-leaflet-directive.js"></script>
+  <script src="/static/js/third-party/angularjs-plugins/angular-animate.js"></script>
+  <script src="/static/js/third-party/angularjs-plugins/angular-disqus.js"></script>
+  <script src="/static/js/third-party/angularjs-plugins/ngprogress-lite.js"></script>
+  <script src="/static/js/third-party/leaflet/leaflet.js"></script>
+
+  <script src="/static/app/app.js"></script>
+
+
+
+</body>
+</html>
+
