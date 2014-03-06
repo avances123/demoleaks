@@ -1,0 +1,9 @@
+<div class="row">
+    <!-- Mapa grande -->
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <h1>Lista de Elecciones</h1>
+        <div class="list-group">
+        	<a ui-sref="election_detail({id:election.id})" ng-repeat="election in electionlist" class="list-group-item">{{election.name}}</a>
+        </div>
+    </div>
+</div>  

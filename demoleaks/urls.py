@@ -26,6 +26,7 @@ class ResultPartiesViewSet(viewsets.ModelViewSet):
     model = ResultParties
 
 # Routers provide an easy way of automatically determining the URL conf
+#router = routers.DefaultRouter(trailing_slash=False)
 router = routers.DefaultRouter()
 router.register(r'users'  , UserViewSet)
 router.register(r'groups' , GroupViewSet)
